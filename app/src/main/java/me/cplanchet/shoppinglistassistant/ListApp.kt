@@ -1,4 +1,4 @@
-package me.cplanchet.shoppinglistassistant.ui
+package me.cplanchet.shoppinglistassistant
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
