@@ -19,7 +19,7 @@ class ManualShoppingListRepositoryTest {
         ListItem(item, 3f, "lb", false),
     )
     val shoppingList1 = ShoppingList(1, "name", listItems, null)
-    
+
     @Test
     fun GetAllLists_called_returnsLists() = runBlocking{
         val items = repository.GetAllLists();
