@@ -6,7 +6,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import me.cplanchet.shoppinglistassistant.navigation.destinations.HomeDesitination
-import me.cplanchet.shoppinglistassistant.ui.theme.home.HomeScreen
+import me.cplanchet.shoppinglistassistant.ui.home.HomeScreen
 
 @Composable
 fun ListNavHost(

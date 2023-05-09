@@ -1,4 +1,4 @@
-package me.cplanchet.shoppinglistassistant.ui.theme.home
+package me.cplanchet.shoppinglistassistant.ui.home
 
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
