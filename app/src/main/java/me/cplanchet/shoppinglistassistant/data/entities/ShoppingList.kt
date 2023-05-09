@@ -1,4 +1,4 @@
-package me.cplanchet.shoppinglistassistant.data
+package me.cplanchet.shoppinglistassistant.data.entities
 
 data class ShoppingList(
     val id: Int,

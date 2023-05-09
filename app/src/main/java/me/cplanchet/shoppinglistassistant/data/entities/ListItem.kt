@@ -1,4 +1,6 @@
-package me.cplanchet.shoppinglistassistant.data
+package me.cplanchet.shoppinglistassistant.data.entities
+
+import me.cplanchet.shoppinglistassistant.data.entities.Item
 
 data class ListItem(
     val item: Item,
