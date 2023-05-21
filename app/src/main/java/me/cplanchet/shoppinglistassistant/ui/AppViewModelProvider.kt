@@ -6,7 +6,7 @@ import me.cplanchet.shoppinglistassistant.ListApplication
 import me.cplanchet.shoppinglistassistant.ui.home.HomeViewModel
 
 object AppViewModelProvider {
-    val factory = viewModelFactory{
+    val Factory = viewModelFactory{
         initializer {
             HomeViewModel(
                 ListApplication().containter.shoppingListRepository
