@@ -5,6 +5,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import me.cplanchet.shoppinglistassistant.data.entities.ShoppingList
 import me.cplanchet.shoppinglistassistant.navigation.destinations.HomeDesitination
 import me.cplanchet.shoppinglistassistant.ui.home.HomeScreen
 
@@ -19,7 +20,7 @@ fun ListNavHost(
         modifier = modifier
     ){
         composable(route = HomeDesitination.route){
-            HomeScreen()
+            HomeScreen(lists = listOf<ShoppingList>())
         }
     }
 }
