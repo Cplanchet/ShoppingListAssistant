@@ -8,6 +8,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -24,6 +25,7 @@ import me.cplanchet.shoppinglistassistant.data.entities.Item
 import me.cplanchet.shoppinglistassistant.data.entities.ListItem
 import me.cplanchet.shoppinglistassistant.data.entities.ShoppingList
 import me.cplanchet.shoppinglistassistant.ui.components.AppBar
+import me.cplanchet.shoppinglistassistant.ui.theme.ShoppingListAssistantTheme
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
@@ -38,7 +40,17 @@ fun HomeScreen(
             AppBar(hasBackButton = false)
         },
         floatingActionButton = {
-        //TODO: add FAB
+            FloatingActionButton(
+                onClick = {/*TODO add logic*/ },
+                containerColor = MaterialTheme.colorScheme.primary,
+                contentColor = MaterialTheme.colorScheme.onPrimary
+
+            ) {
+                Icon(
+                    imageVector = Icons.Outlined.Add,
+                    contentDescription = "Add Button",
+                )
+            }
         },
         content = {
             LazyColumn(
@@ -63,7 +75,7 @@ fun ListCard(
         shape = RectangleShape,
     ) {
         Column(
-            modifier = Modifier.padding(top = 0.dp, start = 16.dp, bottom = 0.dp, end = 16.dp)
+            modifier = modifier.padding(top = 0.dp, start = 16.dp, bottom = 0.dp, end = 16.dp)
         ){
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -161,5 +173,7 @@ fun HomeScreenPreview(){
         shoppingList3
     )
 //-------------------------------------------------------------------------------------------------------
-    HomeScreen(lists = shoppingLists)
+    ShoppingListAssistantTheme {
+        HomeScreen(lists = shoppingLists)
+    }
 }
