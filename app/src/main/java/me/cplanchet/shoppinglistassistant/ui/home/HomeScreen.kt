@@ -7,13 +7,13 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -54,7 +54,8 @@ fun HomeScreen(
         },
         content = {
             LazyColumn(
-                modifier = modifier.padding(it).then(Modifier.padding(top = 32.dp)),
+                modifier = modifier.padding(it).then(Modifier.padding(top = 32.dp, start = 16.dp, end = 16.dp, bottom = 32.dp))
+                    .fillMaxHeight(),
                 verticalArrangement = Arrangement.spacedBy(16.dp),
             ){
                 items(lists){list ->
@@ -65,14 +66,17 @@ fun HomeScreen(
     )
 }
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun ListCard(
     modifier: Modifier = Modifier,
     list: ShoppingList
  ) {
-    OutlinedCard(
+    ElevatedCard(
         //TODO: Make clickable
         shape = RectangleShape,
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
+        elevation = CardDefaults.elevatedCardElevation(defaultElevation = 5.dp)
     ) {
         Column(
             modifier = modifier.padding(top = 0.dp, start = 16.dp, bottom = 0.dp, end = 16.dp)
@@ -85,12 +89,16 @@ fun ListCard(
                 Text(
                     text = list.name,
                     fontSize = 32.sp,
-                    modifier = Modifier.padding(4.dp)
+                    modifier = Modifier.padding(4.dp),
+                    color = MaterialTheme.colorScheme.onPrimaryContainer
                 )
                 IconButton(
                     onClick = { /*TODO: add delete function*/ }
                 ) {
-                    Icon(Icons.Filled.Delete, contentDescription = "delete button", tint = Color.Black)
+                    Icon(
+                        imageVector = Icons.Filled.Delete,
+                        contentDescription = "delete button",
+                        tint = MaterialTheme.colorScheme.onPrimaryContainer)
                 }
             }
             Column(
@@ -167,10 +175,12 @@ fun HomeScreenPreview(){
     val shoppingList1 = ShoppingList(1, "name", listItems, null)
     val shoppingList2 = ShoppingList(2, "name2", listItems2, null)
     val shoppingList3 = ShoppingList(3, "name3", listItems3, null)
+    val shoppingList4 = ShoppingList(4, "name4", listOf<ListItem>(), null)
     val shoppingLists = listOf(
         shoppingList1,
         shoppingList2,
-        shoppingList3
+        shoppingList3,
+        shoppingList4
     )
 //-------------------------------------------------------------------------------------------------------
     ShoppingListAssistantTheme {
