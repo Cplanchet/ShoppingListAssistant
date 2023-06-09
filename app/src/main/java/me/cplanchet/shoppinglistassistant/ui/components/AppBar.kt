@@ -2,40 +2,53 @@ package me.cplanchet.shoppinglistassistant.ui.components
 
 import android.content.res.Configuration.UI_MODE_NIGHT_NO
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import me.cplanchet.shoppinglistassistant.R
 import me.cplanchet.shoppinglistassistant.ui.theme.ShoppingListAssistantTheme
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppBar(
     modifier: Modifier = Modifier,
-    hasBackButton: Boolean
+    hasBackButton: Boolean,
+    navigateUp: () -> Unit = {}
 ){
-    Surface(
-        modifier = Modifier.fillMaxWidth(),
-        color = MaterialTheme.colorScheme.primary
-    ){
-        Column(
-            modifier= modifier.fillMaxWidth().padding(5.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text(
-                text = stringResource(R.string.app_title),
-                style = MaterialTheme.typography.headlineLarge,
-                color = MaterialTheme.colorScheme.onPrimary
+    if(hasBackButton){
+        TopAppBar(
+            title = { Text(stringResource(R.string.app_title))},
+            modifier = modifier,
+            navigationIcon = {
+                IconButton(onClick = navigateUp){
+                    Icon(
+                        imageVector = Icons.Filled.ArrowBack,
+                        contentDescription = "back button"
+                    )
+                }
+            },
+            colors = TopAppBarDefaults.smallTopAppBarColors(
+                titleContentColor = MaterialTheme.colorScheme.onPrimary,
+                navigationIconContentColor = MaterialTheme.colorScheme.onPrimary,
+                containerColor = MaterialTheme.colorScheme.primary,
+
             )
-        }
+        )
+    }
+    else{
+        TopAppBar(
+            title = {Text(stringResource(R.string.app_title))},
+            modifier = modifier,
+            colors = TopAppBarDefaults.smallTopAppBarColors(
+                titleContentColor = MaterialTheme.colorScheme.onPrimary,
+                navigationIconContentColor = MaterialTheme.colorScheme.onPrimary,
+                containerColor = MaterialTheme.colorScheme.primary,
+
+            ))
     }
 }
 
