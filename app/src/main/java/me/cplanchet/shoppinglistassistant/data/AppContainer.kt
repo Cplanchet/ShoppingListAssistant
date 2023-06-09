@@ -8,6 +8,6 @@ interface AppContainer {
 
 class AppDataContainer(private val context: Context): AppContainer{
     override val shoppingListRepository: ShoppingListRepository by lazy {
-        ManualShoppingListRepository()
+        MockShoppingListRepository()
     }
 }

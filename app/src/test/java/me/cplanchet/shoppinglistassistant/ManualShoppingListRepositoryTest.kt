@@ -3,7 +3,7 @@ package me.cplanchet.shoppinglistassistant
 import junit.framework.Assert.assertEquals
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
-import me.cplanchet.shoppinglistassistant.data.ManualShoppingListRepository
+import me.cplanchet.shoppinglistassistant.data.MockShoppingListRepository
 import me.cplanchet.shoppinglistassistant.data.entities.Category
 import me.cplanchet.shoppinglistassistant.data.entities.Item
 import me.cplanchet.shoppinglistassistant.data.entities.ListItem
@@ -11,7 +11,7 @@ import me.cplanchet.shoppinglistassistant.data.entities.ShoppingList
 import org.junit.Test
 
 class ManualShoppingListRepositoryTest {
-    val repository = ManualShoppingListRepository()
+    val repository = MockShoppingListRepository()
     val category = Category(1, "cat 1")
     val item = Item(1, "item1", category)
     val listItems = listOf(
