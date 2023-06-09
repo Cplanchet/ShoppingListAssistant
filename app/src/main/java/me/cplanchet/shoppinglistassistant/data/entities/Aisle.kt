@@ -1,8 +1,12 @@
 package me.cplanchet.shoppinglistassistant.data.entities
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+
+@Entity
 data class Aisle(
+    @PrimaryKey(autoGenerate = true)
     val id: Int,
-    val name: String,
-    val categories: List<Category>?,
-    val items: List<Item>?
+    val storeId: Int,
+    val name: String
 )
