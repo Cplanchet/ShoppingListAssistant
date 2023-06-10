@@ -4,5 +4,5 @@ data class ShoppingListDto(
     val id: Int,
     val name: String,
     val items: List<ListItemDto>,
-    val store: StoreDto
+    val store: StoreDto?
 )

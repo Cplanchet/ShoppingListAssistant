@@ -12,8 +12,8 @@ interface AisleItemDao {
     suspend fun update(aisleItem:AisleItem)
     @Delete
     suspend fun delete(aisleItem:AisleItem)
-    @Query("SELECT * FROM AisleItem WHERE aisleId = :id")
+    @Query("SELECT * FROM Aisle_Item WHERE aisleId = :id")
     fun getAisleItemByAisleId(id: Int): Flow<List<AisleItem>>
-    @Query("SELECT * FROM AisleItem")
+    @Query("SELECT * FROM Aisle_Item")
     fun getAllAisleItems(): Flow<List<AisleItem>>
 }

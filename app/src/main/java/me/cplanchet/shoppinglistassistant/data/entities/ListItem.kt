@@ -2,7 +2,7 @@ package me.cplanchet.shoppinglistassistant.data.entities
 
 import androidx.room.Entity
 
-@Entity
+@Entity(tableName = "List_Item", primaryKeys = ["listId", "itemId"])
 data class ListItem(
     val listId: Int,
     val itemId: Int,

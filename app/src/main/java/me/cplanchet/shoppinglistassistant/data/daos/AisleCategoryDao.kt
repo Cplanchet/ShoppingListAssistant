@@ -15,12 +15,12 @@ interface AisleCategoryDao {
     @Delete
     suspend fun delete(aisleCategory:AisleCategory)
 
-    @Query("SELECT * FROM AisleCategory WHERE aisleId = :id")
+    @Query("SELECT * FROM Aisle_Category WHERE aisleId = :id")
     fun getAisleCategoryByAisleId(id: Int): Flow<List<AisleCategory>>
 
-    @Query("SELECT * FROM AisleCategory WHERE categoryId = :id")
+    @Query("SELECT * FROM Aisle_Category WHERE categoryId = :id")
     fun getAisleCategoryByCategoryId(id: Int): Flow<List<AisleCategory>>
 
-    @Query("SELECT * FROM AisleCategory")
+    @Query("SELECT * FROM Aisle_Category")
     fun getAllAisleCategories(): Flow<List<AisleCategory>>
 }

@@ -14,7 +14,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.painterResource
@@ -23,8 +22,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import me.cplanchet.shoppinglistassistant.R
-import me.cplanchet.shoppinglistassistant.data.MockShoppingListRepository
-import me.cplanchet.shoppinglistassistant.data.entities.ShoppingList
+import me.cplanchet.shoppinglistassistant.data.MockShoppingListService
+import me.cplanchet.shoppinglistassistant.data.dtos.ShoppingListDto
 import me.cplanchet.shoppinglistassistant.ui.AppViewModelProvider
 import me.cplanchet.shoppinglistassistant.ui.components.AppBar
 import me.cplanchet.shoppinglistassistant.ui.theme.ShoppingListAssistantTheme
@@ -61,7 +60,7 @@ fun HomeScreen(
                     .fillMaxHeight(),
                 verticalArrangement = Arrangement.spacedBy(16.dp),
             ){
-                items(homeUIState.ShoppingLists){list ->
+                items(homeUIState.shoppingLists){list ->
                     ListCard(list = list)
                 }
             }
@@ -69,11 +68,10 @@ fun HomeScreen(
     )
 }
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun ListCard(
     modifier: Modifier = Modifier,
-    list: ShoppingList
+    list: ShoppingListDto
  ) {
     ElevatedCard(
         //TODO: Make clickable
@@ -153,8 +151,9 @@ fun ListCard(
 )
 @Composable
 fun HomeScreenPreview(){
-    val homeViewModel = HomeViewModel(listRepository = MockShoppingListRepository());
+    val viewModel = HomeViewModel(listService = MockShoppingListService());
+    val homeUIState by viewModel.homeUIState.collectAsState()
     ShoppingListAssistantTheme {
-        HomeScreen(homeViewModel = homeViewModel)
+        HomeScreen(homeViewModel = viewModel)
     }
 }

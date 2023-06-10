@@ -12,8 +12,8 @@ interface ListItemDao {
     suspend fun update(listItem:ListItem)
     @Delete
     suspend fun delete(listItem:ListItem)
-    @Query("SELECT * FROM ListItem WHERE listId = :id")
+    @Query("SELECT * FROM List_Item WHERE listId = :id")
     fun getListItemsByListId(id: Int): Flow<List<ListItem>>
-    @Query("SELECT * FROM ListItem")
+    @Query("SELECT * FROM List_Item")
     fun getAllListItems(): Flow<List<ListItem>>
 }
