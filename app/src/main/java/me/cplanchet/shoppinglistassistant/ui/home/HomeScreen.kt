@@ -22,7 +22,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import me.cplanchet.shoppinglistassistant.R
-import me.cplanchet.shoppinglistassistant.data.MockShoppingListService
+import me.cplanchet.shoppinglistassistant.data.MockShoppingListRepository
 import me.cplanchet.shoppinglistassistant.data.dtos.ShoppingListDto
 import me.cplanchet.shoppinglistassistant.ui.AppViewModelProvider
 import me.cplanchet.shoppinglistassistant.ui.components.AppBar
@@ -151,7 +151,7 @@ fun ListCard(
 )
 @Composable
 fun HomeScreenPreview(){
-    val viewModel = HomeViewModel(listService = MockShoppingListService());
+    val viewModel = HomeViewModel(listRepository = MockShoppingListRepository());
     val homeUIState by viewModel.homeUIState.collectAsState()
     ShoppingListAssistantTheme {
         HomeScreen(homeViewModel = viewModel)

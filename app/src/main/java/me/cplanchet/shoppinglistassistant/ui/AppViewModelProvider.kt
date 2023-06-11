@@ -11,7 +11,7 @@ object AppViewModelProvider {
     val Factory = viewModelFactory{
         initializer {
             HomeViewModel(
-                listApplication().container.shoppingListService
+                listApplication().container.shoppingListRepository
             )
         }
     }

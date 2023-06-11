@@ -1,8 +1,8 @@
 package me.cplanchet.shoppinglistassistant.data
 
 import kotlinx.coroutines.flow.Flow
-import me.cplanchet.shoppinglistassistant.data.entities.ShoppingList
+import me.cplanchet.shoppinglistassistant.data.dtos.ShoppingListDto
 
 interface ShoppingListRepository{
-    fun GetAllLists(): Flow<List<ShoppingList>>
+    fun getAllLists(): Flow<List<ShoppingListDto>>
 }
