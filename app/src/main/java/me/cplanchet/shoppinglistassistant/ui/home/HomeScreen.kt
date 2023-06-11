@@ -152,7 +152,6 @@ fun ListCard(
 @Composable
 fun HomeScreenPreview(){
     val viewModel = HomeViewModel(listRepository = MockShoppingListRepository());
-    val homeUIState by viewModel.homeUIState.collectAsState()
     ShoppingListAssistantTheme {
         HomeScreen(homeViewModel = viewModel)
     }
