@@ -28,7 +28,6 @@ import me.cplanchet.shoppinglistassistant.ui.AppViewModelProvider
 import me.cplanchet.shoppinglistassistant.ui.components.AppBar
 import me.cplanchet.shoppinglistassistant.ui.theme.ShoppingListAssistantTheme
 
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
@@ -151,8 +150,8 @@ fun ListCard(
 )
 @Composable
 fun HomeScreenPreview(){
-    val viewModel = HomeViewModel(listRepository = MockShoppingListRepository());
+    val test = HomeViewModel(listRepository = MockShoppingListRepository());
     ShoppingListAssistantTheme {
-        HomeScreen(homeViewModel = viewModel)
+        HomeScreen(homeViewModel = test)
     }
 }

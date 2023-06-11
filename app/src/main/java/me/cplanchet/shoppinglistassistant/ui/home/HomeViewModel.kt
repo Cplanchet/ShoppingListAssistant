@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.stateIn
 import me.cplanchet.shoppinglistassistant.data.ShoppingListRepository
 
 class HomeViewModel(listRepository: ShoppingListRepository): ViewModel() {
-    val homeUIState: StateFlow<HomeUIState> = listRepository.getAllLists().map{ HomeUIState(listOf()) }.stateIn(
+    val homeUIState: StateFlow<HomeUIState> = listRepository.getAllLists().map{ HomeUIState(it) }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5_000L),
         initialValue = HomeUIState()
