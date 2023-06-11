@@ -20,24 +20,30 @@ class DefaultShoppingListRepository(private val shoppingListDao: ShoppingListDao
 
     private fun convertListToDto(list: ShoppingList): ShoppingListDto{
         var itemDtos: ArrayList<ListItemDto> = arrayListOf()
-        var storeDto: StoreDto = StoreDto(1, "store", listOf()) //TODO wire up store
+        var storeDto: StoreDto? = null  //TODO add Store
         listItemDao.getListItemsByListId(list.id).onEach {x -> x.forEach { itemDtos.add(convertListItemToDto(it)) }}
 
         return list.mapToDto(itemDtos, storeDto)
     }
 
     private fun convertListItemToDto(item: ListItem): ListItemDto{
-        var itemDto: ItemDto = ItemDto(1, "name", CategoryDto(1, "name"))   //TODO fix this to not need to be initialized
+        var itemDto: ItemDto? = null
         itemDao.getItemById(item.itemId).onEach {x -> itemDto = convertToItemDto(x)}
 
-        return item.mapToDto(itemDto)
+        if(itemDto == null){
+            throw NullPointerException()
+        }
+        return item.mapToDto(itemDto as ItemDto)
     }
 
     private fun convertToItemDto(item: Item): ItemDto{
-        var categoryDto: CategoryDto = CategoryDto(1, "1")  //TODO fix this
+        var categoryDto: CategoryDto? = null
         categoryDao.getCategoryById(item.categoryId).onEach {x -> categoryDto = x.mapToDto() }
 
-        return item.mapToDto(categoryDto)
+        if(categoryDto == null){
+            throw NullPointerException()
+        }
+        return item.mapToDto(categoryDto as CategoryDto)
     }
 }
 
@@ -47,7 +53,7 @@ fun Store.mapToDto(aisles: List<AisleDto>): StoreDto {
 fun Aisle.mapToDto(categories: List<CategoryDto>, items: List<ItemDto>): AisleDto {
     return AisleDto(this.id, this.name, categories, items)
 }
-fun ShoppingList.mapToDto(items: List<ListItemDto>, store: StoreDto): ShoppingListDto {
+fun ShoppingList.mapToDto(items: List<ListItemDto>, store: StoreDto?): ShoppingListDto {
     return ShoppingListDto(this.id, this.name, items, store)
 }
 fun Category.mapToDto(): CategoryDto{
