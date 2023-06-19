@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">ShoppingListAssistant</string>
     <string name="app_title">Shopping List Assistant</string>
+    <string name="list_name_label">List Name</string>
 </resources>

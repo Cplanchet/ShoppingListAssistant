@@ -18,6 +18,10 @@ class DefaultShoppingListRepository(private val shoppingListDao: ShoppingListDao
         return flowOf(listsDtos)
     }
 
+    override fun insertList(list: ShoppingListDto) {
+        return
+    }
+
     private fun convertListToDto(list: ShoppingList): ShoppingListDto{
         var itemDtos: ArrayList<ListItemDto> = arrayListOf()
         var storeDto: StoreDto? = null  //TODO add Store

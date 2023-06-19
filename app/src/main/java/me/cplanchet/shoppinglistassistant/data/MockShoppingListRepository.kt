@@ -42,5 +42,7 @@ class MockShoppingListRepository : ShoppingListRepository{
         )
         return flowOf(shoppingLists)
     }
-
+    override fun insertList(list: ShoppingListDto){
+        return
+    }
 }
