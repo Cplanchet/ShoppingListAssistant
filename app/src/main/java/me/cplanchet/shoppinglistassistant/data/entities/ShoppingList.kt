@@ -8,5 +8,5 @@ data class ShoppingList(
     @PrimaryKey(autoGenerate = true)
     val id: Int,
     val name: String,
-    val storeId: Int
+    val storeId: Int?
 )

@@ -10,6 +10,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import kotlinx.coroutines.launch
 import me.cplanchet.shoppinglistassistant.R
 import me.cplanchet.shoppinglistassistant.data.MockShoppingListRepository
 import me.cplanchet.shoppinglistassistant.ui.AppViewModelProvider
@@ -25,6 +26,7 @@ fun CreateListPage(
     modifier: Modifier = Modifier,
     viewModel: CreateListViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ){
+    val coroutineScope = rememberCoroutineScope()
     Scaffold(
         modifier = modifier,
         topBar = {
@@ -37,7 +39,10 @@ fun CreateListPage(
             Text(
                 text = stringResource(R.string.create_list_title)
             )
-            FormBody(viewModel.listUIState)
+            FormBody(
+                listUIState = viewModel.listUIState,
+                onValueChange = viewModel::updateUiState
+            )
             Row(
                 modifier = modifier.fillMaxWidth().padding(top = 32.dp),
                 horizontalArrangement = Arrangement.SpaceAround
@@ -50,7 +55,12 @@ fun CreateListPage(
                     Text(text = stringResource(R.string.back))
                 }
                 Button(
-                    onClick = {},
+                    onClick = {
+                              coroutineScope.launch{
+                                  viewModel.saveList()
+                                  navigateBack()
+                              }
+                    },
                     modifier.width(100.dp)
                 ){
                     Text(text = stringResource(R.string.save))
@@ -64,7 +74,7 @@ fun CreateListPage(
 fun FormBody(
     listUIState: ListUIState,
     modifier: Modifier = Modifier,
-    onValueChange: (ListUIState) -> Unit = {}
+    onValueChange: (ListUIState) -> Unit
 ){
     Column(
         modifier = modifier.fillMaxWidth(),

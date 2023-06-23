@@ -18,8 +18,9 @@ class DefaultShoppingListRepository(private val shoppingListDao: ShoppingListDao
         return flowOf(listsDtos)
     }
 
-    override fun insertList(list: ShoppingListDto) {
-        return
+    override suspend fun insertList(list: ShoppingListDto) {
+        val newList = ShoppingList(list.id, list.name, list.store?.id)
+        shoppingListDao.insert(newList);
     }
 
     private fun convertListToDto(list: ShoppingList): ShoppingListDto{
