@@ -2,4 +2,8 @@
     <string name="app_name">ShoppingListAssistant</string>
     <string name="app_title">Shopping List Assistant</string>
     <string name="list_name_label">List Name</string>
+    <string name="create_list_title">Create List</string>
+    <string name="back">Back</string>
+    <string name="save">Save</string>
+    <string name="choose_store">Choose Store</string>
 </resources>

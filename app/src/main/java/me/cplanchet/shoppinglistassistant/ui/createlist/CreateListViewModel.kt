@@ -4,12 +4,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import me.cplanchet.shoppinglistassistant.data.DefaultShoppingListRepository
+import me.cplanchet.shoppinglistassistant.data.ShoppingListRepository
 import me.cplanchet.shoppinglistassistant.ui.ListUIState
 import me.cplanchet.shoppinglistassistant.ui.isValid
 import me.cplanchet.shoppinglistassistant.ui.toListDto
 
-class CreateListViewModel(private val shoppingListRepository: DefaultShoppingListRepository): ViewModel() {
+class CreateListViewModel(private val shoppingListRepository: ShoppingListRepository): ViewModel() {
     var listUIState by mutableStateOf(ListUIState())
         private set
 
