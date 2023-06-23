@@ -23,13 +23,12 @@ fun CreateListPage(
     navigateBack: () -> Unit,
     onNavigateUp: () -> Unit,
     modifier: Modifier = Modifier,
-    canNavigateBack: Boolean = true,
     viewModel: CreateListViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ){
     Scaffold(
         modifier = modifier,
         topBar = {
-            AppBar(hasBackButton = true)
+            AppBar(hasBackButton = true, navigateUp = {onNavigateUp()})
         }
     ){ paddingValues ->
         Column(
@@ -45,12 +44,14 @@ fun CreateListPage(
 
             ) {
                 OutlinedButton(
-                    onClick = {},
+                    onClick = { navigateBack() },
+                    modifier.width(100.dp)
                 ){
                     Text(text = stringResource(R.string.back))
                 }
                 Button(
-                    onClick = {}
+                    onClick = {},
+                    modifier.width(100.dp)
                 ){
                     Text(text = stringResource(R.string.save))
                 }

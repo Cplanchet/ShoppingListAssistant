@@ -17,16 +17,16 @@ fun ListNavHost(
 ){
     NavHost(
         navController = navController,
-        startDestination = CreateListDestination.route,
+        startDestination = HomeDesitination.route,
         modifier = modifier
     ){
         composable(route = HomeDesitination.route){
-            HomeScreen()
+            HomeScreen(navigateToCreateList = {navController.navigate(CreateListDestination.route)})
         }
         composable(route = CreateListDestination.route){
             CreateListPage(
-                navigateBack = {},
-                onNavigateUp =  {}
+                navigateBack = {navController.popBackStack()},
+                onNavigateUp =  {navController.navigateUp()}
             )
         }
     }

@@ -1,13 +1,12 @@
 package me.cplanchet.shoppinglistassistant.ui.home
 
-import android.annotation.SuppressLint
 import android.content.res.Configuration.UI_MODE_NIGHT_NO
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -32,6 +31,7 @@ import me.cplanchet.shoppinglistassistant.ui.theme.ShoppingListAssistantTheme
 fun HomeScreen(
     modifier: Modifier = Modifier,
     homeViewModel: HomeViewModel = viewModel(factory = AppViewModelProvider.Factory),
+    navigateToCreateList: () -> Unit
 ){
     val homeUIState by homeViewModel.homeUIState.collectAsState()
     Scaffold(
@@ -41,7 +41,7 @@ fun HomeScreen(
         },
         floatingActionButton = {
             FloatingActionButton(
-                onClick = {/*TODO add logic*/ },
+                onClick = { navigateToCreateList() },
                 containerColor = MaterialTheme.colorScheme.primary,
                 contentColor = MaterialTheme.colorScheme.onPrimary
 
@@ -151,6 +151,9 @@ fun ListCard(
 fun HomeScreenPreview(){
     val test = HomeViewModel(listRepository = MockShoppingListRepository());
     ShoppingListAssistantTheme {
-        HomeScreen(homeViewModel = test)
+        HomeScreen(
+            homeViewModel = test,
+            navigateToCreateList = {}
+            )
     }
 }
