@@ -7,8 +7,10 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlinx.coroutines.launch
 import me.cplanchet.shoppinglistassistant.R
@@ -17,6 +19,7 @@ import me.cplanchet.shoppinglistassistant.ui.AppViewModelProvider
 import me.cplanchet.shoppinglistassistant.ui.ListUIState
 import me.cplanchet.shoppinglistassistant.ui.components.AppBar
 import me.cplanchet.shoppinglistassistant.ui.components.StandardDropdownBox
+import me.cplanchet.shoppinglistassistant.ui.isValid
 import me.cplanchet.shoppinglistassistant.ui.theme.ShoppingListAssistantTheme
 
 @Composable
@@ -30,18 +33,23 @@ fun CreateListPage(
     Scaffold(
         modifier = modifier,
         topBar = {
-            AppBar(hasBackButton = true, navigateUp = {onNavigateUp()})
+            AppBar(hasBackButton = true, navigateUp = {onNavigateUp()},)
         }
     ){ paddingValues ->
         Column(
-           modifier = Modifier.padding(paddingValues).then(Modifier.padding(top = 32.dp))
+           modifier = Modifier.padding(paddingValues).then(Modifier.padding(top = 32.dp)),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = stringResource(R.string.create_list_title)
+                text = stringResource(R.string.create_list_title),
+                fontSize = 32.sp,
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.primary
             )
             FormBody(
                 listUIState = viewModel.listUIState,
-                onValueChange = viewModel::updateUiState
+                onValueChange = viewModel::updateUiState,
+                modifier = Modifier.padding(top = 32.dp)
             )
             Row(
                 modifier = modifier.fillMaxWidth().padding(top = 32.dp),
@@ -61,7 +69,8 @@ fun CreateListPage(
                                   navigateBack()
                               }
                     },
-                    modifier.width(100.dp)
+                    modifier.width(100.dp),
+                    enabled = viewModel.listUIState.isValid()
                 ){
                     Text(text = stringResource(R.string.save))
                 }

@@ -9,9 +9,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
@@ -34,11 +32,13 @@ fun HomeScreen(
     navigateToCreateList: () -> Unit
 ){
     val homeUIState by homeViewModel.homeUIState.collectAsState()
+    val openDialog = remember { mutableStateOf(false) }
     Scaffold(
         modifier = modifier,
         topBar = {
             AppBar(hasBackButton = false)
         },
+        floatingActionButtonPosition = FabPosition.Center,
         floatingActionButton = {
             FloatingActionButton(
                 onClick = { navigateToCreateList() },
@@ -53,13 +53,19 @@ fun HomeScreen(
             }
         },
         content = {
+            if(openDialog.value){
+                DeleteDialog(
+                    onDismiss = {openDialog.value = false},
+                    onConfirm = {},
+                )
+            }
             LazyColumn(
-                modifier = modifier.padding(it).then(Modifier.padding(top = 32.dp, start = 16.dp, end = 16.dp, bottom = 32.dp))
+                modifier = modifier.padding(it).then(Modifier.padding(top = 64.dp, start = 16.dp, end = 16.dp, bottom = 32.dp))
                     .fillMaxHeight(),
                 verticalArrangement = Arrangement.spacedBy(16.dp),
             ){
                 items(homeUIState.shoppingLists){list ->
-                    ListCard(list = list)
+                    ListCard(list = list, onListDelete = {openDialog.value = true})
                 }
             }
         }
@@ -69,7 +75,8 @@ fun HomeScreen(
 @Composable
 fun ListCard(
     modifier: Modifier = Modifier,
-    list: ShoppingListDto
+    list: ShoppingListDto,
+    onListDelete: (ShoppingListDto) -> Unit
  ) {
     ElevatedCard(
         //TODO: Make clickable
@@ -92,7 +99,7 @@ fun ListCard(
                     color = MaterialTheme.colorScheme.onPrimaryContainer
                 )
                 IconButton(
-                    onClick = { /*TODO: add delete function*/ }
+                    onClick = { onListDelete(list)}
                 ) {
                     Icon(
                         imageVector = Icons.Filled.Delete,
@@ -132,6 +139,52 @@ fun ListCard(
                             )
                             Text(i.item.name)
                         }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun DeleteDialog(
+    onDismiss: () -> Unit,
+    onConfirm: () -> Unit,
+    modifier: Modifier = Modifier,
+){
+    AlertDialog(
+        onDismissRequest = {
+            onDismiss()
+        }
+    ) {
+        Surface(
+            modifier = modifier.wrapContentWidth().wrapContentHeight(),
+            shape = MaterialTheme.shapes.large,
+            tonalElevation = AlertDialogDefaults.TonalElevation
+        ){
+            Column(modifier = Modifier.padding(16.dp)) {
+                Text(
+                    text = "Are you sure you want to delete this list?"
+                )
+                Spacer(modifier = Modifier.height(24.dp))
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.End
+                ){
+                    TextButton(
+                        onClick = {
+                            onDismiss()
+                        },
+                    ) {
+                        Text("Dismiss")
+                    }
+                    TextButton(
+                        onClick = {
+                            onConfirm()
+                        },
+                    ) {
+                        Text("Confirm")
                     }
                 }
             }
