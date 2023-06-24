@@ -1,7 +1,6 @@
 package me.cplanchet.shoppinglistassistant.data.databases
 
 import android.content.Context
-import android.util.Log
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
@@ -23,7 +22,6 @@ abstract class ListDatabase: RoomDatabase() {
         @Volatile
         private var Instance: ListDatabase? = null
         fun getDatabase(context: Context): ListDatabase {
-            Log.i("Database", "Got DB")
             return Instance ?: synchronized(this){
                 Room.databaseBuilder(context, ListDatabase::class.java, "list_database")
                     .fallbackToDestructiveMigration()

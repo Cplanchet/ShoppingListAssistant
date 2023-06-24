@@ -1,7 +1,8 @@
 package me.cplanchet.shoppinglistassistant.data
 
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import me.cplanchet.shoppinglistassistant.data.daos.CategoryDao
 import me.cplanchet.shoppinglistassistant.data.daos.ItemDao
@@ -12,10 +13,7 @@ import me.cplanchet.shoppinglistassistant.data.entities.*
 
 class DefaultShoppingListRepository(private val shoppingListDao: ShoppingListDao, private val listItemDao: ListItemDao, private val itemDao: ItemDao, private val categoryDao: CategoryDao): ShoppingListRepository {
     override fun getAllLists(): Flow<List<ShoppingListDto>> {
-        var listsDtos: ArrayList<ShoppingListDto> = arrayListOf()
-        shoppingListDao.getAllShoppingLists().onEach {x -> x.forEach{listsDtos.add(convertListToDto(it))}}
-
-        return flowOf(listsDtos)
+        return shoppingListDao.getAllShoppingLists().map {convertListsToDto(it)}
     }
 
     override suspend fun insertList(list: ShoppingListDto) {
@@ -23,22 +21,32 @@ class DefaultShoppingListRepository(private val shoppingListDao: ShoppingListDao
         shoppingListDao.insert(newList);
     }
 
-    private fun convertListToDto(list: ShoppingList): ShoppingListDto{
-        var itemDtos: ArrayList<ListItemDto> = arrayListOf()
-        var storeDto: StoreDto? = null  //TODO add Store
-        listItemDao.getListItemsByListId(list.id).onEach {x -> x.forEach { itemDtos.add(convertListItemToDto(it)) }}
+    private suspend fun convertListsToDto(lists: List<ShoppingList>): List<ShoppingListDto>{
+        var listDtos = ArrayList<ShoppingListDto>()
 
-        return list.mapToDto(itemDtos, storeDto)
+        for(item in lists){
+            var storeDto: StoreDto? = null  //TODO add Store
+            val itemDtos = listItemDao.getListItemsByListId(item.id).map { convertListItemsToDto(it) }
+
+            listDtos.add(item.mapToDto(itemDtos.first(), storeDto))
+        }
+        return listDtos
     }
 
-    private fun convertListItemToDto(item: ListItem): ListItemDto{
-        var itemDto: ItemDto? = null
-        itemDao.getItemById(item.itemId).onEach {x -> itemDto = convertToItemDto(x)}
+    private fun convertListItemsToDto(items: List<ListItem>): List<ListItemDto>{
+        var itemDtos = ArrayList<ListItemDto>()
 
-        if(itemDto == null){
-            throw NullPointerException()
+        for(item in items){
+            var itemDto: ItemDto? = null
+            itemDao.getItemById(item.itemId).onEach {x -> itemDto = convertToItemDto(x)}
+
+            if(itemDto == null){
+                throw NullPointerException()
+            }
+            itemDtos.add(item.mapToDto(itemDto as ItemDto))
         }
-        return item.mapToDto(itemDto as ItemDto)
+
+        return itemDtos
     }
 
     private fun convertToItemDto(item: Item): ItemDto{
