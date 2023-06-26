@@ -18,6 +18,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import kotlinx.coroutines.launch
 import me.cplanchet.shoppinglistassistant.R
 import me.cplanchet.shoppinglistassistant.data.MockShoppingListRepository
 import me.cplanchet.shoppinglistassistant.data.dtos.ShoppingListDto
@@ -31,8 +32,10 @@ fun HomeScreen(
     homeViewModel: HomeViewModel = viewModel(factory = AppViewModelProvider.Factory),
     navigateToCreateList: () -> Unit
 ){
+    val coroutineScope = rememberCoroutineScope()
     val homeUIState by homeViewModel.homeUIState.collectAsState()
     val openDialog = remember { mutableStateOf(false) }
+    var listToDelete = remember { mutableStateOf(ShoppingListDto(1, "", listOf(), null)) }
     Scaffold(
         modifier = modifier,
         topBar = {
@@ -56,7 +59,13 @@ fun HomeScreen(
             if(openDialog.value){
                 DeleteDialog(
                     onDismiss = {openDialog.value = false},
-                    onConfirm = {},
+                    onConfirm = {
+                        coroutineScope.launch {
+                            homeViewModel.deleteList(listToDelete.value)
+                            openDialog.value = false
+                        }
+                    },
+                    listDto = listToDelete.value
                 )
             }
             LazyColumn(
@@ -65,7 +74,10 @@ fun HomeScreen(
                 verticalArrangement = Arrangement.spacedBy(16.dp),
             ){
                 items(homeUIState.shoppingLists){list ->
-                    ListCard(list = list, onListDelete = {openDialog.value = true})
+                    ListCard(list = list, onListDelete = {
+                        listToDelete.value = it
+                        openDialog.value = true
+                    })
                 }
             }
         }
@@ -99,7 +111,7 @@ fun ListCard(
                     color = MaterialTheme.colorScheme.onPrimaryContainer
                 )
                 IconButton(
-                    onClick = { onListDelete(list)}
+                    onClick = { onListDelete(list) }
                 ) {
                     Icon(
                         imageVector = Icons.Filled.Delete,
@@ -151,6 +163,7 @@ fun ListCard(
 fun DeleteDialog(
     onDismiss: () -> Unit,
     onConfirm: () -> Unit,
+    listDto: ShoppingListDto,
     modifier: Modifier = Modifier,
 ){
     AlertDialog(
@@ -165,7 +178,7 @@ fun DeleteDialog(
         ){
             Column(modifier = Modifier.padding(16.dp)) {
                 Text(
-                    text = "Are you sure you want to delete this list?"
+                    text = "Are you sure you want to delete " + listDto.name + "?"
                 )
                 Spacer(modifier = Modifier.height(24.dp))
                 Row(

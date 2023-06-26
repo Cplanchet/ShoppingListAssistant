@@ -17,8 +17,11 @@ class DefaultShoppingListRepository(private val shoppingListDao: ShoppingListDao
     }
 
     override suspend fun insertList(list: ShoppingListDto) {
-        val newList = ShoppingList(list.id, list.name, list.store?.id)
-        shoppingListDao.insert(newList);
+        shoppingListDao.insert(list.mapToEntity());
+    }
+
+    override suspend fun deleteList(list: ShoppingListDto) {
+        shoppingListDao.delete(list.mapToEntity())
     }
 
     private suspend fun convertListsToDto(lists: List<ShoppingList>): List<ShoppingListDto>{
@@ -77,6 +80,9 @@ fun Item.mapToDto(category: CategoryDto): ItemDto{
 }
 fun ListItem.mapToDto(item: ItemDto): ListItemDto{
     return ListItemDto(item, this.amount, this.amountUnit, this.checked)
+}
+fun ShoppingListDto.mapToEntity(): ShoppingList{
+    return ShoppingList(this.id, this.name, this.store?.id)
 }
 
 

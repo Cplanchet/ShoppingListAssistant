@@ -45,4 +45,8 @@ class MockShoppingListRepository : ShoppingListRepository{
     override suspend fun insertList(list: ShoppingListDto){
         return
     }
+
+    override suspend fun deleteList(list: ShoppingListDto) {
+        return
+    }
 }
