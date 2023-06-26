@@ -25,5 +25,5 @@ fun ShoppingListDto.toListUIState(): ListUIState = ListUIState(
 )
 
 fun ListUIState.isValid(): Boolean {
-    return name.isNotBlank()
+    return name.isNotBlank() && name.length <= 30
 }

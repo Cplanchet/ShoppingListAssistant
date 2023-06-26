@@ -105,7 +105,7 @@ fun ListCard(
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
-                    text = list.name,
+                    text = if (list.name.length > 15) list.name.take(15) + "..." else list.name,
                     fontSize = 32.sp,
                     modifier = Modifier.padding(4.dp),
                     color = MaterialTheme.colorScheme.onPrimaryContainer
@@ -116,7 +116,8 @@ fun ListCard(
                     Icon(
                         imageVector = Icons.Filled.Delete,
                         contentDescription = "delete button",
-                        tint = MaterialTheme.colorScheme.onPrimaryContainer)
+                        tint = MaterialTheme.colorScheme.onPrimaryContainer
+                    )
                 }
             }
             Column(
