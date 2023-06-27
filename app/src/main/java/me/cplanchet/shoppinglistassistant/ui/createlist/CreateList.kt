@@ -1,5 +1,6 @@
 package me.cplanchet.shoppinglistassistant.ui.createlist
 
+import android.annotation.SuppressLint
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
@@ -16,12 +17,13 @@ import kotlinx.coroutines.launch
 import me.cplanchet.shoppinglistassistant.R
 import me.cplanchet.shoppinglistassistant.data.MockShoppingListRepository
 import me.cplanchet.shoppinglistassistant.ui.AppViewModelProvider
-import me.cplanchet.shoppinglistassistant.ui.ListUIState
 import me.cplanchet.shoppinglistassistant.ui.components.AppBar
 import me.cplanchet.shoppinglistassistant.ui.components.StandardDropdownBox
-import me.cplanchet.shoppinglistassistant.ui.isValid
+import me.cplanchet.shoppinglistassistant.ui.state.ListUIState
+import me.cplanchet.shoppinglistassistant.ui.state.isValid
 import me.cplanchet.shoppinglistassistant.ui.theme.ShoppingListAssistantTheme
 
+@SuppressLint("StateFlowValueCalledInComposition")
 @Composable
 fun CreateListPage(
     navigateBack: () -> Unit,
@@ -30,6 +32,7 @@ fun CreateListPage(
     viewModel: CreateListViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ){
     val coroutineScope = rememberCoroutineScope()
+    val createListUIState by viewModel.createListUIState.collectAsState()
     Scaffold(
         modifier = modifier,
         topBar = {
@@ -48,7 +51,8 @@ fun CreateListPage(
             )
             FormBody(
                 listUIState = viewModel.listUIState,
-                onValueChange = viewModel::updateUiState,
+                createListUIState = createListUIState,
+                onValueChange = viewModel::updateUIState,
                 modifier = Modifier.padding(top = 32.dp)
             )
             Row(
@@ -82,6 +86,7 @@ fun CreateListPage(
 @Composable
 fun FormBody(
     listUIState: ListUIState,
+    createListUIState: CreateListUIState,
     modifier: Modifier = Modifier,
     onValueChange: (ListUIState) -> Unit
 ){
@@ -98,12 +103,16 @@ fun FormBody(
             modifier = Modifier.fillMaxWidth(),
             singleLine = true
         )
-        val options = listOf("option 1", "option2", "option3")
-        var selectedText by remember { mutableStateOf(options[0])}
+        val options = createListUIState.stores.map { it.name }
+        var selectedText by remember { mutableStateOf("Select 1...") }
+
     StandardDropdownBox(
         Modifier.fillMaxWidth(),
         selected = selectedText,
-        onSelectionChanged = { selectedText = it},
+        onSelectionChanged = {
+            selectedText = it
+            onValueChange(listUIState.copy(store = createListUIState.stores.find{store -> store.name == it}))
+        },
         options = options,
         label = {Text(text = stringResource(R.string.choose_store))}
     )

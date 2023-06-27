@@ -2,10 +2,7 @@ package me.cplanchet.shoppinglistassistant.data
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
-import me.cplanchet.shoppinglistassistant.data.dtos.CategoryDto
-import me.cplanchet.shoppinglistassistant.data.dtos.ItemDto
-import me.cplanchet.shoppinglistassistant.data.dtos.ListItemDto
-import me.cplanchet.shoppinglistassistant.data.dtos.ShoppingListDto
+import me.cplanchet.shoppinglistassistant.data.dtos.*
 
 class MockShoppingListRepository : ShoppingListRepository{
     override fun getAllLists(): Flow<List<ShoppingListDto>> {
@@ -48,5 +45,12 @@ class MockShoppingListRepository : ShoppingListRepository{
 
     override suspend fun deleteList(list: ShoppingListDto) {
         return
+    }
+
+    override fun getAllStores(): Flow<List<StoreDto>> {
+        val store1 = StoreDto(1, "Store 1", listOf(), listOf())
+        val store2 = StoreDto(2, "Store 2", listOf(), listOf())
+
+        return flowOf(listOf(store1, store2))
     }
 }

@@ -1,4 +1,4 @@
-package me.cplanchet.shoppinglistassistant.ui
+package me.cplanchet.shoppinglistassistant.ui.state
 
 import me.cplanchet.shoppinglistassistant.data.dtos.ListItemDto
 import me.cplanchet.shoppinglistassistant.data.dtos.ShoppingListDto

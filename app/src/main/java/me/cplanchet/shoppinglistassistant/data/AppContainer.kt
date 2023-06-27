@@ -13,7 +13,8 @@ class AppDataContainer(private val context: Context): AppContainer{
             ListDatabase.getDatabase(context).shoppingListDao(),
             ListDatabase.getDatabase(context).listItemDao(),
             ListDatabase.getDatabase(context).itemDao(),
-            ListDatabase.getDatabase(context).categoryDao()
+            ListDatabase.getDatabase(context).categoryDao(),
+            ListDatabase.getDatabase(context).storeDao()
         )
     }
 }

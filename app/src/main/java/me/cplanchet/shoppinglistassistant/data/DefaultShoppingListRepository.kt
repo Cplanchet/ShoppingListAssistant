@@ -4,14 +4,11 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
-import me.cplanchet.shoppinglistassistant.data.daos.CategoryDao
-import me.cplanchet.shoppinglistassistant.data.daos.ItemDao
-import me.cplanchet.shoppinglistassistant.data.daos.ListItemDao
-import me.cplanchet.shoppinglistassistant.data.daos.ShoppingListDao
+import me.cplanchet.shoppinglistassistant.data.daos.*
 import me.cplanchet.shoppinglistassistant.data.dtos.*
 import me.cplanchet.shoppinglistassistant.data.entities.*
 
-class DefaultShoppingListRepository(private val shoppingListDao: ShoppingListDao, private val listItemDao: ListItemDao, private val itemDao: ItemDao, private val categoryDao: CategoryDao): ShoppingListRepository {
+class DefaultShoppingListRepository(private val shoppingListDao: ShoppingListDao, private val listItemDao: ListItemDao, private val itemDao: ItemDao, private val categoryDao: CategoryDao, private val storeDao: StoreDao): ShoppingListRepository {
     override fun getAllLists(): Flow<List<ShoppingListDto>> {
         return shoppingListDao.getAllShoppingLists().map {convertListsToDto(it)}
     }
@@ -22,6 +19,10 @@ class DefaultShoppingListRepository(private val shoppingListDao: ShoppingListDao
 
     override suspend fun deleteList(list: ShoppingListDto) {
         shoppingListDao.delete(list.mapToEntity())
+    }
+
+    override fun getAllStores(): Flow<List<StoreDto>> {
+        return storeDao.getAllStores().map{ convertToStoreDto(it) }
     }
 
     private suspend fun convertListsToDto(lists: List<ShoppingList>): List<ShoppingListDto>{
@@ -61,10 +62,18 @@ class DefaultShoppingListRepository(private val shoppingListDao: ShoppingListDao
         }
         return item.mapToDto(categoryDto as CategoryDto)
     }
+
+    private fun convertToStoreDto(stores: List<Store>): List<StoreDto> {
+        var storeDtos = ArrayList<StoreDto>()
+        for (store in stores) {
+            storeDtos.add(store.mapToDto(listOf(), listOf()))
+        }
+        return storeDtos
+    }
 }
 
-fun Store.mapToDto(aisles: List<AisleDto>): StoreDto {
-    return StoreDto(this.id, this.name, aisles)
+fun Store.mapToDto(items: List<ItemDto>, aisles: List<AisleDto>): StoreDto {
+    return StoreDto(this.id, this.name, items, aisles)
 }
 fun Aisle.mapToDto(categories: List<CategoryDto>, items: List<ItemDto>): AisleDto {
     return AisleDto(this.id, this.name, categories, items)
