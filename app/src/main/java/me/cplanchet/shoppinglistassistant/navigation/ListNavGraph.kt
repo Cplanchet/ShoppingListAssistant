@@ -6,8 +6,10 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import me.cplanchet.shoppinglistassistant.navigation.destinations.CreateListDestination
-import me.cplanchet.shoppinglistassistant.navigation.destinations.HomeDesitination
+import me.cplanchet.shoppinglistassistant.navigation.destinations.CreateStoreDestination
+import me.cplanchet.shoppinglistassistant.navigation.destinations.HomeDestination
 import me.cplanchet.shoppinglistassistant.ui.createlist.CreateListPage
+import me.cplanchet.shoppinglistassistant.ui.createstore.CreateStorePage
 import me.cplanchet.shoppinglistassistant.ui.home.HomeScreen
 
 @Composable
@@ -17,16 +19,22 @@ fun ListNavHost(
 ){
     NavHost(
         navController = navController,
-        startDestination = HomeDesitination.route,
+        startDestination = CreateStoreDestination.route,
         modifier = modifier
     ){
-        composable(route = HomeDesitination.route){
+        composable(route = HomeDestination.route){
             HomeScreen(navigateToCreateList = {navController.navigate(CreateListDestination.route)})
         }
         composable(route = CreateListDestination.route){
             CreateListPage(
                 navigateBack = {navController.popBackStack()},
                 onNavigateUp =  {navController.navigateUp()}
+            )
+        }
+        composable(route = CreateStoreDestination.route){
+            CreateStorePage(
+                navigateBack = {navController.popBackStack()},
+                onNavigateUp = {navController.navigateUp()}
             )
         }
     }

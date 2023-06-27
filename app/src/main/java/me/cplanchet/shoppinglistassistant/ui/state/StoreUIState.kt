@@ -14,3 +14,7 @@ data class StoreUIState(
 fun StoreDto.toUIState(): StoreUIState{
     return StoreUIState(this.id, this.name, this.items, this.aisle)
 }
+
+fun StoreUIState.isValid(): Boolean{
+    return this.name.isNotBlank() && this.name.length <= 30;
+}

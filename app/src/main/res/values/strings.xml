@@ -6,4 +6,7 @@
     <string name="back">Back</string>
     <string name="save">Save</string>
     <string name="choose_store">Choose Store</string>
+    <string name="store_name_label">Store Name</string>
+    <string name="store_id_label">Store ID</string>
+    <string name="create_store_title">Create Store</string>
 </resources>
