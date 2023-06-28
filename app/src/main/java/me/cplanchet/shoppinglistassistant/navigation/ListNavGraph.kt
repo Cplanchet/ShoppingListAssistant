@@ -27,8 +27,9 @@ fun ListNavHost(
         }
         composable(route = CreateListDestination.route){
             CreateListPage(
-                navigateBack = {navController.popBackStack()},
-                onNavigateUp =  {navController.navigateUp()}
+                navigateBack = { navController.popBackStack() },
+                onNavigateUp = { navController.navigateUp() },
+                navigateToCreateStorePage = { navController.navigate(CreateStoreDestination.route) }
             )
         }
         composable(route = CreateStoreDestination.route){

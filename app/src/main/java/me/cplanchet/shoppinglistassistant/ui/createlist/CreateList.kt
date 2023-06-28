@@ -18,7 +18,7 @@ import me.cplanchet.shoppinglistassistant.R
 import me.cplanchet.shoppinglistassistant.data.MockShoppingListRepository
 import me.cplanchet.shoppinglistassistant.ui.AppViewModelProvider
 import me.cplanchet.shoppinglistassistant.ui.components.AppBar
-import me.cplanchet.shoppinglistassistant.ui.components.StandardDropdownBox
+import me.cplanchet.shoppinglistassistant.ui.components.StoreDropdownBox
 import me.cplanchet.shoppinglistassistant.ui.state.ListUIState
 import me.cplanchet.shoppinglistassistant.ui.state.isValid
 import me.cplanchet.shoppinglistassistant.ui.theme.ShoppingListAssistantTheme
@@ -28,6 +28,7 @@ import me.cplanchet.shoppinglistassistant.ui.theme.ShoppingListAssistantTheme
 fun CreateListPage(
     navigateBack: () -> Unit,
     onNavigateUp: () -> Unit,
+    navigateToCreateStorePage: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: CreateListViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ){
@@ -53,7 +54,8 @@ fun CreateListPage(
                 listUIState = viewModel.listUIState,
                 createListUIState = createListUIState,
                 onValueChange = viewModel::updateUIState,
-                modifier = Modifier.padding(top = 32.dp)
+                modifier = Modifier.padding(top = 32.dp),
+                onCreateStore = { navigateToCreateStorePage() }
             )
             Row(
                 modifier = modifier.fillMaxWidth().padding(top = 32.dp),
@@ -88,7 +90,8 @@ fun FormBody(
     listUIState: ListUIState,
     createListUIState: CreateListUIState,
     modifier: Modifier = Modifier,
-    onValueChange: (ListUIState) -> Unit
+    onValueChange: (ListUIState) -> Unit,
+    onCreateStore: () -> Unit
 ){
     Column(
         modifier = modifier.fillMaxWidth(),
@@ -104,18 +107,19 @@ fun FormBody(
             singleLine = true
         )
         val options = createListUIState.stores.map { it.name }
-        var selectedText by remember { mutableStateOf("Select 1...") }
+        var selectedText by remember { mutableStateOf("Select Store...") }
 
-    StandardDropdownBox(
-        Modifier.fillMaxWidth(),
-        selected = selectedText,
-        onSelectionChanged = {
-            selectedText = it
-            onValueChange(listUIState.copy(store = createListUIState.stores.find{store -> store.name == it}))
-        },
-        options = options,
-        label = {Text(text = stringResource(R.string.choose_store))}
-    )
+        StoreDropdownBox(
+            Modifier.fillMaxWidth(),
+            selected = selectedText,
+            onSelectionChanged = {
+                selectedText = it
+                onValueChange(listUIState.copy(store = createListUIState.stores.find { store -> store.name == it }))
+            },
+            onSelectCreate = { onCreateStore() },
+            options = options,
+            label = { Text(text = stringResource(R.string.choose_store)) }
+        )
     }
 }
 
@@ -130,6 +134,11 @@ fun FormBody(
 @Composable
 fun CreateListPreview(){
     ShoppingListAssistantTheme {
-        CreateListPage(navigateBack =  {}, onNavigateUp = {}, viewModel = CreateListViewModel(MockShoppingListRepository()))
+        CreateListPage(
+            navigateBack = {},
+            onNavigateUp = {},
+            navigateToCreateStorePage = {},
+            viewModel = CreateListViewModel(MockShoppingListRepository())
+        )
     }
 }
