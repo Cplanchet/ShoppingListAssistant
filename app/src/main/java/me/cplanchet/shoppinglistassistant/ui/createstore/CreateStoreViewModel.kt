@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import me.cplanchet.shoppinglistassistant.data.ShoppingListRepository
 import me.cplanchet.shoppinglistassistant.ui.state.StoreUIState
 import me.cplanchet.shoppinglistassistant.ui.state.isValid
+import me.cplanchet.shoppinglistassistant.ui.state.toStoreDto
 
 class CreateStoreViewModel(private val shoppingListRepository: ShoppingListRepository): ViewModel() {
     var storeUIState by mutableStateOf(StoreUIState())
@@ -18,7 +19,7 @@ class CreateStoreViewModel(private val shoppingListRepository: ShoppingListRepos
 
     suspend fun saveStore(){
         if(storeUIState.isValid()){
-
+            shoppingListRepository.insertStore(storeUIState.toStoreDto())
         }
     }
 }

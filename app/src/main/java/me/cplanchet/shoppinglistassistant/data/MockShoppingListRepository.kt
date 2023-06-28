@@ -53,4 +53,6 @@ class MockShoppingListRepository : ShoppingListRepository{
 
         return flowOf(listOf(store1, store2))
     }
+    override suspend fun insertStore(store: StoreDto) {
+    }
 }

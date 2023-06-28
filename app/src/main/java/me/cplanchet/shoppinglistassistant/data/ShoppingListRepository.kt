@@ -10,4 +10,5 @@ interface ShoppingListRepository{
     suspend fun deleteList(list: ShoppingListDto)
 
     fun getAllStores(): Flow<List<StoreDto>>
+    suspend fun insertStore(store:StoreDto)
 }

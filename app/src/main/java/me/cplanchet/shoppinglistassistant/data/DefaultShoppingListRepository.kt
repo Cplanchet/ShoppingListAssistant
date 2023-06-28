@@ -25,6 +25,10 @@ class DefaultShoppingListRepository(private val shoppingListDao: ShoppingListDao
         return storeDao.getAllStores().map{ convertToStoreDto(it) }
     }
 
+    override suspend fun insertStore(store: StoreDto) {
+        storeDao.insert(store.mapToEntity())
+    }
+
     private suspend fun convertListsToDto(lists: List<ShoppingList>): List<ShoppingListDto>{
         var listDtos = ArrayList<ShoppingListDto>()
 
@@ -92,6 +96,9 @@ fun ListItem.mapToDto(item: ItemDto): ListItemDto{
 }
 fun ShoppingListDto.mapToEntity(): ShoppingList{
     return ShoppingList(this.id, this.name, this.store?.id)
+}
+fun StoreDto.mapToEntity(): Store{
+    return Store(this.id, this.name)
 }
 
 
