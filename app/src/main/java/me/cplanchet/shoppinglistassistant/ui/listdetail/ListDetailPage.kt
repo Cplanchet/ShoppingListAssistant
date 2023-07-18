@@ -1,32 +1,42 @@
 package me.cplanchet.shoppinglistassistant.ui.listdetail
 
 import android.content.res.Configuration
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material3.Checkbox
-import androidx.compose.material3.Icon
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
-import me.cplanchet.shoppinglistassistant.data.MockShoppingListRepository
+import androidx.compose.ui.unit.dp
 import me.cplanchet.shoppinglistassistant.data.dtos.CategoryDto
 import me.cplanchet.shoppinglistassistant.data.dtos.ItemDto
 import me.cplanchet.shoppinglistassistant.data.dtos.ListItemDto
+import me.cplanchet.shoppinglistassistant.ui.components.AppBar
 import me.cplanchet.shoppinglistassistant.ui.theme.ShoppingListAssistantTheme
 
 @Composable
-fun ListDetailPage(){
-    val repo = MockShoppingListRepository()
+fun ListDetailPage(
+    modifier: Modifier = Modifier,
+    onNavigateUp: () -> Unit
+){
     val category = CategoryDto(1, "Cat")
     val item = ItemDto(1, "Name", category)
-    val listItem = ListItemDto(item, 1f, "lb", false)
-    ListItem(listItem = listItem)
+    val listItem = ListItemDto(item, 1f, "lb", true)
+
+    Scaffold(
+        topBar = {AppBar(hasBackButton = true, navigateUp = {onNavigateUp()})}
+    ){paddingValues ->
+        Column(
+            modifier = modifier.padding(paddingValues).then(Modifier.padding(top = 32.dp, start = 16.dp))
+        ) {
+            Text(text = "Name", style = MaterialTheme.typography.titleLarge, color = MaterialTheme.colorScheme.primary)
+            Text(text = "Store", style = MaterialTheme.typography.titleSmall, color = MaterialTheme.colorScheme.primary)
+            ListItem(listItem = listItem)
+        }
+    }
 }
 
 @Composable
@@ -70,6 +80,6 @@ fun ListItem(
 @Composable
 fun ListDetailPreview(){
     ShoppingListAssistantTheme {
-        ListDetailPage()
+        ListDetailPage(onNavigateUp = {})
     }
 }

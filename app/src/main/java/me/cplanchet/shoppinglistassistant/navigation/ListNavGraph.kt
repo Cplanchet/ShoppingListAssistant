@@ -41,7 +41,7 @@ fun ListNavHost(
             )
         }
         composable(route = ListDetailDestination.route){
-            ListDetailPage()
+            ListDetailPage(onNavigateUp = {})
         }
     }
 }
