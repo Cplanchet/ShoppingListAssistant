@@ -10,4 +10,5 @@
     <string name="store_id_label">Store ID</string>
     <string name="create_store_title">Create Store</string>
     <string name="store_dropdown_create">Create New Store...</string>
+    <string name="list_detail_title">List Details</string>
 </resources>
