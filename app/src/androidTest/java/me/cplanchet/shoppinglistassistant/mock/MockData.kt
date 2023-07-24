@@ -4,10 +4,6 @@ import me.cplanchet.shoppinglistassistant.data.dtos.CategoryDto
 import me.cplanchet.shoppinglistassistant.data.dtos.ItemDto
 import me.cplanchet.shoppinglistassistant.data.dtos.ListItemDto
 import me.cplanchet.shoppinglistassistant.data.dtos.ShoppingListDto
-import me.cplanchet.shoppinglistassistant.data.entities.Category
-import me.cplanchet.shoppinglistassistant.data.entities.Item
-import me.cplanchet.shoppinglistassistant.data.entities.ListItem
-import me.cplanchet.shoppinglistassistant.data.entities.ShoppingList
 
 object MockData {
     val category: CategoryDto = CategoryDto(1, "fakeCategory")
@@ -20,7 +16,7 @@ object MockData {
     val listItem1 = ListItemDto(item1, 1f, "count", false)
     val listItem2 = ListItemDto(item2, 1f, "count", false)
     val listItem3 = ListItemDto(item3, 1f, "count", false)
-    val listItem4 = ListItemDto(item4, 1f, "count", false)   //TODO: convert to mock repo data
+    val listItem4 = ListItemDto(item4, 1f, "count", false)
 
     val shoppingListNoItems = ShoppingListDto(1, "No Items", listOf(), null)
     val shoppingListOneItem = ShoppingListDto(2, "One Item", listOf(listItem1), null)

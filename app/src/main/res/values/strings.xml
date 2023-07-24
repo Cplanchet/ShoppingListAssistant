@@ -9,6 +9,7 @@
     <string name="store_name_label">Store Name</string>
     <string name="store_id_label">Store ID</string>
     <string name="create_store_title">Create Store</string>
-    <string name="store_dropdown_create">Create New Store...</string>
+    <string name="store_dropdown_create">Create New Store…</string>
     <string name="list_detail_title">List Details</string>
+    <string name="list_detail_button_label">Add Item…</string>
 </resources>
