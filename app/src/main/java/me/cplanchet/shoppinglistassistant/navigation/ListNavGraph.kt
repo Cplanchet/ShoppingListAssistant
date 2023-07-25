@@ -3,8 +3,10 @@ package me.cplanchet.shoppinglistassistant.navigation
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import me.cplanchet.shoppinglistassistant.navigation.destinations.CreateListDestination
 import me.cplanchet.shoppinglistassistant.navigation.destinations.CreateStoreDestination
 import me.cplanchet.shoppinglistassistant.navigation.destinations.HomeDestination
@@ -21,11 +23,14 @@ fun ListNavHost(
 ){
     NavHost(
         navController = navController,
-        startDestination = ListDetailDestination.route,
+        startDestination = HomeDestination.route,
         modifier = modifier
     ){
         composable(route = HomeDestination.route){
-            HomeScreen(navigateToCreateList = {navController.navigate(CreateListDestination.route)})
+            HomeScreen(
+                navigateToCreateList = {navController.navigate(CreateListDestination.route)},
+                navigateToListDetail = {navController.navigate("${ListDetailDestination.route}/${it}")}
+            )
         }
         composable(route = CreateListDestination.route){
             CreateListPage(
@@ -40,8 +45,11 @@ fun ListNavHost(
                 onNavigateUp = {navController.navigateUp()}
             )
         }
-        composable(route = ListDetailDestination.route){
-            ListDetailPage(onNavigateUp = {}, list = null)
+        composable(route = ListDetailDestination.routeWithArgs,
+            arguments = listOf(navArgument(ListDetailDestination.listIdArg){
+                type = NavType.IntType
+            })){
+            ListDetailPage(onNavigateUp = { navController.navigateUp() })
         }
     }
 }

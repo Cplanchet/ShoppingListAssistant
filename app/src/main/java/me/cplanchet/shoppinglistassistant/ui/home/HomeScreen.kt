@@ -30,12 +30,13 @@ import me.cplanchet.shoppinglistassistant.ui.theme.ShoppingListAssistantTheme
 fun HomeScreen(
     modifier: Modifier = Modifier,
     homeViewModel: HomeViewModel = viewModel(factory = AppViewModelProvider.Factory),
-    navigateToCreateList: () -> Unit
+    navigateToCreateList: () -> Unit,
+    navigateToListDetail: (listId: Int) -> Unit
 ){
     val coroutineScope = rememberCoroutineScope()
     val homeUIState by homeViewModel.homeUIState.collectAsState()
     val openDialog = remember { mutableStateOf(false) }
-    var listToDelete = remember { mutableStateOf(ShoppingListDto(1, "", listOf(), null)) }
+    val listToDelete = remember { mutableStateOf(ShoppingListDto(1, "", listOf(), null)) }
     Scaffold(
         modifier = modifier,
         topBar = {
@@ -74,27 +75,33 @@ fun HomeScreen(
                 verticalArrangement = Arrangement.spacedBy(16.dp),
             ){
                 items(homeUIState.shoppingLists){list ->
-                    ListCard(list = list, onListDelete = {
+                    ListCard(
+                        list = list,
+                        onListDelete = {
                         listToDelete.value = it
                         openDialog.value = true
-                    })
+                    },
+                        onCardClick = { navigateToListDetail(it) }
+                        )
                 }
             }
         }
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ListCard(
     modifier: Modifier = Modifier,
     list: ShoppingListDto,
-    onListDelete: (ShoppingListDto) -> Unit
+    onListDelete: (ShoppingListDto) -> Unit,
+    onCardClick: (listId: Int) -> Unit
  ) {
     ElevatedCard(
-        //TODO: Make clickable
         shape = RectangleShape,
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
-        elevation = CardDefaults.elevatedCardElevation(defaultElevation = 5.dp)
+        elevation = CardDefaults.elevatedCardElevation(defaultElevation = 5.dp),
+        onClick = {onCardClick(list.id)}
     ) {
         Column(
             modifier = modifier.padding(top = 0.dp, start = 16.dp, bottom = 0.dp, end = 16.dp)
@@ -220,7 +227,8 @@ fun HomeScreenPreview(){
     ShoppingListAssistantTheme {
         HomeScreen(
             homeViewModel = test,
-            navigateToCreateList = {}
+            navigateToCreateList = {},
+            navigateToListDetail = {}
             )
     }
 }

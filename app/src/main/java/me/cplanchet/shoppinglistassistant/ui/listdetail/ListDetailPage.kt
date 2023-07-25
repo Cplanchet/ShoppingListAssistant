@@ -8,17 +8,19 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import me.cplanchet.shoppinglistassistant.R
-import me.cplanchet.shoppinglistassistant.data.dtos.CategoryDto
-import me.cplanchet.shoppinglistassistant.data.dtos.ItemDto
+import me.cplanchet.shoppinglistassistant.data.MockShoppingListRepository
 import me.cplanchet.shoppinglistassistant.data.dtos.ListItemDto
-import me.cplanchet.shoppinglistassistant.data.dtos.ShoppingListDto
+import me.cplanchet.shoppinglistassistant.ui.AppViewModelProvider
 import me.cplanchet.shoppinglistassistant.ui.components.AppBar
 import me.cplanchet.shoppinglistassistant.ui.theme.ShoppingListAssistantTheme
 
@@ -26,22 +28,24 @@ import me.cplanchet.shoppinglistassistant.ui.theme.ShoppingListAssistantTheme
 fun ListDetailPage(
     modifier: Modifier = Modifier,
     onNavigateUp: () -> Unit,
-    list: ShoppingListDto?
+    listDetailViewModel: ListDetailViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ){
+    val uiState = listDetailViewModel.uiState.collectAsState()
+
     Scaffold(
-        topBar = {AppBar(hasBackButton = true, navigateUp = {onNavigateUp()})}
+        topBar = {AppBar(hasBackButton = true, navigateUp = { onNavigateUp() })}
     ){paddingValues ->
         Column(
             modifier = modifier.padding(paddingValues).then(Modifier.padding(top = 32.dp, start = 16.dp))
         ) {
-            Text(text = list?.name ?: "", style = MaterialTheme.typography.titleLarge, color = MaterialTheme.colorScheme.primary)
-            if(list?.store != null){
-                Text(text = list.store.name, style = MaterialTheme.typography.titleSmall, color = MaterialTheme.colorScheme.primary)
+            Text(text = uiState.value.name, style = MaterialTheme.typography.titleLarge, color = MaterialTheme.colorScheme.primary)
+            if(uiState.value.store != null){
+                Text(text = uiState.value.store!!.name, style = MaterialTheme.typography.titleSmall, color = MaterialTheme.colorScheme.primary)
             }
             LazyColumn(
                 modifier = Modifier.padding(end = 16.dp, top = 16.dp)
             ){
-                items(list?.items ?: listOf()) {item ->
+                items(uiState.value.items) {item ->
                     ListItem(listItem = item)
                 }
             }
@@ -93,21 +97,8 @@ fun ListItem(
 )
 @Composable
 fun ListDetailPreview(){
+    val listDetailViewModel = ListDetailViewModel(listRepository =  MockShoppingListRepository(), savedStateHandle = SavedStateHandle())
     ShoppingListAssistantTheme {
-        val category = CategoryDto(1, "fakeCategory")
-
-        val item1 = ItemDto(1, "fake item 1", category)
-        val item2 = ItemDto(2, "fake item 2", category)
-        val item3 = ItemDto(3, "fake item 3", category)
-        val item4 = ItemDto(4, "fake item 4", category)
-
-        val listItem1 = ListItemDto(item1, 1f, "count", false)
-        val listItem2 = ListItemDto(item2, 1f, "count", false)
-        val listItem3 = ListItemDto(item3, 1f, "count", false)
-        val listItem4 = ListItemDto(item4, 1f, "count", false)
-
-        val shoppingListFourItems = ShoppingListDto(2, "Four Items", listOf(listItem1, listItem2, listItem3, listItem4), null)
-
-        ListDetailPage(onNavigateUp = {}, list = shoppingListFourItems)
+        ListDetailPage(onNavigateUp = {}, listDetailViewModel = listDetailViewModel)
     }
 }

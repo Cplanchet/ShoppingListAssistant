@@ -6,6 +6,7 @@ import me.cplanchet.shoppinglistassistant.data.dtos.StoreDto
 
 interface ShoppingListRepository{
     fun getAllLists(): Flow<List<ShoppingListDto>>
+    fun getListById(listId: Int): Flow<ShoppingListDto>
     suspend fun insertList(list: ShoppingListDto)
     suspend fun deleteList(list: ShoppingListDto)
 
