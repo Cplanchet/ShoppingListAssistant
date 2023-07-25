@@ -112,3 +112,56 @@ fun StoreDropdownBox(
         }
     }
 }
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun AutocompleteTextbox(
+    modifier: Modifier = Modifier,
+    options: List<String>,
+    onSelectionChanged: (String) -> Unit,
+    text: String,
+    onTextChange: (String) -> Unit,
+    label: @Composable (() -> Unit)
+){
+    var expanded by remember {mutableStateOf(false)}
+    //var selectedText by remember { mutableStateOf("") }
+    ExposedDropdownMenuBox(
+        expanded = expanded,
+        onExpandedChange = { expanded = !expanded },
+        modifier = modifier
+    ) {
+        OutlinedTextField(
+            value = text,
+            onValueChange = { onTextChange(it)},
+            label = label,
+            trailingIcon = {
+                ExposedDropdownMenuDefaults.TrailingIcon(
+                    expanded = expanded
+                )
+            },
+            colors = ExposedDropdownMenuDefaults.textFieldColors(),
+            modifier = Modifier.menuAnchor()
+        )
+        val filteringOptions = options.filter { it. contains(text, ignoreCase = true) }
+        if(filteringOptions.isNotEmpty()){
+            ExposedDropdownMenu(
+                expanded = expanded,
+                onDismissRequest = {
+                    expanded = !expanded
+                },
+                modifier.fillMaxWidth()
+            ) {
+                filteringOptions.forEach { selectedOption ->
+                    DropdownMenuItem(
+                        text = { Text(text = selectedOption) },
+                        onClick = {
+                            onSelectionChanged(selectedOption)
+                            onTextChange(selectedOption)
+                            expanded = false
+                        }
+                    )
+                }
+            }
+        }
+    }
+}

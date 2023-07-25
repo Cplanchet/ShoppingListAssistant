@@ -12,4 +12,5 @@
     <string name="store_dropdown_create">Create New Store…</string>
     <string name="list_detail_title">List Details</string>
     <string name="list_detail_button_label">Add Item…</string>
+    <string name="list_detail_add_item_button"></string>
 </resources>
