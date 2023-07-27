@@ -33,8 +33,22 @@ class DefaultShoppingListRepository(private val shoppingListDao: ShoppingListDao
         storeDao.insert(store.mapToEntity())
     }
 
+    override suspend fun addListItem(listItem: ListItemDto, listId: Int){
+        listItemDao.insert(listItem.mapToEntity(listId))
+    }
+    override fun getAllItems(): Flow<List<ItemDto>>{
+        return itemDao.getAllItems().map { convertToItemDtos(it) }
+    }
+    override suspend fun insertItem(item: ItemDto){
+        itemDao.insert(item.mapToEntity())
+    }
+
+    override fun getAllListItems(listId: Int): Flow<List<ListItemDto>>{
+        return listItemDao.getListItemsByListId(listId).map { convertListItemsToDto(it) }
+    }
+
     private suspend fun convertListsToDto(lists: List<ShoppingList>): List<ShoppingListDto>{
-        var listDtos = ArrayList<ShoppingListDto>()
+        val listDtos = ArrayList<ShoppingListDto>()
 
         for(item in lists){
             listDtos.add(convertListToDto(item))
@@ -47,30 +61,27 @@ class DefaultShoppingListRepository(private val shoppingListDao: ShoppingListDao
         val itemDtos = listItemDao.getListItemsByListId(list.id).map { convertListItemsToDto(it) }
         return list.mapToDto(itemDtos.first(), storeDto)
     }
-    private fun convertListItemsToDto(items: List<ListItem>): List<ListItemDto>{
+    private suspend fun convertListItemsToDto(items: List<ListItem>): List<ListItemDto>{
         var itemDtos = ArrayList<ListItemDto>()
 
         for(item in items){
-            var itemDto: ItemDto? = null
-            itemDao.getItemById(item.itemId).onEach {x -> itemDto = convertToItemDto(x)}
-
-            if(itemDto == null){
-                throw NullPointerException()
-            }
-            itemDtos.add(item.mapToDto(itemDto as ItemDto))
+            itemDtos.add(item.mapToDto(itemDao.getItemById(item.itemId).map { convertToItemDto(it)}.first()))
         }
-
-        return itemDtos
+            return itemDtos
     }
 
     private fun convertToItemDto(item: Item): ItemDto{
         var categoryDto: CategoryDto? = null
-        categoryDao.getCategoryById(item.categoryId).onEach {x -> categoryDto = x.mapToDto() }
+        categoryDao.getCategoryById(item.categoryId ?: 0).onEach {x -> categoryDto = x.mapToDto() }
 
-        if(categoryDto == null){
-            throw NullPointerException()
+        return item.mapToDto(categoryDto)
+    }
+    private fun convertToItemDtos(items: List<Item>): List<ItemDto>{
+        var itemDtos = ArrayList<ItemDto>()
+        for(item in items){
+            itemDtos.add(convertToItemDto(item))
         }
-        return item.mapToDto(categoryDto as CategoryDto)
+        return itemDtos
     }
 
     private fun convertToStoreDto(stores: List<Store>): List<StoreDto> {
@@ -94,11 +105,17 @@ fun ShoppingList.mapToDto(items: List<ListItemDto>, store: StoreDto?): ShoppingL
 fun Category.mapToDto(): CategoryDto{
     return CategoryDto(this.id, this.name)
 }
-fun Item.mapToDto(category: CategoryDto): ItemDto{
+fun Item.mapToDto(category: CategoryDto?): ItemDto{
     return ItemDto(this.id, this.name, category)
+}
+fun ItemDto.mapToEntity(): Item{
+    return Item(this.id, this.name, this.category?.id)
 }
 fun ListItem.mapToDto(item: ItemDto): ListItemDto{
     return ListItemDto(item, this.amount, this.amountUnit, this.checked)
+}
+fun ListItemDto.mapToEntity(listId: Int): ListItem{
+    return ListItem(listId, this.item.id, this.amount, this.amountUnit, this.checked)
 }
 fun ShoppingListDto.mapToEntity(): ShoppingList{
     return ShoppingList(this.id, this.name, this.store?.id)

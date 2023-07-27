@@ -17,6 +17,7 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import kotlinx.coroutines.launch
 import me.cplanchet.shoppinglistassistant.R
 import me.cplanchet.shoppinglistassistant.data.dtos.ListItemDto
 import me.cplanchet.shoppinglistassistant.ui.AppViewModelProvider
@@ -30,8 +31,10 @@ fun ListDetailPage(
     onNavigateUp: () -> Unit,
     listDetailViewModel: ListDetailViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ){
-    val uiState = listDetailViewModel.uiState.collectAsState()
+    val uiState = listDetailViewModel.listUIState.collectAsState()
+    val itemsState = listDetailViewModel.itemsUIState.collectAsState()
     var addItem by remember { mutableStateOf(false)}
+    val coroutineScope = rememberCoroutineScope()
 
     Scaffold(
         topBar = {AppBar(hasBackButton = true, navigateUp = { onNavigateUp() })}
@@ -46,12 +49,29 @@ fun ListDetailPage(
             LazyColumn(
                 modifier = Modifier.padding(end = 16.dp, top = 16.dp)
             ){
-                items(uiState.value.items) {item ->
+                items(uiState.value.items) { item ->
                     ListItem(listItem = item)
                 }
             }
             if(addItem){
-                AddItemSection( onSubmit = {addItem = false}, onCancel = {addItem = false})
+                AddItemSection(
+                    onSubmit = {
+                        val item = itemsState.value.items.find { item -> item.name.equals(it, ignoreCase = true) }
+                        if(item != null){
+                            coroutineScope.launch {
+                                listDetailViewModel.addItemToList(item)
+                            }
+                        }
+                        else{
+                            coroutineScope.launch {
+                                listDetailViewModel.itemToAdd = it
+                                listDetailViewModel.createItem(it)
+                            }
+                        }
+                        addItem = false
+                   },
+                    onCancel = {addItem = false},
+                    options = itemsState.value.items.map { it.name })
             } else{
                 TextButton(onClick = {addItem = true}){
                     Text(text = stringResource(R.string.list_detail_button_label))
@@ -97,7 +117,8 @@ fun ListItem(
 fun AddItemSection(
     modifier: Modifier = Modifier,
     onCancel: () -> Unit,
-    onSubmit: (itemName: String) -> Unit
+    onSubmit: (itemName: String) -> Unit,
+    options: List<String>
 ){
     var empty by remember { mutableStateOf(true)}
     var resultText by remember {mutableStateOf("")}
@@ -106,7 +127,7 @@ fun AddItemSection(
         verticalAlignment = Alignment.CenterVertically
     ){
         AutocompleteTextbox(
-            options = listOf("Apple", "Banana", "Cherry", "Duster"),
+            options = options,
             onSelectionChanged = { onSubmit(it) },
             text = resultText,
             onTextChange = {
@@ -152,6 +173,6 @@ fun AddItemSection(
 @Composable
 fun ListDetailPreview(){
     ShoppingListAssistantTheme {
-        AddItemSection(onSubmit =  {}, onCancel = {})
+        AddItemSection(onSubmit =  {}, onCancel = {}, options = listOf("Apple", "Orange", "Banana"))
     }
 }

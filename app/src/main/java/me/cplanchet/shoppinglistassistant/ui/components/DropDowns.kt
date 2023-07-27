@@ -124,7 +124,6 @@ fun AutocompleteTextbox(
     label: @Composable (() -> Unit)
 ){
     var expanded by remember {mutableStateOf(false)}
-    //var selectedText by remember { mutableStateOf("") }
     ExposedDropdownMenuBox(
         expanded = expanded,
         onExpandedChange = { expanded = !expanded },
