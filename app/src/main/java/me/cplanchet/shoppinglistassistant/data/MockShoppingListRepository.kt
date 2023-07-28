@@ -36,6 +36,9 @@ class MockShoppingListRepository : ShoppingListRepository{
         shoppingList3,
         shoppingList4
     )
+    val store1 = StoreDto(1, "Store 1", listOf(), listOf())
+    val store2 = StoreDto(2, "Store 2", listOf(), listOf())
+
     override fun getAllLists(): Flow<List<ShoppingListDto>> {
         return flowOf(shoppingLists)
     }
@@ -52,10 +55,11 @@ class MockShoppingListRepository : ShoppingListRepository{
     }
 
     override fun getAllStores(): Flow<List<StoreDto>> {
-        val store1 = StoreDto(1, "Store 1", listOf(), listOf())
-        val store2 = StoreDto(2, "Store 2", listOf(), listOf())
 
         return flowOf(listOf(store1, store2))
+    }
+    override fun getStoreById(id: Int): Flow<StoreDto>{
+        return flowOf(store1)
     }
     override suspend fun insertStore(store: StoreDto) {
     }

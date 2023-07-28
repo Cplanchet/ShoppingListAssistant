@@ -13,6 +13,7 @@ interface ShoppingListRepository{
     suspend fun deleteList(list: ShoppingListDto)
 
     fun getAllStores(): Flow<List<StoreDto>>
+    fun getStoreById(id: Int): Flow<StoreDto>
     suspend fun insertStore(store:StoreDto)
 
     suspend fun addListItem(listItem: ListItemDto, listId: Int)

@@ -12,23 +12,22 @@ class DefaultShoppingListRepository(private val shoppingListDao: ShoppingListDao
     override fun getAllLists(): Flow<List<ShoppingListDto>> {
         return shoppingListDao.getAllShoppingLists().map {convertListsToDto(it)}
     }
-
     override fun getListById(listId: Int): Flow<ShoppingListDto> {
         return shoppingListDao.getShoppingListById(listId).map { convertListToDto(it) }
     }
-
     override suspend fun insertList(list: ShoppingListDto) {
         shoppingListDao.insert(list.mapToEntity());
     }
-
     override suspend fun deleteList(list: ShoppingListDto) {
         shoppingListDao.delete(list.mapToEntity())
     }
 
     override fun getAllStores(): Flow<List<StoreDto>> {
-        return storeDao.getAllStores().map{ convertToStoreDto(it) }
+        return storeDao.getAllStores().map{ convertToStoreDtos(it) }
     }
-
+    override fun getStoreById(id: Int): Flow<StoreDto>{
+        return storeDao.getStoreById(id).map { convertToStoreDto(it) }
+    }
     override suspend fun insertStore(store: StoreDto) {
         storeDao.insert(store.mapToEntity())
     }
@@ -58,6 +57,9 @@ class DefaultShoppingListRepository(private val shoppingListDao: ShoppingListDao
 
     private suspend fun convertListToDto(list: ShoppingList): ShoppingListDto{
         var storeDto: StoreDto? = null
+        if(list.storeId != null){
+            storeDto = storeDao.getStoreById(list.storeId).map { convertToStoreDto(it) }.first()
+        }
         val itemDtos = listItemDao.getListItemsByListId(list.id).map { convertListItemsToDto(it) }
         return list.mapToDto(itemDtos.first(), storeDto)
     }
@@ -76,6 +78,7 @@ class DefaultShoppingListRepository(private val shoppingListDao: ShoppingListDao
 
         return item.mapToDto(categoryDto)
     }
+
     private fun convertToItemDtos(items: List<Item>): List<ItemDto>{
         var itemDtos = ArrayList<ItemDto>()
         for(item in items){
@@ -84,10 +87,14 @@ class DefaultShoppingListRepository(private val shoppingListDao: ShoppingListDao
         return itemDtos
     }
 
-    private fun convertToStoreDto(stores: List<Store>): List<StoreDto> {
+    private fun convertToStoreDto(store: Store): StoreDto{
+        return store.mapToDto(listOf(), listOf())
+    }
+
+    private fun convertToStoreDtos(stores: List<Store>): List<StoreDto> {
         var storeDtos = ArrayList<StoreDto>()
         for (store in stores) {
-            storeDtos.add(store.mapToDto(listOf(), listOf()))
+            storeDtos.add(convertToStoreDto(store))
         }
         return storeDtos
     }
