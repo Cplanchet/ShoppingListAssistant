@@ -74,4 +74,6 @@ class MockShoppingListRepository : ShoppingListRepository{
     override fun getAllListItems(listId: Int): Flow<List<ListItemDto>>{
         return flowOf(listItems)
     }
+    override suspend fun updateListItem(item: ListItemDto, listId: Int){
+    }
 }

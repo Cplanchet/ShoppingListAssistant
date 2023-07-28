@@ -62,4 +62,10 @@ class ListDetailViewModel(
             listRepository.insertItem(ItemDto(0, itemName, null))
         }
     }
+
+    suspend fun updateListItem(item: ListItemDto){
+        viewModelScope.launch {
+            listRepository.updateListItem(item, listId)
+        }
+    }
 }

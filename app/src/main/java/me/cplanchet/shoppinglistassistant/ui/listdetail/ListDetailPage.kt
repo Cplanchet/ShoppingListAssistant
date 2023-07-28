@@ -50,7 +50,13 @@ fun ListDetailPage(
                 modifier = Modifier.padding(end = 16.dp, top = 16.dp)
             ){
                 items(uiState.value.items) { item ->
-                    ListItem(listItem = item)
+                    ListItem(
+                        listItem = item,
+                        onCheckedChanged ={
+                            coroutineScope.launch{
+                                listDetailViewModel.updateListItem(item.copy(checked = it))
+                            }
+                        })
                 }
             }
             if(addItem){
@@ -84,6 +90,7 @@ fun ListDetailPage(
 @Composable
 fun ListItem(
     modifier: Modifier = Modifier,
+    onCheckedChanged: (checked: Boolean) -> Unit,
     listItem: ListItemDto
 ){
     Row(
@@ -97,7 +104,7 @@ fun ListItem(
         ){
             Checkbox(
                 checked = listItem.checked,
-                onCheckedChange = {},
+                onCheckedChange = { onCheckedChanged(it) },
             )
             Text(
                 text = listItem.item.name + "  " + "(" + listItem.amount + " " + listItem.amountUnit + ")",
