@@ -129,7 +129,7 @@ fun ListCard(
             }
             Column(
                 modifier = Modifier.padding(8.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
+                horizontalAlignment = Alignment.Start
             ){
                 if(list.items.size >= 3){
                     for(i in 0..2){
