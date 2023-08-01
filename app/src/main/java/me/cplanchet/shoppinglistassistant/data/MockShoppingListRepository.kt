@@ -49,10 +49,10 @@ class MockShoppingListRepository : ShoppingListRepository{
     override suspend fun insertList(list: ShoppingListDto){
         return
     }
-
     override suspend fun deleteList(list: ShoppingListDto) {
         return
     }
+    override suspend fun updateList(store:ShoppingListDto){}
 
     override fun getAllStores(): Flow<List<StoreDto>> {
 

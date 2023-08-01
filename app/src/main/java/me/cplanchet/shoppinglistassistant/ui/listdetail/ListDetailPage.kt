@@ -1,6 +1,7 @@
 package me.cplanchet.shoppinglistassistant.ui.listdetail
 
 import android.content.res.Configuration
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -29,6 +30,7 @@ import me.cplanchet.shoppinglistassistant.ui.theme.ShoppingListAssistantTheme
 fun ListDetailPage(
     modifier: Modifier = Modifier,
     onNavigateUp: () -> Unit,
+    navigateToUpdateListPage: (listId: Int) -> Unit,
     listDetailViewModel: ListDetailViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ){
     val uiState = listDetailViewModel.listUIState.collectAsState()
@@ -42,9 +44,17 @@ fun ListDetailPage(
         Column(
             modifier = modifier.padding(paddingValues).then(Modifier.padding(top = 32.dp, start = 16.dp))
         ) {
-            Text(text = uiState.value.name, style = MaterialTheme.typography.titleLarge, color = MaterialTheme.colorScheme.primary)
+            Text(
+                modifier = Modifier.clickable(onClick = {navigateToUpdateListPage(listDetailViewModel.listId)}),
+                text = uiState.value.name,
+                style = MaterialTheme.typography.titleLarge,
+                color = MaterialTheme.colorScheme.primary)
             if(uiState.value.store != null){
-                Text(text = uiState.value.store!!.name, style = MaterialTheme.typography.titleSmall, color = MaterialTheme.colorScheme.primary)
+                Text(
+                    modifier = Modifier.clickable(onClick = {navigateToUpdateListPage(listDetailViewModel.listId)}),
+                    text = uiState.value.store!!.name,
+                    style = MaterialTheme.typography.titleSmall,
+                    color = MaterialTheme.colorScheme.primary)
             }
             LazyColumn(
                 modifier = Modifier.padding(end = 16.dp, top = 16.dp)
@@ -104,7 +114,7 @@ fun ListItem(
         ){
             Checkbox(
                 checked = listItem.checked,
-                onCheckedChange = { onCheckedChanged(it) },
+                onCheckedChange = { onCheckedChanged(it) }
             )
             Text(
                 text = listItem.item.name + "  " + "(" + listItem.amount + " " + listItem.amountUnit + ")",

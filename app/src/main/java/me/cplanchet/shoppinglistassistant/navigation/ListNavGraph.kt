@@ -7,14 +7,12 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import me.cplanchet.shoppinglistassistant.navigation.destinations.CreateListDestination
-import me.cplanchet.shoppinglistassistant.navigation.destinations.CreateStoreDestination
-import me.cplanchet.shoppinglistassistant.navigation.destinations.HomeDestination
-import me.cplanchet.shoppinglistassistant.navigation.destinations.ListDetailDestination
+import me.cplanchet.shoppinglistassistant.navigation.destinations.*
 import me.cplanchet.shoppinglistassistant.ui.createlist.CreateListPage
 import me.cplanchet.shoppinglistassistant.ui.createstore.CreateStorePage
 import me.cplanchet.shoppinglistassistant.ui.home.HomeScreen
 import me.cplanchet.shoppinglistassistant.ui.listdetail.ListDetailPage
+import me.cplanchet.shoppinglistassistant.ui.updatelist.UpdateListPage
 
 @Composable
 fun ListNavHost(
@@ -49,7 +47,20 @@ fun ListNavHost(
             arguments = listOf(navArgument(ListDetailDestination.listIdArg){
                 type = NavType.IntType
             })){
-            ListDetailPage(onNavigateUp = { navController.navigateUp() })
+            ListDetailPage(
+                onNavigateUp = { navController.navigateUp() },
+                navigateToUpdateListPage = {navController.navigate("${UpdateListDestination.route}/${it}")}
+            )
+        }
+        composable(route = UpdateListDestination.routeWithArgs,
+            arguments = listOf(navArgument(UpdateListDestination.listIdArg){
+                type = NavType.IntType
+            })){
+            UpdateListPage(
+                onNavigateUp = { navController.navigateUp() },
+                navigateBack = { navController.popBackStack() },
+                navigateToCreateStorePage = {navController.navigate(CreateStoreDestination.route)}
+            )
         }
     }
 }

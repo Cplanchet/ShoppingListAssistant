@@ -21,6 +21,9 @@ class DefaultShoppingListRepository(private val shoppingListDao: ShoppingListDao
     override suspend fun deleteList(list: ShoppingListDto) {
         shoppingListDao.delete(list.mapToEntity())
     }
+    override suspend fun updateList(store:ShoppingListDto){
+        shoppingListDao.update(store.mapToEntity())
+    }
 
     override fun getAllStores(): Flow<List<StoreDto>> {
         return storeDao.getAllStores().map{ convertToStoreDtos(it) }

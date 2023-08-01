@@ -19,8 +19,8 @@ class ListDetailViewModel(
     private val listRepository: ShoppingListRepository,
     savedStateHandle: SavedStateHandle
 ): ViewModel() {
-    private val listId: Int = checkNotNull(savedStateHandle[ListDetailDestination.listIdArg])
     private val _listUIState = MutableStateFlow(ListUIState())
+    val listId: Int = checkNotNull(savedStateHandle[ListDetailDestination.listIdArg])
     var itemToAdd by mutableStateOf("")
     val listUIState:StateFlow<ListUIState> = _listUIState
     val itemsUIState = listRepository.getAllItems().map{

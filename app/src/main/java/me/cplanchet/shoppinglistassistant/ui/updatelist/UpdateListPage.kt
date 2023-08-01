@@ -4,27 +4,40 @@ import android.content.res.Configuration
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import kotlinx.coroutines.launch
 import me.cplanchet.shoppinglistassistant.R
+import me.cplanchet.shoppinglistassistant.ui.AppViewModelProvider
 import me.cplanchet.shoppinglistassistant.ui.components.AppBar
 import me.cplanchet.shoppinglistassistant.ui.components.StoreDropdownBox
+import me.cplanchet.shoppinglistassistant.ui.state.isValid
 import me.cplanchet.shoppinglistassistant.ui.theme.ShoppingListAssistantTheme
 
 @Composable
 fun UpdateListPage(
     modifier: Modifier = Modifier,
-    onNavigateUp: () -> Unit
+    onNavigateUp: () -> Unit,
+    navigateBack: () -> Unit,
+    navigateToCreateStorePage: () -> Unit,
+    viewModel: UpdateListViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ){
+    val coroutineScope = rememberCoroutineScope()
+    val updateListViewModel by viewModel.updateListUIState.collectAsState()
+
     Scaffold(
         topBar = { AppBar(hasBackButton = true, navigateUp = { onNavigateUp() }) }
-    ) {
+    ) {padding ->
         Column(
-            modifier = modifier.fillMaxWidth().padding(it).then(Modifier.padding(top = 32.dp)),
+            modifier = modifier.fillMaxWidth().padding(padding).then(Modifier.padding(top = 32.dp)),
             horizontalAlignment = Alignment.CenterHorizontally
         ){
             Text(
@@ -39,17 +52,21 @@ fun UpdateListPage(
             ) {
                 OutlinedTextField(
                     modifier = Modifier.fillMaxWidth(),
-                    value = "",
-                    onValueChange = {},
+                    value = viewModel.listUIState.name,
+                    onValueChange = { viewModel.updateListState(viewModel.listUIState.copy(name = it))},
                     label = {Text(text = stringResource(R.string.list_name_label))}
                 )
                 StoreDropdownBox(
                     modifier = Modifier.padding(top = 8.dp),
-                    options = emptyList(),
-                    onSelectCreate = {},
-                    onSelectionChanged = {},
+                    options = updateListViewModel.stores.map {it.name}.plus("None"),
+                    onSelectCreate = {navigateToCreateStorePage()},
+                    onSelectionChanged = {
+                        viewModel.updateListState(viewModel.listUIState.copy(
+                            store = updateListViewModel.stores.find {store -> store.name == it}
+                        ))
+                    },
                     label = {Text(text = stringResource(R.string.choose_store))},
-                    selected = ""
+                    selected = viewModel.listUIState.store?.name ?: "None"
                 )
             }
             Row(
@@ -58,13 +75,19 @@ fun UpdateListPage(
             ){
                 OutlinedButton(
                     modifier = Modifier.widthIn(min= 130.dp),
-                    onClick = {}
+                    onClick = { navigateBack() }
                 ){
                     Text(text = "Cancel")
                 }
                 Button(
                     modifier = Modifier.widthIn(min = 130.dp),
-                    onClick = {}
+                    onClick = {
+                        coroutineScope.launch {
+                            viewModel.saveList()
+                            navigateBack()
+                        }
+                    },
+                    enabled = viewModel.listUIState.isValid()
                 ){
                     Text(text = "Save")
                 }
@@ -84,7 +107,7 @@ fun UpdateListPage(
 @Composable
 fun UpdateListPreview(){
     ShoppingListAssistantTheme {
-        UpdateListPage(onNavigateUp = {})
+        UpdateListPage(onNavigateUp = {}, navigateBack = {}, navigateToCreateStorePage = {})
     }
 }
 
