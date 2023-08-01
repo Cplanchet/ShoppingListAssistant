@@ -23,7 +23,7 @@ fun StandardDropdownBox(
         onExpandedChange = { expanded = !expanded },
         modifier = modifier
     ) {
-        TextField(
+        OutlinedTextField(
             readOnly = true,
             value = selected,
             onValueChange = {},
@@ -73,7 +73,7 @@ fun StoreDropdownBox(
         onExpandedChange = { expanded = !expanded },
         modifier = modifier
     ) {
-        TextField(
+        OutlinedTextField(
             readOnly = true,
             value = selected,
             onValueChange = {},
