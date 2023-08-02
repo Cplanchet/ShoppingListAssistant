@@ -87,7 +87,8 @@ fun ListDetailPage(
                         addItem = false
                    },
                     onCancel = {addItem = false},
-                    options = itemsState.value.items.map { it.name })
+                    options = itemsState.value.items.map { it.name }.filter { item -> listDetailViewModel.listUIState.value.items.find{added -> added.item.name == item} == null}
+                )
             } else{
                 TextButton(onClick = {addItem = true}){
                     Text(text = stringResource(R.string.list_detail_button_label))
