@@ -1,7 +1,9 @@
 package me.cplanchet.shoppinglistassistant.ui.listdetail
 
 import android.content.res.Configuration
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -26,6 +28,7 @@ import me.cplanchet.shoppinglistassistant.ui.components.AppBar
 import me.cplanchet.shoppinglistassistant.ui.components.AutocompleteTextbox
 import me.cplanchet.shoppinglistassistant.ui.theme.ShoppingListAssistantTheme
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ListDetailPage(
     modifier: Modifier = Modifier,
@@ -37,6 +40,7 @@ fun ListDetailPage(
     val itemsState = listDetailViewModel.itemsUIState.collectAsState()
     var addItem by remember { mutableStateOf(false)}
     val coroutineScope = rememberCoroutineScope()
+    var itemToDelete by remember { mutableStateOf<ListItemDto?>(null)}
 
     Scaffold(
         topBar = {AppBar(hasBackButton = true, navigateUp = { onNavigateUp() })}
@@ -61,6 +65,14 @@ fun ListDetailPage(
             ){
                 items(uiState.value.items) { item ->
                     ListItem(
+                        modifier = Modifier.combinedClickable(
+                            onClick = {
+                                coroutineScope.launch{
+                                listDetailViewModel.updateListItem(item.copy(checked = !item.checked))
+                            } },
+                            onLongClick = { itemToDelete = item },
+                            onLongClickLabel = stringResource(R.string.click_item_context)
+                        ),
                         listItem = item,
                         onCheckedChanged ={
                             coroutineScope.launch{
@@ -93,6 +105,18 @@ fun ListDetailPage(
                 TextButton(onClick = {addItem = true}){
                     Text(text = stringResource(R.string.list_detail_button_label))
                 }
+            }
+
+            if(itemToDelete != null){
+                DeleteDialog(
+                    onConfirm = {
+                        coroutineScope.launch {
+                            listDetailViewModel.deleteListItem(itemToDelete!!)
+                            itemToDelete = null
+                        }
+                    },
+                    onDismiss = { itemToDelete = null }
+                )
             }
         }
     }
@@ -175,6 +199,52 @@ fun AddItemSection(
                     contentDescription = "Add Item",
                     tint = MaterialTheme.colorScheme.secondary
                 )
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun DeleteDialog(
+    onDismiss: () -> Unit,
+    onConfirm: () -> Unit,
+    modifier: Modifier = Modifier,
+){
+    AlertDialog(
+        onDismissRequest = {
+            onDismiss()
+        }
+    ) {
+        Surface(
+            modifier = modifier.wrapContentWidth().wrapContentHeight(),
+            shape = MaterialTheme.shapes.large,
+            tonalElevation = AlertDialogDefaults.TonalElevation
+        ){
+            Column(modifier = Modifier.padding(16.dp)) {
+                Text(
+                    text = "Are you sure you want to delete this item?"
+                )
+                Spacer(modifier = Modifier.height(24.dp))
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.End
+                ){
+                    TextButton(
+                        onClick = {
+                            onDismiss()
+                        },
+                    ) {
+                        Text("Dismiss")
+                    }
+                    TextButton(
+                        onClick = {
+                            onConfirm()
+                        },
+                    ) {
+                        Text("Confirm")
+                    }
+                }
             }
         }
     }

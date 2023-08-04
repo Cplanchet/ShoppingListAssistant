@@ -38,6 +38,10 @@ class DefaultShoppingListRepository(private val shoppingListDao: ShoppingListDao
     override suspend fun addListItem(listItem: ListItemDto, listId: Int){
         listItemDao.insert(listItem.mapToEntity(listId))
     }
+    override suspend fun deleteListItem(listItem: ListItemDto, listId: Int){
+        listItemDao.delete(listItem.mapToEntity(listId))
+    }
+
     override fun getAllItems(): Flow<List<ItemDto>>{
         return itemDao.getAllItems().map { convertToItemDtos(it) }
     }

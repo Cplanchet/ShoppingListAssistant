@@ -14,4 +14,5 @@
     <string name="list_detail_button_label">Add Item…</string>
     <string name="list_detail_add_item_button">Add Item</string>
     <string name="update_list_title">Update List</string>
+    <string name="click_item_context">Delete Item</string>
 </resources>

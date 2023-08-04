@@ -68,4 +68,10 @@ class ListDetailViewModel(
             listRepository.updateListItem(item, listId)
         }
     }
+
+    suspend fun deleteListItem(item: ListItemDto){
+        viewModelScope.launch {
+            listRepository.deleteListItem(item, listId)
+        }
+    }
 }
