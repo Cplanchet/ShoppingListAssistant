@@ -70,9 +70,10 @@ fun HomeScreen(
                 )
             }
             LazyColumn(
-                modifier = modifier.padding(it).then(Modifier.padding(top = 64.dp, start = 16.dp, end = 16.dp, bottom = 32.dp))
+                modifier = modifier.padding(it).then(Modifier.padding(start = 16.dp, end = 16.dp))
                     .fillMaxHeight(),
                 verticalArrangement = Arrangement.spacedBy(16.dp),
+                contentPadding = PaddingValues(top = 64.dp, bottom = 16.dp)
             ){
                 items(homeUIState.shoppingLists){list ->
                     ListCard(
