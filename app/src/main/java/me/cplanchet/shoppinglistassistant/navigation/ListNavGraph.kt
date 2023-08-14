@@ -12,6 +12,7 @@ import me.cplanchet.shoppinglistassistant.ui.createlist.CreateListPage
 import me.cplanchet.shoppinglistassistant.ui.createstore.CreateStorePage
 import me.cplanchet.shoppinglistassistant.ui.home.HomeScreen
 import me.cplanchet.shoppinglistassistant.ui.listdetail.ListDetailPage
+import me.cplanchet.shoppinglistassistant.ui.updateitem.UpdateItemPage
 import me.cplanchet.shoppinglistassistant.ui.updatelist.UpdateListPage
 
 @Composable
@@ -49,7 +50,8 @@ fun ListNavHost(
             })){
             ListDetailPage(
                 onNavigateUp = { navController.navigateUp() },
-                navigateToUpdateListPage = {navController.navigate("${UpdateListDestination.route}/${it}")}
+                navigateToUpdateListPage = {navController.navigate("${UpdateListDestination.route}/${it}")},
+                navigateToUpdateItemPage = {listId, itemId -> navController.navigate("${UpdateItemDestination.route}/${listId}/item/${itemId}")}
             )
         }
         composable(route = UpdateListDestination.routeWithArgs,
@@ -60,6 +62,14 @@ fun ListNavHost(
                 onNavigateUp = { navController.navigateUp() },
                 navigateBack = { navController.popBackStack() },
                 navigateToCreateStorePage = {navController.navigate(CreateStoreDestination.route)}
+            )
+        }
+        composable(route = UpdateItemDestination.routeWithArgs,
+            arguments = listOf(
+                navArgument(UpdateItemDestination.listIdArg){type = NavType.IntType},
+                navArgument(UpdateItemDestination.itemIdArg){type = NavType.IntType})){
+            UpdateItemPage(
+                onNavigateUp = { navController.navigateUp() }
             )
         }
     }

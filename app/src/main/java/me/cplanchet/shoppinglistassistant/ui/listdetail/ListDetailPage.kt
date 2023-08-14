@@ -34,6 +34,7 @@ fun ListDetailPage(
     modifier: Modifier = Modifier,
     onNavigateUp: () -> Unit,
     navigateToUpdateListPage: (listId: Int) -> Unit,
+    navigateToUpdateItemPage: (listId: Int, itemId: Int) -> Unit,
     listDetailViewModel: ListDetailViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ){
     val uiState = listDetailViewModel.listUIState.collectAsState()
@@ -78,7 +79,11 @@ fun ListDetailPage(
                             coroutineScope.launch{
                                 listDetailViewModel.updateListItem(item.copy(checked = it))
                             }
-                        })
+                        },
+                        onEditButtonPressed = {
+                            navigateToUpdateItemPage(listDetailViewModel.listId, it)
+                        }
+                    )
                 }
             }
             if(addItem){
@@ -126,6 +131,7 @@ fun ListDetailPage(
 fun ListItem(
     modifier: Modifier = Modifier,
     onCheckedChanged: (checked: Boolean) -> Unit,
+    onEditButtonPressed: (itemId: Int) -> Unit,
     listItem: ListItemDto
 ){
     Row(
@@ -149,7 +155,9 @@ fun ListItem(
         Row(
             verticalAlignment = Alignment.CenterVertically,
         ){
-            Icon(imageVector = Icons.Filled.Edit, contentDescription = "edit icon")
+            IconButton(onClick = { onEditButtonPressed(listItem.item.id) }) {
+                Icon(imageVector = Icons.Filled.Edit, contentDescription = "edit icon")
+            }
         }
 
     }

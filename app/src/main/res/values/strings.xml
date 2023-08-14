@@ -24,4 +24,5 @@
     <string name="label_remove_item">Remove Item</string>
     <string name="label_list_item_amount">Amount</string>
     <string name="label_list_item_unit">Unit</string>
+    <string name="update_item_title">Update Item</string>
 </resources>
