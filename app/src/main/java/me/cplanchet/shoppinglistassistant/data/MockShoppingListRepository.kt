@@ -26,7 +26,7 @@ class MockShoppingListRepository : ShoppingListRepository{
         ListItemDto(item1, 1f, "count", false),
         ListItemDto(item2, 3f, "count", false),
     )
-    val shoppingList1 = ShoppingListDto(1, "name", listItems, null)
+    val shoppingList1 = ShoppingListDto(1, "Name1", listItems, null)
     val shoppingList2 = ShoppingListDto(2, "name2", listItems2, null)
     val shoppingList3 = ShoppingListDto(3, "name3", listItems3, null)
     val shoppingList4 = ShoppingListDto(4, "name4", listOf(), null)

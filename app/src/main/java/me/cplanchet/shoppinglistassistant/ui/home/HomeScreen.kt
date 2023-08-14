@@ -14,6 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -113,10 +114,12 @@ fun ListCard(
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
-                    text = if (list.name.length > 15) list.name.take(15) + "..." else list.name,
+                    text = list.name,
                     fontSize = 32.sp,
-                    modifier = Modifier.padding(4.dp),
-                    color = MaterialTheme.colorScheme.onPrimaryContainer
+                    modifier = Modifier.padding(4.dp).fillMaxWidth(.85f),
+                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
                 )
                 IconButton(
                     onClick = { onListDelete(list) }
@@ -224,7 +227,7 @@ fun DeleteDialog(
 )
 @Composable
 fun HomeScreenPreview(){
-    val test = HomeViewModel(listRepository = MockShoppingListRepository());
+    val test = HomeViewModel(listRepository = MockShoppingListRepository())
     ShoppingListAssistantTheme {
         HomeScreen(
             homeViewModel = test,
