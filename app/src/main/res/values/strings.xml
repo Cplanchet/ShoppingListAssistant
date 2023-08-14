@@ -4,6 +4,7 @@
     <string name="list_name_label">List Name</string>
     <string name="create_list_title">Create List</string>
     <string name="back">Back</string>
+    <string name="cancel">Cancel</string>
     <string name="save">Save</string>
     <string name="choose_store">Choose Store</string>
     <string name="store_name_label">Store Name</string>
@@ -15,4 +16,12 @@
     <string name="list_detail_add_item_button">Add Item</string>
     <string name="update_list_title">Update List</string>
     <string name="click_item_context">Delete Item</string>
+    <string name="label_name">Name</string>
+    <string name="edit_item_view_title">Edit Item</string>
+    <string name="edit_list_item_view_title">Edit List Item</string>
+    <string name="label_category">Category</string>
+    <string name="label_delete_item">Delete Item</string>
+    <string name="label_remove_item">Remove Item</string>
+    <string name="label_list_item_amount">Amount</string>
+    <string name="label_list_item_unit">Unit</string>
 </resources>
