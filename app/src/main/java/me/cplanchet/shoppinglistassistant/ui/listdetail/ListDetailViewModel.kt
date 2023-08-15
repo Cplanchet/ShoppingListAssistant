@@ -22,7 +22,7 @@ class ListDetailViewModel(
     private val _listUIState = MutableStateFlow(ListUIState())
     val listId: Int = checkNotNull(savedStateHandle[ListDetailDestination.listIdArg])
     var itemToAdd by mutableStateOf("")
-    val listUIState:StateFlow<ListUIState> = _listUIState
+    var listUIState:StateFlow<ListUIState> = _listUIState
     val itemsUIState = listRepository.getAllItems().map{
         ListDetailUIState(it)
     }.stateIn(
@@ -48,6 +48,7 @@ class ListDetailViewModel(
                     addItemToList(toAdd)
                     itemToAdd = ""
                 }
+                refreshItemNames()
             }
         }
     }
@@ -72,6 +73,16 @@ class ListDetailViewModel(
     suspend fun deleteListItem(item: ListItemDto){
         viewModelScope.launch {
             listRepository.deleteListItem(item, listId)
+        }
+    }
+
+    private fun refreshItemNames(){
+        listUIState.value.items.forEach { item ->
+            val refreshedItem = itemsUIState.value.items.find { itemDto -> itemDto.id == item.item.id }
+
+            if (refreshedItem != null) {
+                listUIState.value.items.single{listItem -> listItem.item.id == refreshedItem.id}.item = refreshedItem
+            }
         }
     }
 }
