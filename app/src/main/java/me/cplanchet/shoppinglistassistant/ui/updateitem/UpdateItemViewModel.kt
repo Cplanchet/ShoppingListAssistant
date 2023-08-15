@@ -6,6 +6,9 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import me.cplanchet.shoppinglistassistant.data.ShoppingListRepository
 import me.cplanchet.shoppinglistassistant.navigation.destinations.UpdateItemDestination
@@ -22,6 +25,11 @@ class UpdateItemViewModel(
         private set
     var listItemUIState by mutableStateOf(ListItemUIState())
         private set
+    val categoryUIState = repository.getAllCategories().map{ UpdateItemUIState(it) }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5_000L),
+        initialValue = UpdateItemUIState()
+    )
 
     fun updateItemUIState(newItemUIState: ItemUIState){
         itemUIState = newItemUIState.copy()

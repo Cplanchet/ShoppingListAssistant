@@ -3,7 +3,6 @@ package me.cplanchet.shoppinglistassistant.data
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onEach
 import me.cplanchet.shoppinglistassistant.data.daos.*
 import me.cplanchet.shoppinglistassistant.data.dtos.*
 import me.cplanchet.shoppinglistassistant.data.entities.*
@@ -68,6 +67,10 @@ class DefaultShoppingListRepository(private val shoppingListDao: ShoppingListDao
         listItemDao.update(ListItem(listId, item.item.id, item.amount, item.amountUnit, item.checked))
     }
 
+    override fun getAllCategories(): Flow<List<CategoryDto>>{
+        return categoryDao.getAllCategories().map { convertToCategoryDtos(it) }
+    }
+
     private suspend fun convertListsToDto(lists: List<ShoppingList>): List<ShoppingListDto>{
         val listDtos = ArrayList<ShoppingListDto>()
 
@@ -101,16 +104,16 @@ class DefaultShoppingListRepository(private val shoppingListDao: ShoppingListDao
             return itemDtos
     }
 
-    private fun convertToItemDto(item: Item?): ItemDto{
-        var categoryDto: CategoryDto? = null
+    private suspend fun convertToItemDto(item: Item?): ItemDto{
+        var categoryDto: CategoryDto?
         if(item != null){
-            categoryDao.getCategoryById(item.categoryId ?: 0).onEach {x -> categoryDto = x.mapToDto() }
+            categoryDto = categoryDao.getCategoryById(item.categoryId ?: 0).map { convertToCategoryDto(it) }.first()
             return item.mapToDto(categoryDto)
         }
         return ItemDto()
     }
 
-    private fun convertToItemDtos(items: List<Item>): List<ItemDto>{
+    private suspend fun convertToItemDtos(items: List<Item>): List<ItemDto>{
         var itemDtos = ArrayList<ItemDto>()
         for(item in items){
             itemDtos.add(convertToItemDto(item))
@@ -128,6 +131,22 @@ class DefaultShoppingListRepository(private val shoppingListDao: ShoppingListDao
             storeDtos.add(convertToStoreDto(store))
         }
         return storeDtos
+    }
+
+    private fun convertToCategoryDto(category: Category?): CategoryDto{
+        if(category != null){
+            return category.mapToDto()
+        }
+        return CategoryDto()
+    }
+    private fun convertToCategoryDtos(categories: List<Category>): List<CategoryDto>{
+        var dtos: ArrayList<CategoryDto> = ArrayList()
+
+        categories.forEach {
+            dtos.add(convertToCategoryDto(it))
+        }
+
+        return dtos
     }
 }
 
@@ -161,5 +180,4 @@ fun ShoppingListDto.mapToEntity(): ShoppingList{
 fun StoreDto.mapToEntity(): Store{
     return Store(this.id, this.name)
 }
-
 

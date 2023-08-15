@@ -31,6 +31,7 @@ fun UpdateItemPage(
     navigateBack: () -> Unit,
     viewModel: UpdateItemViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ){
+    val vm by viewModel.categoryUIState.collectAsState()
     Scaffold(
         modifier = modifier,
         topBar = { AppBar(hasBackButton = true, navigateUp = { onNavigateUp() }) }
@@ -77,7 +78,11 @@ fun UpdateItemPage(
                 else{
                     ItemView(
                         item = viewModel.itemUIState,
+                        options = vm.categories.map { category -> category.name },
                         onValueChange = { newItem -> viewModel.updateItemUIState(newItem)},
+                        onSelectionChange = {
+                            viewModel.updateItemUIState(viewModel.itemUIState.copy(category = vm.categories.firstOrNull{category -> category.name == it}))
+                        },
                         onDelete = {
                            coroutineScope.launch{
                                navigateBack()
@@ -102,7 +107,9 @@ fun UpdateItemPage(
 fun ItemView(
     modifier: Modifier = Modifier,
     item: ItemUIState,
+    options: List<String>,
     onValueChange: (item:ItemUIState) -> Unit,
+    onSelectionChange: (selection: String) -> Unit,
     onSave: () -> Unit,
     onCancel: () -> Unit,
     onDelete: () -> Unit
@@ -125,9 +132,9 @@ fun ItemView(
         )
         StandardDropdownBox(
             modifier = Modifier.padding(top = 8.dp),
-            options = listOf("test", "test"),
-            onSelectionChanged = {},
-            selected = "test",
+            options = options,
+            onSelectionChanged = { onSelectionChange(it) },
+            selected = item.category?.name ?: "Select Category",
             label = {Text(stringResource(R.string.label_category))}
         )
 
