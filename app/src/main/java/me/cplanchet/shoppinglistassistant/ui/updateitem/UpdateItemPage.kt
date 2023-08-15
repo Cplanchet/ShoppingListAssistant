@@ -60,12 +60,17 @@ fun UpdateItemPage(
                         onValueChange = {listItem -> viewModel.updateListItemUIState(listItem) },
                         onCancel = {navigateBack()},
                         onSave = {
-                                 coroutineScope.launch {
-                                     viewModel.saveListItem()
-                                     navigateBack()
-                                 }
+                             coroutineScope.launch {
+                                 viewModel.saveListItem()
+                                 navigateBack()
+                             }
                         },
-                        onDelete = {},
+                        onDelete = {
+                           coroutineScope.launch{
+                               navigateBack()
+                               viewModel.removeListItem()
+                           }
+                        },
                         listItem = viewModel.listItemUIState
                     )
                 }
@@ -73,7 +78,12 @@ fun UpdateItemPage(
                     ItemView(
                         item = viewModel.itemUIState,
                         onValueChange = { newItem -> viewModel.updateItemUIState(newItem)},
-                        onDelete = {},
+                        onDelete = {
+                           coroutineScope.launch{
+                               navigateBack()
+                               viewModel.deleteItem()
+                           }
+                        },
                         onCancel = { navigateBack() },
                         onSave = {
                             coroutineScope.launch{
@@ -188,7 +198,7 @@ fun ListItemView(
             )
         }
         Button(
-            onClick = {},
+            onClick = { onDelete() },
             colors = ButtonDefaults.buttonColors(
                 contentColor = MaterialTheme.colorScheme.onError,
                 containerColor = MaterialTheme.colorScheme.error),

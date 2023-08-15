@@ -54,6 +54,9 @@ class DefaultShoppingListRepository(private val shoppingListDao: ShoppingListDao
     override suspend fun updateItem(item: ItemDto){
         itemDao.update(item.mapToEntity())
     }
+    override suspend fun deleteItem(item: ItemDto){
+        itemDao.delete(item.mapToEntity())
+    }
 
     override fun getAllListItems(listId: Int): Flow<List<ListItemDto>>{
         return listItemDao.getListItemsByListId(listId).map { convertListItemsToDto(it) }
@@ -83,8 +86,11 @@ class DefaultShoppingListRepository(private val shoppingListDao: ShoppingListDao
         return list.mapToDto(itemDtos.first(), storeDto)
     }
 
-    private suspend fun convertListItemToDto(item: ListItem): ListItemDto{
-        return (item.mapToDto(itemDao.getItemById(item.itemId).map { convertToItemDto(it)}.first()))
+    private suspend fun convertListItemToDto(item: ListItem?): ListItemDto{
+        if(item != null){
+            return (item.mapToDto(itemDao.getItemById(item.itemId).map { convertToItemDto(it)}.first()))
+        }
+        return ListItemDto(ItemDto(), 0f, "", true)
     }
     private suspend fun convertListItemsToDto(items: List<ListItem>): List<ListItemDto>{
         var itemDtos = ArrayList<ListItemDto>()
@@ -95,11 +101,13 @@ class DefaultShoppingListRepository(private val shoppingListDao: ShoppingListDao
             return itemDtos
     }
 
-    private fun convertToItemDto(item: Item): ItemDto{
+    private fun convertToItemDto(item: Item?): ItemDto{
         var categoryDto: CategoryDto? = null
-        categoryDao.getCategoryById(item.categoryId ?: 0).onEach {x -> categoryDto = x.mapToDto() }
-
-        return item.mapToDto(categoryDto)
+        if(item != null){
+            categoryDao.getCategoryById(item.categoryId ?: 0).onEach {x -> categoryDto = x.mapToDto() }
+            return item.mapToDto(categoryDto)
+        }
+        return ItemDto()
     }
 
     private fun convertToItemDtos(items: List<Item>): List<ItemDto>{

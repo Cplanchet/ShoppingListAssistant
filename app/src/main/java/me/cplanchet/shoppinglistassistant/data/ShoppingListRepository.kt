@@ -24,6 +24,7 @@ interface ShoppingListRepository{
     fun getItemById(itemId: Int): Flow<ItemDto>
     suspend fun insertItem(item: ItemDto)
     suspend fun updateItem(item: ItemDto)
+    suspend fun deleteItem(item: ItemDto)
 
     fun getAllListItems(listId: Int): Flow<List<ListItemDto>>
     fun getListItemById(listId: Int, itemId: Int): Flow<ListItemDto>

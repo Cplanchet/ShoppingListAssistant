@@ -40,6 +40,13 @@ class UpdateItemViewModel(
             repository.updateListItem(listItemUIState.toListItem(), listId)
         }
     }
+    suspend fun removeListItem(){
+        repository.deleteListItem(listItemUIState.toListItem(), listId)
+    }
+    suspend fun deleteItem(){
+        repository.deleteItem(itemUIState.toItem())
+    }
+
 
     init{
         viewModelScope.launch {
