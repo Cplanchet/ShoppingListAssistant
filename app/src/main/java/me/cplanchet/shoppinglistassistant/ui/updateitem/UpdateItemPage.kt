@@ -2,23 +2,34 @@ package me.cplanchet.shoppinglistassistant.ui.updateitem
 
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.viewmodel.compose.viewModel
+import kotlinx.coroutines.launch
 import me.cplanchet.shoppinglistassistant.R
+import me.cplanchet.shoppinglistassistant.data.MockShoppingListRepository
+import me.cplanchet.shoppinglistassistant.ui.AppViewModelProvider
 import me.cplanchet.shoppinglistassistant.ui.components.AppBar
 import me.cplanchet.shoppinglistassistant.ui.components.StandardDropdownBox
+import me.cplanchet.shoppinglistassistant.ui.state.ItemUIState
+import me.cplanchet.shoppinglistassistant.ui.state.ListItemUIState
 import me.cplanchet.shoppinglistassistant.ui.theme.ShoppingListAssistantTheme
 
 @Composable
 fun UpdateItemPage(
     modifier: Modifier = Modifier,
     onNavigateUp: () -> Unit,
+    navigateBack: () -> Unit,
+    viewModel: UpdateItemViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ){
     Scaffold(
         modifier = modifier,
@@ -26,6 +37,7 @@ fun UpdateItemPage(
     ) {
         var view by remember { mutableStateOf(0) }
         val tabNames = listOf("List", "Item")
+        val coroutineScope = rememberCoroutineScope()
 
         Column(
             modifier = Modifier.padding(it)
@@ -44,10 +56,32 @@ fun UpdateItemPage(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 if(view == 0){
-                    ListItemView()
+                    ListItemView(
+                        onValueChange = {listItem -> viewModel.updateListItemUIState(listItem) },
+                        onCancel = {navigateBack()},
+                        onSave = {
+                                 coroutineScope.launch {
+                                     viewModel.saveListItem()
+                                     navigateBack()
+                                 }
+                        },
+                        onDelete = {},
+                        listItem = viewModel.listItemUIState
+                    )
                 }
                 else{
-                    ItemView()
+                    ItemView(
+                        item = viewModel.itemUIState,
+                        onValueChange = { newItem -> viewModel.updateItemUIState(newItem)},
+                        onDelete = {},
+                        onCancel = { navigateBack() },
+                        onSave = {
+                            coroutineScope.launch{
+                                viewModel.saveItem()
+                                navigateBack()
+                            }
+                        }
+                    )
                 }
             }
         }
@@ -55,11 +89,18 @@ fun UpdateItemPage(
 }
 
 @Composable
-fun ItemView(){
+fun ItemView(
+    modifier: Modifier = Modifier,
+    item: ItemUIState,
+    onValueChange: (item:ItemUIState) -> Unit,
+    onSave: () -> Unit,
+    onCancel: () -> Unit,
+    onDelete: () -> Unit
+){
     Column(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.fillMaxWidth(.8f)
+        modifier = modifier.fillMaxWidth(.8f)
     ){
         Text(
             text = stringResource(R.string.edit_item_view_title),
@@ -68,8 +109,8 @@ fun ItemView(){
         )
         OutlinedTextField(
             modifier = Modifier.padding(top = 16.dp).fillMaxWidth(),
-            value = "",
-            onValueChange = {},
+            value = item.name,
+            onValueChange = {onValueChange(item.copy(name = it))},
             label = {Text(stringResource(R.string.label_name))}
         )
         StandardDropdownBox(
@@ -81,7 +122,7 @@ fun ItemView(){
         )
 
         Button(
-            onClick = {},
+            onClick = { onDelete() },
             colors = ButtonDefaults.buttonColors(
                 contentColor = MaterialTheme.colorScheme.onError,
                 containerColor = MaterialTheme.colorScheme.error),
@@ -94,14 +135,14 @@ fun ItemView(){
             horizontalArrangement = Arrangement.SpaceBetween
         ){
             OutlinedButton(
-                onClick = {},
+                onClick = { onCancel() },
                 modifier = Modifier.width(100.dp)
             ){
                 Text(stringResource(R.string.cancel))
             }
 
             Button(
-                onClick = {},
+                onClick = { onSave() },
                 modifier = Modifier.width(100.dp)
             ){
                 Text(stringResource(R.string.save))
@@ -111,11 +152,18 @@ fun ItemView(){
 }
 
 @Composable
-fun ListItemView(){
+fun ListItemView(
+    modifier: Modifier = Modifier,
+    listItem: ListItemUIState,
+    onValueChange: (item: ListItemUIState) -> Unit,
+    onCancel: () -> Unit,
+    onSave: () -> Unit,
+    onDelete: () -> Unit
+){
     Column(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.fillMaxWidth(.9f)
+        modifier = modifier.fillMaxWidth(.9f)
     ) {
         Text(
             text = stringResource(R.string.edit_list_item_view_title),
@@ -127,16 +175,16 @@ fun ListItemView(){
             modifier = Modifier.fillMaxWidth().padding(top = 16.dp)
         ){
             OutlinedTextField(
-                onValueChange = {},
+                onValueChange = { onValueChange(listItem.copy(amount = it.toFloat())) },
                 label = {Text(stringResource(R.string.label_list_item_amount))},
-                value = "",
+                value = listItem.amount.toString(),
                 modifier = Modifier.width(100.dp),
-
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
             )
             OutlinedTextField(
-                onValueChange = {},
+                onValueChange = { onValueChange(listItem.copy(amountUnit = it)) },
                 label = {Text(stringResource(R.string.label_list_item_unit))},
-                value = ""
+                value = listItem.amountUnit
             )
         }
         Button(
@@ -153,14 +201,14 @@ fun ListItemView(){
             horizontalArrangement = Arrangement.SpaceBetween
         ){
             OutlinedButton(
-                onClick = {},
+                onClick = { onCancel() },
                 modifier = Modifier.width(100.dp)
             ){
                 Text(stringResource(R.string.cancel))
             }
 
             Button(
-                onClick = {},
+                onClick = { onSave() },
                 modifier = Modifier.width(100.dp)
             ){
                 Text(stringResource(R.string.save))
@@ -180,6 +228,6 @@ fun ListItemView(){
 @Composable
 fun UpdateItemPagePreview(){
     ShoppingListAssistantTheme {
-        UpdateItemPage(onNavigateUp = {})
+        UpdateItemPage(onNavigateUp = {}, viewModel = UpdateItemViewModel(MockShoppingListRepository(), SavedStateHandle()), navigateBack = {})
     }
 }

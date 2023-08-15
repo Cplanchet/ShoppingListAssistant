@@ -10,6 +10,7 @@ import me.cplanchet.shoppinglistassistant.ui.createlist.CreateListViewModel
 import me.cplanchet.shoppinglistassistant.ui.createstore.CreateStoreViewModel
 import me.cplanchet.shoppinglistassistant.ui.home.HomeViewModel
 import me.cplanchet.shoppinglistassistant.ui.listdetail.ListDetailViewModel
+import me.cplanchet.shoppinglistassistant.ui.updateitem.UpdateItemViewModel
 import me.cplanchet.shoppinglistassistant.ui.updatelist.UpdateListViewModel
 
 object AppViewModelProvider {
@@ -39,6 +40,12 @@ object AppViewModelProvider {
             UpdateListViewModel(
                 savedStateHandle = this.createSavedStateHandle(),
                 shoppingListRepository = listApplication().container.shoppingListRepository
+            )
+        }
+        initializer {
+            UpdateItemViewModel(
+                savedStateHandle = this.createSavedStateHandle(),
+                repository = listApplication().container.shoppingListRepository,
             )
         }
     }

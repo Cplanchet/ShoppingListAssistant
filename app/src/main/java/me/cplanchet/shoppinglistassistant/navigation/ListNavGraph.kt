@@ -69,7 +69,8 @@ fun ListNavHost(
                 navArgument(UpdateItemDestination.listIdArg){type = NavType.IntType},
                 navArgument(UpdateItemDestination.itemIdArg){type = NavType.IntType})){
             UpdateItemPage(
-                onNavigateUp = { navController.navigateUp() }
+                onNavigateUp = { navController.navigateUp() },
+                navigateBack = { navController.popBackStack()}
             )
         }
     }

@@ -45,12 +45,21 @@ class DefaultShoppingListRepository(private val shoppingListDao: ShoppingListDao
     override fun getAllItems(): Flow<List<ItemDto>>{
         return itemDao.getAllItems().map { convertToItemDtos(it) }
     }
+    override fun getItemById(itemId: Int): Flow<ItemDto>{
+        return itemDao.getItemById(itemId).map { convertToItemDto(it) }
+    }
     override suspend fun insertItem(item: ItemDto){
         itemDao.insert(item.mapToEntity())
+    }
+    override suspend fun updateItem(item: ItemDto){
+        itemDao.update(item.mapToEntity())
     }
 
     override fun getAllListItems(listId: Int): Flow<List<ListItemDto>>{
         return listItemDao.getListItemsByListId(listId).map { convertListItemsToDto(it) }
+    }
+    override fun getListItemById(listId: Int, itemId: Int): Flow<ListItemDto>{
+        return listItemDao.getListItemByItemId(listId, itemId).map { convertListItemToDto(it) }
     }
     override suspend fun updateListItem(item: ListItemDto, listId: Int){
         listItemDao.update(ListItem(listId, item.item.id, item.amount, item.amountUnit, item.checked))
@@ -73,11 +82,15 @@ class DefaultShoppingListRepository(private val shoppingListDao: ShoppingListDao
         val itemDtos = listItemDao.getListItemsByListId(list.id).map { convertListItemsToDto(it) }
         return list.mapToDto(itemDtos.first(), storeDto)
     }
+
+    private suspend fun convertListItemToDto(item: ListItem): ListItemDto{
+        return (item.mapToDto(itemDao.getItemById(item.itemId).map { convertToItemDto(it)}.first()))
+    }
     private suspend fun convertListItemsToDto(items: List<ListItem>): List<ListItemDto>{
         var itemDtos = ArrayList<ListItemDto>()
 
         for(item in items){
-            itemDtos.add(item.mapToDto(itemDao.getItemById(item.itemId).map { convertToItemDto(it)}.first()))
+            itemDtos.add(convertListItemToDto(item))
         }
             return itemDtos
     }
