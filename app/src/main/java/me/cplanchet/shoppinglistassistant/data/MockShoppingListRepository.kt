@@ -12,8 +12,8 @@ class MockShoppingListRepository : ShoppingListRepository{
     val item4 = ItemDto(4, "item4", category)
 
     val listItems = listOf(
-        ListItemDto(item1, 1f, "count", false),
-        ListItemDto(item2, 3f, "lb", false),
+        ListItemDto(item1, 1f, "count", true),
+        ListItemDto(item2, 3f, "lb", true),
         ListItemDto(item3, 3f, "lb", false),
         ListItemDto(item4, 3f, "lb", false),
     )

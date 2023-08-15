@@ -14,6 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -145,7 +146,10 @@ fun ListCard(
                                 painter = painterResource(R.drawable.check_box_outline_blank_48px),
                                 contentDescription = "check box"
                             )
-                            Text(list.items[i].item.name)
+                            Text(
+                                text = list.items[i].item.name,
+                                textDecoration = if (list.items[i].checked) TextDecoration.LineThrough else TextDecoration.None
+                                )
                         }
                     }
                     if(list.items.size > 3){
@@ -161,7 +165,10 @@ fun ListCard(
                                 painter = painterResource(R.drawable.check_box_outline_blank_48px),
                                 contentDescription = "check box"
                             )
-                            Text(i.item.name)
+                            Text(
+                                text = i.item.name,
+                                textDecoration = if (i.checked) TextDecoration.LineThrough else TextDecoration.None
+                            )
                         }
                     }
                 }
