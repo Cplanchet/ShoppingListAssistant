@@ -1,9 +1,12 @@
 package me.cplanchet.shoppinglistassistant.ui.listdetail
 
 import android.content.res.Configuration
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.VectorConverter
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -15,9 +18,13 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlinx.coroutines.launch
@@ -27,6 +34,7 @@ import me.cplanchet.shoppinglistassistant.ui.AppViewModelProvider
 import me.cplanchet.shoppinglistassistant.ui.components.AppBar
 import me.cplanchet.shoppinglistassistant.ui.components.AutocompleteTextbox
 import me.cplanchet.shoppinglistassistant.ui.theme.ShoppingListAssistantTheme
+import kotlin.math.roundToInt
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -134,15 +142,44 @@ fun ListItem(
     onEditButtonPressed: (itemId: Int) -> Unit,
     listItem: ListItemDto
 ){
+    var offset by remember { mutableStateOf(Animatable(Offset(0f, 0f), Offset.VectorConverter)) }
+    val coroutineScope = rememberCoroutineScope()
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
-        modifier = modifier.fillMaxWidth()
+        modifier = modifier.fillMaxWidth().offset{ offset.value.toIntOffset() }
+//            .draggable(
+//                orientation = Orientation.Vertical,
+//                state = rememberDraggableState { delta ->
+//                    offsetY += delta
+//                }
+//            )
     ){
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Start,
         ){
+            Icon(
+                painter = painterResource(R.drawable.baseline_drag_indicator_24),
+                contentDescription = "Drag Icon",
+                modifier = Modifier.pointerInput(Unit){
+                    detectDragGestures(
+                        onDrag = { change, dragAmount ->
+                            change.consume()
+                            //offsetY += dragAmount.y
+                            val position = Offset(offset.value.x, offset.value.y + dragAmount.y)
+                            coroutineScope.launch{
+                                offset.snapTo(position)
+                            }
+                        },
+                        onDragEnd = {
+                            coroutineScope.launch{
+                                offset.animateTo(Offset(0f, 0f))
+                            }
+                        }
+                    )
+                }
+            )
             Checkbox(
                 checked = listItem.checked,
                 onCheckedChange = { onCheckedChanged(it) }
@@ -272,3 +309,4 @@ fun ListDetailPreview(){
         AddItemSection(onSubmit =  {}, onCancel = {}, options = listOf("Apple", "Orange", "Banana"))
     }
 }
+private fun Offset.toIntOffset() = IntOffset(x.roundToInt(), y.roundToInt())
