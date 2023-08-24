@@ -9,7 +9,9 @@ import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
@@ -50,6 +52,7 @@ fun ListDetailPage(
     var addItem by remember { mutableStateOf(false)}
     val coroutineScope = rememberCoroutineScope()
     var itemToDelete by remember { mutableStateOf<ListItemDto?>(null)}
+    val lazyListState = rememberLazyListState();
 
     Scaffold(
         topBar = {AppBar(hasBackButton = true, navigateUp = { onNavigateUp() })}
@@ -70,9 +73,13 @@ fun ListDetailPage(
                     color = MaterialTheme.colorScheme.primary)
             }
             LazyColumn(
-                modifier = Modifier.padding(end = 16.dp, top = 16.dp)
+                modifier = Modifier.padding(end = 16.dp, top = 16.dp),
+                state = lazyListState,
             ){
-                items(uiState.value.items) { item ->
+                items(
+                    items = uiState.value.items,
+                    key = {item -> item.item.id}
+                    ) { item ->
                     ListItem(
                         modifier = Modifier.combinedClickable(
                             onClick = {
@@ -90,7 +97,8 @@ fun ListDetailPage(
                         },
                         onEditButtonPressed = {
                             navigateToUpdateItemPage(listDetailViewModel.listId, it)
-                        }
+                        },
+                        state = lazyListState
                     )
                 }
             }
@@ -140,7 +148,8 @@ fun ListItem(
     modifier: Modifier = Modifier,
     onCheckedChanged: (checked: Boolean) -> Unit,
     onEditButtonPressed: (itemId: Int) -> Unit,
-    listItem: ListItemDto
+    listItem: ListItemDto,
+    state: LazyListState
 ){
     var offset by remember { mutableStateOf(Animatable(Offset(0f, 0f), Offset.VectorConverter)) }
     val coroutineScope = rememberCoroutineScope()
@@ -159,17 +168,52 @@ fun ListItem(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Start,
         ){
+            var currentIndexOfDraggedItem by remember { mutableStateOf(0) }
             Icon(
                 painter = painterResource(R.drawable.baseline_drag_indicator_24),
                 contentDescription = "Drag Icon",
                 modifier = Modifier.pointerInput(Unit){
                     detectDragGestures(
                         onDrag = { change, dragAmount ->
+                            //Use Lazy List State to get information about current and overed item
+                            /*
+                            Setting Current:
+                            
+                             lazyListState.layoutInfo.visibleItemsInfo
+                                .firstOrNull { item -> offset.y.toInt() in item.offset..(item.offset + item.size) }
+                                ?.also {
+                                    currentIndexOfDraggedItem = it.index
+                                    initiallyDraggedElement = it
+                                }
+
+                            Checking Hover:
+
+                             currentElement?.let { hovered ->
+                                lazyListState.layoutInfo.visibleItemsInfo
+                                    .filterNot { item -> item.offsetEnd < startOffset || item.offset > endOffset || hovered.index == item.index }
+                                    .firstOrNull { item ->
+                                        val delta = startOffset - hovered.offset
+                                        when {
+                                            delta > 0 -> (endOffset > item.offsetEnd)
+                                            else -> (startOffset < item.offset)
+                                        }
+                                    }
+                                    ?.also { item ->
+                                        currentIndexOfDraggedItem?.let { current -> onMove.invoke(current, item.index) }
+                                        currentIndexOfDraggedItem = item.index
+                                    }
+                            * */
                             change.consume()
-                            //offsetY += dragAmount.y
                             val position = Offset(offset.value.x, offset.value.y + dragAmount.y)
                             coroutineScope.launch{
                                 offset.snapTo(position)
+                            }
+                        },
+                        onDragStart = {
+                            state.layoutInfo.visibleItemsInfo.firstOrNull{
+                                    item -> item.key == listItem.item.id
+                            }?.also {
+                                currentIndexOfDraggedItem = it.index
                             }
                         },
                         onDragEnd = {
