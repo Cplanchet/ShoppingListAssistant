@@ -35,7 +35,8 @@ class DefaultShoppingListRepository(private val shoppingListDao: ShoppingListDao
     }
 
     override suspend fun addListItem(listItem: ListItemDto, listId: Int){
-        listItemDao.insert(listItem.mapToEntity(listId))
+        val order = listItemDao.getListItemsByListId(listId).first().maxOfOrNull { it.order }
+        listItemDao.insert(listItem.mapToEntity(listId, (order?.plus(1)) ?: 0))
     }
     override suspend fun deleteListItem(listItem: ListItemDto, listId: Int){
         listItemDao.delete(listItem.mapToEntity(listId))
@@ -64,7 +65,7 @@ class DefaultShoppingListRepository(private val shoppingListDao: ShoppingListDao
         return listItemDao.getListItemByItemId(listId, itemId).map { convertListItemToDto(it) }
     }
     override suspend fun updateListItem(item: ListItemDto, listId: Int){
-        listItemDao.update(ListItem(listId, item.item.id, item.amount, item.amountUnit, item.checked))
+        listItemDao.update(ListItem(listId, item.item.id, item.amount, item.amountUnit, item.checked, item.order))
     }
 
     override fun getAllCategories(): Flow<List<CategoryDto>>{
@@ -93,7 +94,7 @@ class DefaultShoppingListRepository(private val shoppingListDao: ShoppingListDao
         if(item != null){
             return (item.mapToDto(itemDao.getItemById(item.itemId).map { convertToItemDto(it)}.first()))
         }
-        return ListItemDto(ItemDto(), 0f, "", true)
+        return ListItemDto(ItemDto(), 0f, "", true, 0)
     }
     private suspend fun convertListItemsToDto(items: List<ListItem>): List<ListItemDto>{
         var itemDtos = ArrayList<ListItemDto>()
@@ -169,10 +170,10 @@ fun ItemDto.mapToEntity(): Item{
     return Item(this.id, this.name, this.category?.id)
 }
 fun ListItem.mapToDto(item: ItemDto): ListItemDto{
-    return ListItemDto(item, this.amount, this.amountUnit, this.checked)
+    return ListItemDto(item, this.amount, this.amountUnit, this.checked, this.order)
 }
-fun ListItemDto.mapToEntity(listId: Int): ListItem{
-    return ListItem(listId, this.item.id, this.amount, this.amountUnit, this.checked)
+fun ListItemDto.mapToEntity(listId: Int, order: Int? = null): ListItem{
+    return ListItem(listId, this.item.id, this.amount, this.amountUnit, this.checked, order ?: this.order)
 }
 fun ShoppingListDto.mapToEntity(): ShoppingList{
     return ShoppingList(this.id, this.name, this.store?.id)

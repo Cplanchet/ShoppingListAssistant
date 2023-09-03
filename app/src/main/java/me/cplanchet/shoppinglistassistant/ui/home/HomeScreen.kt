@@ -147,7 +147,7 @@ fun ListCard(
                                 contentDescription = "check box"
                             )
                             Text(
-                                text = list.items[i].item.name,
+                                text = list.items.sortedBy { it.order }[i].item.name,
                                 textDecoration = if (list.items[i].checked) TextDecoration.LineThrough else TextDecoration.None
                                 )
                         }
@@ -156,7 +156,7 @@ fun ListCard(
                         Text("...")
                     }
                 } else{
-                    for(i in list.items){
+                    for(i in list.items.sortedBy { it.order }){
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.spacedBy(4.dp)

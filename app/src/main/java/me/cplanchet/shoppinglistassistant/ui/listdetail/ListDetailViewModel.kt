@@ -54,7 +54,7 @@ class ListDetailViewModel(
     }
     suspend fun addItemToList(item: ItemDto){
         viewModelScope.launch{
-            listRepository.addListItem(ListItemDto(item, 1f, "count", false), listId)
+            listRepository.addListItem(ListItemDto(item, 1f, "count", false, _listUIState.value.items.size + 1), listId)
         }
     }
 

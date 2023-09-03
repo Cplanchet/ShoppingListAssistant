@@ -7,11 +7,12 @@ data class ListItemUIState(
     val item: ItemDto = ItemDto(),
     val amount: Float = 0f,
     val amountUnit: String = "",
-    val checked: Boolean = false
+    val checked: Boolean = false,
+    val order: Int = 0
     )
 
-fun ListItemDto.toListItemUIState(): ListItemUIState = ListItemUIState(item, amount, amountUnit, checked)
-fun ListItemUIState.toListItem(): ListItemDto = ListItemDto(item, amount, amountUnit, checked)
+fun ListItemDto.toListItemUIState(): ListItemUIState = ListItemUIState(item, amount, amountUnit, checked, order)
+fun ListItemUIState.toListItem(): ListItemDto = ListItemDto(item, amount, amountUnit, checked, order)
 
 fun ListItemUIState.isValid(): Boolean{
     return amountUnit.isNotBlank()

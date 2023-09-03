@@ -77,8 +77,8 @@ fun ListDetailPage(
                 state = lazyListState,
             ){
                 items(
-                    items = uiState.value.items,
-                    key = {item -> item.item.id}
+                    items = uiState.value.items.sortedBy { it.order },
+                    key = {item -> item.order}
                     ) { item ->
                     ListItem(
                         modifier = Modifier.combinedClickable(
@@ -175,7 +175,7 @@ fun ListItem(
                 modifier = Modifier.pointerInput(Unit){
                     detectDragGestures(
                         onDrag = { change, dragAmount ->
-                            //Use Lazy List State to get information about current and overed item
+                            //Use Lazy List State to get information about current and Hovered item
                             /*
                             Setting Current:
                             
@@ -211,7 +211,7 @@ fun ListItem(
                         },
                         onDragStart = {
                             state.layoutInfo.visibleItemsInfo.firstOrNull{
-                                    item -> item.key == listItem.item.id
+                                    item -> item.key == listItem.order
                             }?.also {
                                 currentIndexOfDraggedItem = it.index
                             }
