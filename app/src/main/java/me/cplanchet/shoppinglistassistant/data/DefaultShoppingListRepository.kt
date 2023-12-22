@@ -2,6 +2,7 @@ package me.cplanchet.shoppinglistassistant.data
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import me.cplanchet.shoppinglistassistant.data.daos.*
 import me.cplanchet.shoppinglistassistant.data.dtos.*
@@ -107,7 +108,7 @@ class DefaultShoppingListRepository(private val shoppingListDao: ShoppingListDao
     private suspend fun convertToItemDto(item: Item?): ItemDto{
         var categoryDto: CategoryDto?
         if(item != null){
-            categoryDto = categoryDao.getCategoryById(item.categoryId ?: 0).map { convertToCategoryDto(it) }.first()
+            categoryDto = categoryDao.getCategoryById(item.categoryId ?: 0).map { convertToCategoryDto(it) }.firstOrNull()
             return item.mapToDto(categoryDto)
         }
         return ItemDto()
@@ -133,17 +134,17 @@ class DefaultShoppingListRepository(private val shoppingListDao: ShoppingListDao
         return storeDtos
     }
 
-    private fun convertToCategoryDto(category: Category?): CategoryDto{
-        if(category != null){
+    private fun convertToCategoryDto(category: Category?): CategoryDto?{
+        if(category != null && category.id !=0){
             return category.mapToDto()
         }
-        return CategoryDto()
+        return null;
     }
     private fun convertToCategoryDtos(categories: List<Category>): List<CategoryDto>{
         var dtos: ArrayList<CategoryDto> = ArrayList()
 
         categories.forEach {
-            dtos.add(convertToCategoryDto(it))
+            convertToCategoryDto(it)?.let { it1 -> dtos.add(it1) }
         }
 
         return dtos
