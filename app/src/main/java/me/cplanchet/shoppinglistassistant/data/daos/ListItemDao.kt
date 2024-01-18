@@ -12,10 +12,10 @@ interface ListItemDao {
     suspend fun update(listItem:ListItem)
     @Delete
     suspend fun delete(listItem:ListItem)
-    @Query("SELECT * FROM List_Item WHERE listId = :id")
+    @Query("SELECT * FROM List_Item WHERE listId = :id ORDER BY `order`")
     fun getListItemsByListId(id: Int): Flow<List<ListItem>>
-    @Query("SELECT * FROM List_Item WHERE listId = :listId AND itemId = :itemId")
+    @Query("SELECT * FROM List_Item WHERE listId = :listId AND itemId = :itemId ORDER BY `order`")
     fun getListItemByItemId(listId: Int, itemId: Int): Flow<ListItem>
-    @Query("SELECT * FROM List_Item")
+    @Query("SELECT * FROM List_Item ORDER BY `order`")
     fun getAllListItems(): Flow<List<ListItem>>
 }

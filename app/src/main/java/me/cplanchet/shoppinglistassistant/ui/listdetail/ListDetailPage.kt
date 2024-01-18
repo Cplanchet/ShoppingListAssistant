@@ -1,12 +1,15 @@
 package me.cplanchet.shoppinglistassistant.ui.listdetail
 
+import android.annotation.SuppressLint
 import android.content.res.Configuration
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.gestures.detectDragGesturesAfterLongPress
+import androidx.compose.foundation.gestures.scrollBy
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
@@ -15,17 +18,22 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.composed
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import me.cplanchet.shoppinglistassistant.R
 import me.cplanchet.shoppinglistassistant.data.dtos.ListItemDto
 import me.cplanchet.shoppinglistassistant.ui.AppViewModelProvider
 import me.cplanchet.shoppinglistassistant.ui.components.AppBar
 import me.cplanchet.shoppinglistassistant.ui.components.AutocompleteTextbox
+import me.cplanchet.shoppinglistassistant.ui.components.rememberDragDropListState
 import me.cplanchet.shoppinglistassistant.ui.theme.ShoppingListAssistantTheme
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -39,6 +47,7 @@ fun ListDetailPage(
 ){
     val uiState = listDetailViewModel.listUIState.collectAsState()
     val itemsState = listDetailViewModel.itemsUIState.collectAsState()
+    val items = listDetailViewModel.listItems.collectAsState()
     var addItem by remember { mutableStateOf(false)}
     val coroutineScope = rememberCoroutineScope()
     var itemToDelete by remember { mutableStateOf<ListItemDto?>(null)}
@@ -61,31 +70,52 @@ fun ListDetailPage(
                     style = MaterialTheme.typography.titleSmall,
                     color = MaterialTheme.colorScheme.primary)
             }
-            LazyColumn(
-                modifier = Modifier.padding(end = 16.dp, top = 16.dp)
-            ){
-                items(uiState.value.items) { item ->
-                    ListItem(
-                        modifier = Modifier.combinedClickable(
-                            onClick = {
-                                coroutineScope.launch{
-                                listDetailViewModel.updateListItem(item.copy(checked = !item.checked))
-                            } },
-                            onLongClick = { itemToDelete = item },
-                            onLongClickLabel = stringResource(R.string.click_item_context)
-                        ),
-                        listItem = item,
-                        onCheckedChanged ={
-                            coroutineScope.launch{
-                                listDetailViewModel.updateListItem(item.copy(checked = it))
-                            }
-                        },
-                        onEditButtonPressed = {
-                            navigateToUpdateItemPage(listDetailViewModel.listId, it)
-                        }
-                    )
+//            LazyColumn(
+//                modifier = Modifier.padding(end = 16.dp, top = 16.dp)
+//            ){
+//                items(uiState.value.items) { item ->
+//                    ListItem(
+//                        modifier = Modifier.combinedClickable(
+//                            onClick = {
+//                                coroutineScope.launch{
+//                                listDetailViewModel.updateListItem(item.copy(checked = !item.checked))
+//                            } },
+//                            onLongClick = { itemToDelete = item },
+//                            onLongClickLabel = stringResource(R.string.click_item_context)
+//                        ),
+//                        listItem = item,
+//                        onCheckedChanged ={
+//                            coroutineScope.launch{
+//                                listDetailViewModel.updateListItem(item.copy(checked = it))
+//                            }
+//                        },
+//                        onEditButtonPressed = {
+//                            navigateToUpdateItemPage(listDetailViewModel.listId, it)
+//                        }
+//                    )
+//                }
+//            }
+
+//            DragDropList(
+//                items = items,
+//                onMove = {from, to -> listDetailViewModel.reorderList.move(from, to)}
+//            )
+            DragDropItemList(
+                items = items.value,
+                onMove = { from, to ->
+                    coroutineScope.launch {
+                         listDetailViewModel.swap(from, to)
+                    }
+                },
+                onCheckedChanged = {
+                    coroutineScope.launch{
+                        listDetailViewModel.updateListItem(it)
+                    }
+                },
+                onEditButtonPressed = {
+                    navigateToUpdateItemPage(listDetailViewModel.listId, it)
                 }
-            }
+            )
             if(addItem){
                 AddItemSection(
                     onSubmit = {
@@ -258,6 +288,80 @@ fun DeleteDialog(
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
+@SuppressLint("UnnecessaryComposedModifier")
+@Composable
+fun DragDropItemList(
+    items: List<ListItemDto>,
+    onMove: (Int, Int) -> Unit,
+    modifier: Modifier = Modifier,
+    onCheckedChanged: (ListItemDto) -> Unit,
+    onEditButtonPressed: (itemId: Int) -> Unit
+) {
+    val scope = rememberCoroutineScope()
+    var overScrollJob by remember { mutableStateOf<Job?>(null) }
+    val dragDropListState = rememberDragDropListState(onMove = onMove)
+
+    LazyColumn(
+        modifier = modifier
+            .pointerInput(Unit) {
+                detectDragGesturesAfterLongPress(
+                    onDrag = { change, offset ->
+                        change.consume()
+                        dragDropListState.onDrag(offset = offset)
+
+                        if (overScrollJob?.isActive == true)
+                            return@detectDragGesturesAfterLongPress
+
+                        dragDropListState
+                            .checkForOverScroll()
+                            .takeIf { it != 0f }
+                            ?.let {
+                                overScrollJob = scope.launch {
+                                    dragDropListState.lazyListState.scrollBy(it)
+                                }
+                            } ?: kotlin.run { overScrollJob?.cancel() }
+                    },
+                    onDragStart = { offset -> dragDropListState.onDragStart(offset) },
+                    onDragEnd = { dragDropListState.onDragInterrupted() },
+                    onDragCancel = { dragDropListState.onDragInterrupted() }
+                )
+            }
+            .padding(top = 10.dp, start = 10.dp, end = 10.dp),
+        state = dragDropListState.lazyListState
+    ) {
+        itemsIndexed(items) { index, item ->
+            Column(
+                modifier = Modifier
+                    .composed {
+                        val offsetOrNull = dragDropListState.elementDisplacement.takeIf {
+                            index == dragDropListState.currentIndexOfDraggedItem
+                        }
+                        Modifier.graphicsLayer {
+                            translationY = offsetOrNull ?: 0f
+                        }
+                    }
+            ) {
+                ListItem(
+                    modifier = Modifier.combinedClickable(
+                        onClick = {
+                            onCheckedChanged(item.copy(checked = !item.checked))
+                        },
+                        //onLongClick = { onDeleteItem(item) },
+                        //onLongClickLabel = stringResource(R.string.click_item_context)
+                    ),
+                    listItem = item,
+                    onCheckedChanged ={
+                        onCheckedChanged(item.copy(checked = it))
+                    },
+                    onEditButtonPressed = {
+                       onEditButtonPressed(item.item.id);
+                    })
+            }
+        }
+    }
+}
+
 @Preview(
     uiMode = Configuration.UI_MODE_NIGHT_NO,
     name = "light mode"
@@ -272,3 +376,4 @@ fun ListDetailPreview(){
         AddItemSection(onSubmit =  {}, onCancel = {}, options = listOf("Apple", "Orange", "Banana"))
     }
 }
+

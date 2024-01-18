@@ -12,19 +12,19 @@ class MockShoppingListRepository : ShoppingListRepository{
     val item4 = ItemDto(4, "item4", category)
 
     val listItems = listOf(
-        ListItemDto(item1, 1f, "count", true),
-        ListItemDto(item2, 3f, "lb", true),
-        ListItemDto(item3, 3f, "lb", false),
-        ListItemDto(item4, 3f, "lb", false),
+        ListItemDto(item1, 1f, "count", true, 1),
+        ListItemDto(item2, 3f, "lb", true, 2),
+        ListItemDto(item3, 3f, "lb", false, 3),
+        ListItemDto(item4, 3f, "lb", false, 4),
     )
     val listItems2 = listOf(
-        ListItemDto(item1, 1f, "count", false),
-        ListItemDto(item2, 3f, "count", false),
-        ListItemDto(item3, 1f, "count", true)
+        ListItemDto(item1, 1f, "count", false, 1),
+        ListItemDto(item2, 3f, "count", false, 2),
+        ListItemDto(item3, 1f, "count", true, 3)
     )
     val listItems3 = listOf(
-        ListItemDto(item1, 1f, "count", false),
-        ListItemDto(item2, 3f, "count", false),
+        ListItemDto(item1, 1f, "count", false,1),
+        ListItemDto(item2, 3f, "count", false, 2),
     )
     val shoppingList1 = ShoppingListDto(1, "Name1", listItems, null)
     val shoppingList2 = ShoppingListDto(2, "name2", listItems2, null)
@@ -84,6 +84,9 @@ class MockShoppingListRepository : ShoppingListRepository{
         return flowOf(listItems[0])
     }
     override suspend fun updateListItem(item: ListItemDto, listId: Int){
+    }
+
+    override suspend fun swapListItems(from: ListItemDto, to: ListItemDto, listId: Int) {
     }
 
     override fun getAllCategories(): Flow<List<CategoryDto>>{

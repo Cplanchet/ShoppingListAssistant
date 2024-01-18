@@ -26,5 +26,6 @@ data class ListItem(
     val itemId: Int,
     val amount: Float,
     val amountUnit: String,
-    val checked: Boolean
+    val checked: Boolean,
+    val order: Int
 )
