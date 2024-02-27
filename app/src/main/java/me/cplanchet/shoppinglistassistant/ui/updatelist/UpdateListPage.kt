@@ -18,7 +18,7 @@ import kotlinx.coroutines.launch
 import me.cplanchet.shoppinglistassistant.R
 import me.cplanchet.shoppinglistassistant.ui.AppViewModelProvider
 import me.cplanchet.shoppinglistassistant.ui.components.AppBar
-import me.cplanchet.shoppinglistassistant.ui.components.StoreDropdownBox
+import me.cplanchet.shoppinglistassistant.ui.components.LinkDropDownBox
 import me.cplanchet.shoppinglistassistant.ui.state.isValid
 import me.cplanchet.shoppinglistassistant.ui.theme.ShoppingListAssistantTheme
 
@@ -56,17 +56,18 @@ fun UpdateListPage(
                     onValueChange = { viewModel.updateListState(viewModel.listUIState.copy(name = it))},
                     label = {Text(text = stringResource(R.string.list_name_label))}
                 )
-                StoreDropdownBox(
+                LinkDropDownBox(
                     modifier = Modifier.padding(top = 8.dp),
                     options = updateListViewModel.stores.map {it.name}.plus("None"),
-                    onSelectCreate = {navigateToCreateStorePage()},
+                    onLinkSelected = {navigateToCreateStorePage()},
                     onSelectionChanged = {
                         viewModel.updateListState(viewModel.listUIState.copy(
                             store = updateListViewModel.stores.find {store -> store.name == it}
                         ))
                     },
                     label = {Text(text = stringResource(R.string.choose_store))},
-                    selected = viewModel.listUIState.store?.name ?: "None"
+                    selected = viewModel.listUIState.store?.name ?: "None",
+                    linkText = stringResource(R.string.create_store_title)
                 )
             }
             Row(

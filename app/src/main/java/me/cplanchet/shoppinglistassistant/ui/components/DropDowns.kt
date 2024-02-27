@@ -4,8 +4,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
-import me.cplanchet.shoppinglistassistant.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -58,13 +56,14 @@ fun StandardDropdownBox(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun StoreDropdownBox(
+fun LinkDropDownBox(
     modifier: Modifier = Modifier,
     options: List<String>,
     onSelectionChanged: (String) -> Unit,
-    onSelectCreate: () -> Unit,
+    onLinkSelected: () -> Unit,
     selected: String,
-    label: @Composable (() -> Unit)?
+    label: @Composable (() -> Unit)?,
+    linkText: String
 ) {
     var expanded by remember { mutableStateOf(false) }
 
@@ -103,9 +102,9 @@ fun StoreDropdownBox(
                 )
             }
             DropdownMenuItem(
-                text = { Text(stringResource(R.string.store_dropdown_create)) },
+                text = { Text(linkText) },
                 onClick = {
-                    onSelectCreate()
+                    onLinkSelected()
                     expanded = false
                 }
             )

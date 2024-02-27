@@ -18,7 +18,7 @@ import me.cplanchet.shoppinglistassistant.R
 import me.cplanchet.shoppinglistassistant.data.MockShoppingListRepository
 import me.cplanchet.shoppinglistassistant.ui.AppViewModelProvider
 import me.cplanchet.shoppinglistassistant.ui.components.AppBar
-import me.cplanchet.shoppinglistassistant.ui.components.StoreDropdownBox
+import me.cplanchet.shoppinglistassistant.ui.components.LinkDropDownBox
 import me.cplanchet.shoppinglistassistant.ui.state.ListUIState
 import me.cplanchet.shoppinglistassistant.ui.state.isValid
 import me.cplanchet.shoppinglistassistant.ui.theme.ShoppingListAssistantTheme
@@ -109,16 +109,17 @@ fun FormBody(
         val options = createListUIState.stores.map { it.name }
         var selectedText by remember { mutableStateOf("Select Store...") }
 
-        StoreDropdownBox(
+        LinkDropDownBox(
             Modifier.fillMaxWidth(),
             selected = selectedText,
             onSelectionChanged = {
                 selectedText = it
                 onValueChange(listUIState.copy(store = createListUIState.stores.find { store -> store.name == it }))
             },
-            onSelectCreate = { onCreateStore() },
+            onLinkSelected = { onCreateStore() },
             options = options,
-            label = { Text(text = stringResource(R.string.choose_store)) }
+            label = { Text(text = stringResource(R.string.choose_store)) },
+            linkText = stringResource(R.string.store_dropdown_create)
         )
     }
 }
