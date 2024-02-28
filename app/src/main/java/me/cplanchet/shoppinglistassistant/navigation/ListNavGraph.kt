@@ -8,6 +8,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import me.cplanchet.shoppinglistassistant.navigation.destinations.*
+import me.cplanchet.shoppinglistassistant.ui.createcategory.CreateCategoryPage
 import me.cplanchet.shoppinglistassistant.ui.createlist.CreateListPage
 import me.cplanchet.shoppinglistassistant.ui.createstore.CreateStorePage
 import me.cplanchet.shoppinglistassistant.ui.home.HomeScreen
@@ -71,6 +72,12 @@ fun ListNavHost(
             UpdateItemPage(
                 onNavigateUp = { navController.navigateUp() },
                 navigateBack = { navController.popBackStack()}
+            )
+        }
+        composable(route = CreateCategoryDestination.route){
+            CreateCategoryPage(
+                onNavigateUp = { navController.navigateUp() },
+                navigateBack = { navController.popBackStack() }
             )
         }
     }

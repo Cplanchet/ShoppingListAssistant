@@ -6,6 +6,7 @@ import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import me.cplanchet.shoppinglistassistant.ListApplication
+import me.cplanchet.shoppinglistassistant.ui.createcategory.CreateCategoryViewModel
 import me.cplanchet.shoppinglistassistant.ui.createlist.CreateListViewModel
 import me.cplanchet.shoppinglistassistant.ui.createstore.CreateStoreViewModel
 import me.cplanchet.shoppinglistassistant.ui.home.HomeViewModel
@@ -46,6 +47,11 @@ object AppViewModelProvider {
             UpdateItemViewModel(
                 savedStateHandle = this.createSavedStateHandle(),
                 repository = listApplication().container.shoppingListRepository,
+            )
+        }
+        initializer {
+            CreateCategoryViewModel(
+                listApplication().container.shoppingListRepository
             )
         }
     }

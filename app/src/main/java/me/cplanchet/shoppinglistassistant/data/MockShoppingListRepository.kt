@@ -92,4 +92,7 @@ class MockShoppingListRepository : ShoppingListRepository{
     override fun getAllCategories(): Flow<List<CategoryDto>>{
         return flowOf(listOf(category))
     }
+
+    override suspend fun insertCategory(category: CategoryDto) {
+    }
 }

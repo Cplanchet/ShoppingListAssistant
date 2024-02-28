@@ -25,4 +25,6 @@
     <string name="label_list_item_amount">Amount</string>
     <string name="label_list_item_unit">Unit</string>
     <string name="update_item_title">Update Item</string>
+    <string name="create_category_title">Create Category</string>
+    <string name="create_category_label_name">Name</string>
 </resources>
