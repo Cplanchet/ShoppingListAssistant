@@ -19,7 +19,7 @@ import me.cplanchet.shoppinglistassistant.R
 import me.cplanchet.shoppinglistassistant.data.MockShoppingListRepository
 import me.cplanchet.shoppinglistassistant.ui.AppViewModelProvider
 import me.cplanchet.shoppinglistassistant.ui.components.AppBar
-import me.cplanchet.shoppinglistassistant.ui.components.StandardDropdownBox
+import me.cplanchet.shoppinglistassistant.ui.components.LinkDropDownBox
 import me.cplanchet.shoppinglistassistant.ui.state.ItemUIState
 import me.cplanchet.shoppinglistassistant.ui.state.ListItemUIState
 import me.cplanchet.shoppinglistassistant.ui.theme.ShoppingListAssistantTheme
@@ -29,6 +29,7 @@ fun UpdateItemPage(
     modifier: Modifier = Modifier,
     onNavigateUp: () -> Unit,
     navigateBack: () -> Unit,
+    navigateToCategoryCreatePage: () -> Unit,
     viewModel: UpdateItemViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ){
     val vm by viewModel.categoryUIState.collectAsState()
@@ -95,6 +96,9 @@ fun UpdateItemPage(
                                 viewModel.saveItem()
                                 navigateBack()
                             }
+                        },
+                        onCreateCategory = {
+                            navigateToCategoryCreatePage()
                         }
                     )
                 }
@@ -110,6 +114,7 @@ fun ItemView(
     options: List<String>,
     onValueChange: (item:ItemUIState) -> Unit,
     onSelectionChange: (selection: String) -> Unit,
+    onCreateCategory: () -> Unit,
     onSave: () -> Unit,
     onCancel: () -> Unit,
     onDelete: () -> Unit
@@ -130,12 +135,14 @@ fun ItemView(
             onValueChange = {onValueChange(item.copy(name = it))},
             label = {Text(stringResource(R.string.label_name))}
         )
-        StandardDropdownBox(
+        LinkDropDownBox(
             modifier = Modifier.padding(top = 8.dp),
             options = options,
             onSelectionChanged = { onSelectionChange(it) },
             selected = item.category?.name ?: "Select Category",
-            label = {Text(stringResource(R.string.label_category))}
+            label = {Text(stringResource(R.string.label_category))},
+            linkText = stringResource(R.string.create_category_link),
+            onLinkSelected = { onCreateCategory() }
         )
 
         Button(
@@ -245,6 +252,6 @@ fun ListItemView(
 @Composable
 fun UpdateItemPagePreview(){
     ShoppingListAssistantTheme {
-        UpdateItemPage(onNavigateUp = {}, viewModel = UpdateItemViewModel(MockShoppingListRepository(), SavedStateHandle()), navigateBack = {})
+        UpdateItemPage(onNavigateUp = {}, viewModel = UpdateItemViewModel(MockShoppingListRepository(), SavedStateHandle()), navigateBack = {}, navigateToCategoryCreatePage = {})
     }
 }
