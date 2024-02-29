@@ -1,6 +1,7 @@
 package me.cplanchet.shoppinglistassistant.ui.updatelist
 
 import android.content.res.Configuration
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -76,7 +77,8 @@ fun UpdateListPage(
             ){
                 OutlinedButton(
                     modifier = Modifier.widthIn(min= 130.dp),
-                    onClick = { navigateBack() }
+                    onClick = { navigateBack() },
+                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary)
                 ){
                     Text(text = "Cancel")
                 }

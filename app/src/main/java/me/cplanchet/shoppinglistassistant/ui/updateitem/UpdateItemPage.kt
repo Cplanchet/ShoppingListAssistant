@@ -1,6 +1,7 @@
 package me.cplanchet.shoppinglistassistant.ui.updateitem
 
 import android.content.res.Configuration
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
@@ -160,7 +161,8 @@ fun ItemView(
         ){
             OutlinedButton(
                 onClick = { onCancel() },
-                modifier = Modifier.width(100.dp)
+                modifier = Modifier.width(100.dp),
+                border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary)
             ){
                 Text(stringResource(R.string.cancel))
             }
@@ -226,7 +228,8 @@ fun ListItemView(
         ){
             OutlinedButton(
                 onClick = { onCancel() },
-                modifier = Modifier.width(100.dp)
+                modifier = Modifier.width(100.dp),
+                border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary)
             ){
                 Text(stringResource(R.string.cancel))
             }

@@ -2,6 +2,7 @@ package me.cplanchet.shoppinglistassistant.ui.createlist
 
 import android.annotation.SuppressLint
 import android.content.res.Configuration
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -64,7 +65,8 @@ fun CreateListPage(
             ) {
                 OutlinedButton(
                     onClick = { navigateBack() },
-                    modifier.width(100.dp)
+                    modifier.width(100.dp),
+                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary)
                 ){
                     Text(text = stringResource(R.string.back))
                 }

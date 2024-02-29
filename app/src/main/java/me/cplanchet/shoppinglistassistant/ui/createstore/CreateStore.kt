@@ -1,6 +1,7 @@
 package me.cplanchet.shoppinglistassistant.ui.createstore
 
 import android.content.res.Configuration
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material3.*
@@ -87,7 +88,8 @@ fun CreateStoreFormBody (
         ){
             OutlinedButton(
                 modifier = Modifier.width(100.dp),
-                onClick = {onBackButtonPressed()}
+                onClick = {onBackButtonPressed()},
+                border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary)
             ){
                 Text(stringResource(R.string.back))
             }
