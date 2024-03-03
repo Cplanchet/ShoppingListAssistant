@@ -13,10 +13,10 @@ object MockData {
     val item3 = ItemDto(3, "fake item 3", category)
     val item4 = ItemDto(4, "fake item 4", category)
 
-    val listItem1 = ListItemDto(item1, 1f, "count", false)
-    val listItem2 = ListItemDto(item2, 1f, "count", false)
-    val listItem3 = ListItemDto(item3, 1f, "count", false)
-    val listItem4 = ListItemDto(item4, 1f, "count", false)
+    val listItem1 = ListItemDto(item1, 1f, "count", false,1)
+    val listItem2 = ListItemDto(item2, 1f, "count", false, 1)
+    val listItem3 = ListItemDto(item3, 1f, "count", false, 1)
+    val listItem4 = ListItemDto(item4, 1f, "count", false, 1)
 
     val shoppingListNoItems = ShoppingListDto(1, "No Items", listOf(), null)
     val shoppingListOneItem = ShoppingListDto(2, "One Item", listOf(listItem1), null)
