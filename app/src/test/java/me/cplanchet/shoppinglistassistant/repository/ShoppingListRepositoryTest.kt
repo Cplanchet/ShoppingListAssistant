@@ -7,7 +7,7 @@ import kotlinx.coroutines.test.runTest
 import me.cplanchet.shoppinglistassistant.data.DefaultShoppingListRepository
 import me.cplanchet.shoppinglistassistant.data.ShoppingListRepository
 import me.cplanchet.shoppinglistassistant.data.daos.*
-import me.cplanchet.shoppinglistassistant.repository.fakes.*
+import me.cplanchet.shoppinglistassistant.fakes.*
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith

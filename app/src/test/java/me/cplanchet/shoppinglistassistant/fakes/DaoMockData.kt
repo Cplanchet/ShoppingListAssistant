@@ -1,4 +1,4 @@
-package me.cplanchet.shoppinglistassistant.repository.fakes
+package me.cplanchet.shoppinglistassistant.fakes
 
 import me.cplanchet.shoppinglistassistant.data.dtos.*
 import me.cplanchet.shoppinglistassistant.data.entities.*

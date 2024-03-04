@@ -1,4 +1,4 @@
-package me.cplanchet.shoppinglistassistant.repository.fakes
+package me.cplanchet.shoppinglistassistant.fakes
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
