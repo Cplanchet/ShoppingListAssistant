@@ -15,5 +15,5 @@ fun ListItemDto.toListItemUIState(): ListItemUIState = ListItemUIState(item, amo
 fun ListItemUIState.toListItem(): ListItemDto = ListItemDto(item, amount, amountUnit, checked, order)
 
 fun ListItemUIState.isValid(): Boolean{
-    return amountUnit.isNotBlank()
+    return amountUnit.isNotBlank() && amount > 0 && order > 0
 }
