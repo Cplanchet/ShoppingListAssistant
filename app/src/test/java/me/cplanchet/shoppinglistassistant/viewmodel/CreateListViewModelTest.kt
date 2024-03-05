@@ -1,37 +1,55 @@
 package me.cplanchet.shoppinglistassistant.viewmodel
 
-import junit.framework.TestCase.assertEquals
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import me.cplanchet.shoppinglistassistant.data.ShoppingListRepository
 import me.cplanchet.shoppinglistassistant.fakes.DaoMockData
-import me.cplanchet.shoppinglistassistant.ui.createlist.CreateListUIState
 import me.cplanchet.shoppinglistassistant.ui.createlist.CreateListViewModel
+import me.cplanchet.shoppinglistassistant.ui.state.ListUIState
+import me.cplanchet.shoppinglistassistant.ui.state.toListDto
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotEquals
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.junit.MockitoJUnitRunner
-import org.mockito.kotlin.doReturn
-import org.mockito.kotlin.mock
+import org.mockito.kotlin.never
+import org.mockito.kotlin.verify
 
 @RunWith(MockitoJUnitRunner::class)
 class CreateListViewModelTest {
     @Mock
     private lateinit var shoppingListRepository: ShoppingListRepository
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun createListUIState_givenFlowFromRepo_setsCreateListUIState() = runTest {
-        val expectedList = DaoMockData.allStoreDtos
-        val expected = CreateListUIState(expectedList)
-        shoppingListRepository = mock<ShoppingListRepository> {
-            on { getAllStores() } doReturn flowOf(expectedList)
-        }
+    fun updateUIState_givenListUIState_updatesState(){
         val underTest = CreateListViewModel(shoppingListRepository)
-        val actual = underTest.createListUIState.first()
+        val toUpdate = ListUIState(1, "name", listOf(), null)
+        assertNotEquals(toUpdate, underTest.listUIState)
 
-        assertEquals(expected, actual)
+        underTest.updateUIState(toUpdate)
+
+        assertEquals(toUpdate, underTest.listUIState)
+    }
+
+    @Test
+    fun saveList_validUIState_callsRepo() = runTest {
+        val underTest = CreateListViewModel(shoppingListRepository)
+        val validState = ListUIState(1, "Name", listOf(), DaoMockData.store1Dto)
+
+        underTest.updateUIState(validState)
+        underTest.saveList()
+
+        verify(shoppingListRepository).insertList(validState.toListDto())
+    }
+
+    @Test
+    fun saveList_invalidUIState_neverCallsRepo() = runTest {
+        val underTest = CreateListViewModel(shoppingListRepository)
+        val invalidState = ListUIState(1, "", listOf(), null)
+
+        underTest.updateUIState(invalidState)
+        underTest.saveList()
+
+        verify(shoppingListRepository, never()).insertList(invalidState.toListDto())
     }
 }
