@@ -55,4 +55,6 @@ object DaoMockData {
 
     val shoppingList1Dto = ShoppingListDto(1, "list1", allListItemDtosList1, null)
     val shoppingList2Dto = ShoppingListDto(2, "list2", allListItemDtosList2, store1Dto)
+
+    val allListDtos = listOf(shoppingList1Dto, shoppingList2Dto)
 }

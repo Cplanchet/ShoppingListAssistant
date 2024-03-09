@@ -28,7 +28,6 @@ import org.mockito.kotlin.verify
 @OptIn(ExperimentalCoroutinesApi::class)
 class CreateCategoryViewModelTest() {
 
-
     @get:Rule
     val mainDispatcherRule = MainDispatcherRule()
 

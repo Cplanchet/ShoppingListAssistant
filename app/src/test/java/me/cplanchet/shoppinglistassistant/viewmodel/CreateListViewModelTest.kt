@@ -1,5 +1,6 @@
 package me.cplanchet.shoppinglistassistant.viewmodel
 
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import me.cplanchet.shoppinglistassistant.data.ShoppingListRepository
 import me.cplanchet.shoppinglistassistant.fakes.DaoMockData
@@ -16,6 +17,7 @@ import org.mockito.kotlin.never
 import org.mockito.kotlin.verify
 
 @RunWith(MockitoJUnitRunner::class)
+@OptIn(ExperimentalCoroutinesApi::class)
 class CreateListViewModelTest {
     @Mock
     private lateinit var shoppingListRepository: ShoppingListRepository
