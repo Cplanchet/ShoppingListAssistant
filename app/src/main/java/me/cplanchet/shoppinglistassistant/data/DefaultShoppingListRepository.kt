@@ -79,6 +79,9 @@ class DefaultShoppingListRepository(private val shoppingListDao: ShoppingListDao
     override suspend fun insertCategory(category: CategoryDto) {
         categoryDao.insert(category.mapToEntity())
     }
+    override suspend fun updateCategory(category: CategoryDto){
+        categoryDao.update(category.mapToEntity())
+    }
 
     private suspend fun convertListsToDto(lists: List<ShoppingList>): List<ShoppingListDto>{
         val listDtos = ArrayList<ShoppingListDto>()

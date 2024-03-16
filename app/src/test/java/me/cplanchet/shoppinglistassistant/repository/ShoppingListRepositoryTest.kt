@@ -213,7 +213,6 @@ class ShoppingListRepositoryTest {
 
         assertEquals(expected, actual)
     }
-
     @Test
     fun insertCategory_givenDto_CallsDaoWithEntity() = runTest {
         val toInsert = DaoMockData.category1Dto
@@ -222,5 +221,14 @@ class ShoppingListRepositoryTest {
         repository.insertCategory(toInsert)
 
         verify(categoryDao).insert(expectedEntity)
+    }
+    @Test
+    fun updateCategory_givenDto_CallsDaoWithEntity() = runTest {
+        val toUpdate = DaoMockData.category2Dto
+        val expectedEntity = DaoMockData.category2
+
+        repository.updateCategory(toUpdate)
+
+        verify(categoryDao).update(expectedEntity)
     }
 }

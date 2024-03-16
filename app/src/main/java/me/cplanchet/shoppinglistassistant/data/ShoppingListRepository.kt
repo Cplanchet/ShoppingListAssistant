@@ -30,4 +30,5 @@ interface ShoppingListRepository{
 
     fun getAllCategories(): Flow<List<CategoryDto>>
     suspend fun insertCategory(category: CategoryDto)
+    suspend fun updateCategory(category: CategoryDto)
 }
