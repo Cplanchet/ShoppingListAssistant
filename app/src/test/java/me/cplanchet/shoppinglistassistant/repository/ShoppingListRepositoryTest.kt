@@ -214,6 +214,14 @@ class ShoppingListRepositoryTest {
         assertEquals(expected, actual)
     }
     @Test
+    fun getCategoryById_givenAndId_ReturnsCorrectCategory() = runTest {
+        val expected = DaoMockData.category1Dto
+
+        val actual = repository.getCategoryById(1).first()
+
+        assertEquals(expected, actual)
+    }
+    @Test
     fun insertCategory_givenDto_CallsDaoWithEntity() = runTest {
         val toInsert = DaoMockData.category1Dto
         val expectedEntity = DaoMockData.category1
@@ -230,5 +238,14 @@ class ShoppingListRepositoryTest {
         repository.updateCategory(toUpdate)
 
         verify(categoryDao).update(expectedEntity)
+    }
+    @Test
+    fun deleteCategory_givenDto_callsDaoWithEntity() = runTest {
+        val toDelete = DaoMockData.category2Dto
+        val expectedEntity = DaoMockData.category2
+
+        repository.deleteCategory(toDelete)
+
+        verify(categoryDao).delete(expectedEntity)
     }
 }

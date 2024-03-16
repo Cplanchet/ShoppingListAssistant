@@ -11,6 +11,7 @@ import me.cplanchet.shoppinglistassistant.ui.createlist.CreateListViewModel
 import me.cplanchet.shoppinglistassistant.ui.createstore.CreateStoreViewModel
 import me.cplanchet.shoppinglistassistant.ui.home.HomeViewModel
 import me.cplanchet.shoppinglistassistant.ui.listdetail.ListDetailViewModel
+import me.cplanchet.shoppinglistassistant.ui.updatecategory.UpdateCategoryViewModel
 import me.cplanchet.shoppinglistassistant.ui.updateitem.UpdateItemViewModel
 import me.cplanchet.shoppinglistassistant.ui.updatelist.UpdateListViewModel
 
@@ -52,6 +53,12 @@ object AppViewModelProvider {
         initializer {
             CreateCategoryViewModel(
                 listApplication().container.shoppingListRepository
+            )
+        }
+        initializer {
+            UpdateCategoryViewModel(
+                savedStateHandle = this.createSavedStateHandle(),
+                shoppingListRepository = listApplication().container.shoppingListRepository
             )
         }
     }

@@ -29,6 +29,8 @@ interface ShoppingListRepository{
     suspend fun swapListItems(from: ListItemDto, to: ListItemDto, listId: Int)
 
     fun getAllCategories(): Flow<List<CategoryDto>>
+    fun getCategoryById(id: Int): Flow<CategoryDto>
     suspend fun insertCategory(category: CategoryDto)
     suspend fun updateCategory(category: CategoryDto)
+    suspend fun deleteCategory(category: CategoryDto)
 }
