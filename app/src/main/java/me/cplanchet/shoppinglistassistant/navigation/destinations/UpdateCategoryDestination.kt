@@ -1,10 +1,10 @@
 package me.cplanchet.shoppinglistassistant.navigation.destinations
 
-object UpdateCategoryDestination: NavigationDestination {
-    override val route: String
-        get() = TODO("Not yet implemented")
-    override val titleRes: Int
-        get() = TODO("Not yet implemented")
+import me.cplanchet.shoppinglistassistant.R
 
+object UpdateCategoryDestination: NavigationDestination {
+    override val route: String = "updatecategory"
+    override val titleRes: Int = R.string.update_category_title
     val categoryIdArg: String = "categoryId"
+    val routeWithArgs = "$route/{$categoryIdArg}"
 }

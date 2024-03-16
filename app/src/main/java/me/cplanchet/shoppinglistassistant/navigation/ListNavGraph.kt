@@ -13,6 +13,7 @@ import me.cplanchet.shoppinglistassistant.ui.createlist.CreateListPage
 import me.cplanchet.shoppinglistassistant.ui.createstore.CreateStorePage
 import me.cplanchet.shoppinglistassistant.ui.home.HomeScreen
 import me.cplanchet.shoppinglistassistant.ui.listdetail.ListDetailPage
+import me.cplanchet.shoppinglistassistant.ui.updatecategory.UpdateCategoryPage
 import me.cplanchet.shoppinglistassistant.ui.updateitem.UpdateItemPage
 import me.cplanchet.shoppinglistassistant.ui.updatelist.UpdateListPage
 
@@ -77,6 +78,13 @@ fun ListNavHost(
         }
         composable(route = CreateCategoryDestination.route){
             CreateCategoryPage(
+                onNavigateUp = { navController.navigateUp() },
+                navigateBack = { navController.popBackStack() }
+            )
+        }
+        composable(route = UpdateCategoryDestination.routeWithArgs,
+            arguments = listOf(navArgument(UpdateCategoryDestination.categoryIdArg){type = NavType.IntType })){
+            UpdateCategoryPage(
                 onNavigateUp = { navController.navigateUp() },
                 navigateBack = { navController.popBackStack() }
             )
