@@ -76,7 +76,6 @@ class DefaultShoppingListRepository(private val shoppingListDao: ShoppingListDao
     override fun getAllCategories(): Flow<List<CategoryDto>>{
         return categoryDao.getAllCategories().map { convertToCategoryDtos(it) }
     }
-
     override suspend fun insertCategory(category: CategoryDto) {
         categoryDao.insert(category.mapToEntity())
     }
