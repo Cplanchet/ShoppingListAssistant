@@ -28,4 +28,6 @@
     <string name="create_category_title">Create Category</string>
     <string name="create_category_label_name">Name</string>
     <string name="create_category_link">Create a new category...</string>
+    <string name="update_category_title">Update Category</string>
+    <string name="delete">Delete</string>
 </resources>
