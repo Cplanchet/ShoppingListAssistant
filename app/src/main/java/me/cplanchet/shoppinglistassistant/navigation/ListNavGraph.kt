@@ -73,7 +73,8 @@ fun ListNavHost(
             UpdateItemPage(
                 onNavigateUp = { navController.navigateUp() },
                 navigateBack = { navController.popBackStack() },
-                navigateToCategoryCreatePage = { navController.navigate(CreateCategoryDestination.route) }
+                navigateToCategoryCreatePage = { navController.navigate(CreateCategoryDestination.route) },
+                navigateToUpdateCategoryPage = { navController.navigate("${UpdateCategoryDestination.route}/${it}") }
             )
         }
         composable(route = CreateCategoryDestination.route){

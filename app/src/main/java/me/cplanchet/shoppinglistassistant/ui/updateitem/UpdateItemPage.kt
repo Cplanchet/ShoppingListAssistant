@@ -4,6 +4,8 @@ import android.content.res.Configuration
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -18,6 +20,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlinx.coroutines.launch
 import me.cplanchet.shoppinglistassistant.R
 import me.cplanchet.shoppinglistassistant.data.MockShoppingListRepository
+import me.cplanchet.shoppinglistassistant.data.dtos.CategoryDto
 import me.cplanchet.shoppinglistassistant.ui.AppViewModelProvider
 import me.cplanchet.shoppinglistassistant.ui.components.AppBar
 import me.cplanchet.shoppinglistassistant.ui.components.LinkDropDownBox
@@ -31,6 +34,7 @@ fun UpdateItemPage(
     onNavigateUp: () -> Unit,
     navigateBack: () -> Unit,
     navigateToCategoryCreatePage: () -> Unit,
+    navigateToUpdateCategoryPage: (categoryId: Int) -> Unit,
     viewModel: UpdateItemViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ){
     val vm by viewModel.categoryUIState.collectAsState()
@@ -80,7 +84,7 @@ fun UpdateItemPage(
                 else{
                     ItemView(
                         item = viewModel.itemUIState,
-                        options = vm.categories.map { category -> category.name },
+                        categoryState = vm,
                         onValueChange = { newItem -> viewModel.updateItemUIState(newItem)},
                         onSelectionChange = {
                             viewModel.updateItemUIState(viewModel.itemUIState.copy(category = vm.categories.firstOrNull{category -> category.name == it}))
@@ -100,6 +104,9 @@ fun UpdateItemPage(
                         },
                         onCreateCategory = {
                             navigateToCategoryCreatePage()
+                        },
+                        onEditCategory = {
+                            navigateToUpdateCategoryPage(it.id)
                         }
                     )
                 }
@@ -112,10 +119,11 @@ fun UpdateItemPage(
 fun ItemView(
     modifier: Modifier = Modifier,
     item: ItemUIState,
-    options: List<String>,
+    categoryState: UpdateItemUIState,
     onValueChange: (item:ItemUIState) -> Unit,
     onSelectionChange: (selection: String) -> Unit,
     onCreateCategory: () -> Unit,
+    onEditCategory: (CategoryDto) -> Unit,
     onSave: () -> Unit,
     onCancel: () -> Unit,
     onDelete: () -> Unit
@@ -136,16 +144,31 @@ fun ItemView(
             onValueChange = {onValueChange(item.copy(name = it))},
             label = {Text(stringResource(R.string.label_name))}
         )
-        LinkDropDownBox(
-            modifier = Modifier.padding(top = 8.dp),
-            options = options,
-            onSelectionChanged = { onSelectionChange(it) },
-            selected = item.category?.name ?: "Select Category",
-            label = {Text(stringResource(R.string.label_category))},
-            linkText = stringResource(R.string.create_category_link),
-            onLinkSelected = { onCreateCategory() }
-        )
-
+        Row(
+            modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            LinkDropDownBox(
+                modifier = Modifier.padding(top = 8.dp).then(if(item.category == null) { Modifier.fillMaxWidth()} else Modifier),
+                options = listOf("Remove Category") + categoryState.categories.map { it.name },
+                onSelectionChanged = { onSelectionChange(it) },
+                selected = item.category?.name ?: "",
+                label = { Text(stringResource(R.string.label_category)) },
+                linkText = stringResource(R.string.create_category_link),
+                onLinkSelected = { onCreateCategory() }
+            )
+            if(item.category != null){
+                IconButton(
+                    onClick = {
+                        onEditCategory(item.category)
+                    },
+                    modifier = Modifier,
+                ){
+                    Icon(imageVector = Icons.Filled.Edit, contentDescription = "Edit Icon", modifier = Modifier.fillMaxHeight())
+                }
+            }
+        }
         Button(
             onClick = { onDelete() },
             colors = ButtonDefaults.buttonColors(
@@ -255,6 +278,6 @@ fun ListItemView(
 @Composable
 fun UpdateItemPagePreview(){
     ShoppingListAssistantTheme {
-        UpdateItemPage(onNavigateUp = {}, viewModel = UpdateItemViewModel(MockShoppingListRepository(), SavedStateHandle()), navigateBack = {}, navigateToCategoryCreatePage = {})
+        UpdateItemPage(onNavigateUp = {}, viewModel = UpdateItemViewModel(MockShoppingListRepository(), SavedStateHandle()), navigateBack = {}, navigateToCategoryCreatePage = {}, navigateToUpdateCategoryPage = {})
     }
 }

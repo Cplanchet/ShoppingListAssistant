@@ -83,14 +83,14 @@ fun LinkDropDownBox(
                 )
             },
             colors = ExposedDropdownMenuDefaults.textFieldColors(),
-            modifier = Modifier.fillMaxWidth().menuAnchor()
+            modifier = modifier.menuAnchor()
         )
         DropdownMenu(
             expanded = expanded,
             onDismissRequest = {
                 expanded = !expanded
             },
-            modifier.fillMaxWidth()
+            modifier
         ) {
             options.forEach { selectedOption ->
                 DropdownMenuItem(

@@ -112,7 +112,7 @@ fun FormBody(
         var selectedText by remember { mutableStateOf("Select Store...") }
 
         LinkDropDownBox(
-            Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth(),
             selected = selectedText,
             onSelectionChanged = {
                 selectedText = it

@@ -25,7 +25,7 @@ class UpdateItemViewModel(
         private set
     var listItemUIState by mutableStateOf(ListItemUIState())
         private set
-    val categoryUIState = repository.getAllCategories().map{ UpdateItemUIState(it) }.stateIn(
+    val categoryUIState = repository.getAllCategories().map{ UpdateItemUIState(it) }.stateIn(   //TODO: convert this to a collect function on init and make it update both the UI state and the item state
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5_000L),
         initialValue = UpdateItemUIState()
