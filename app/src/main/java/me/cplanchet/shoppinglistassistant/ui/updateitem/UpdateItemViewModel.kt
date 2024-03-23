@@ -6,9 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import me.cplanchet.shoppinglistassistant.data.ShoppingListRepository
 import me.cplanchet.shoppinglistassistant.navigation.destinations.UpdateItemDestination
@@ -25,11 +23,8 @@ class UpdateItemViewModel(
         private set
     var listItemUIState by mutableStateOf(ListItemUIState())
         private set
-    val categoryUIState = repository.getAllCategories().map{ UpdateItemUIState(it) }.stateIn(   //TODO: convert this to a collect function on init and make it update both the UI state and the item state
-        scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(5_000L),
-        initialValue = UpdateItemUIState()
-    )
+    var categoryUIState: MutableStateFlow<UpdateItemUIState> = MutableStateFlow(UpdateItemUIState())
+        private set
 
     fun updateItemUIState(newItemUIState: ItemUIState){
         itemUIState = newItemUIState.copy()
@@ -37,7 +32,6 @@ class UpdateItemViewModel(
     fun updateListItemUIState(newListItemUIState: ListItemUIState){
         listItemUIState = newListItemUIState.copy()
     }
-
     suspend fun saveItem(){
         if(itemUIState.isValid()){
             repository.updateItem(itemUIState.toItem())
@@ -55,6 +49,10 @@ class UpdateItemViewModel(
         repository.deleteItem(itemUIState.toItem())
     }
 
+    private fun updateItemCategoryName() {
+        val category = categoryUIState.value.categories.find { category -> category.id == itemUIState.category?.id }
+        updateItemUIState(itemUIState.copy(category = category))
+    }
 
     init{
         viewModelScope.launch {
@@ -62,10 +60,18 @@ class UpdateItemViewModel(
                 itemUIState = it.toItemUiState()
             }
         }
-
         viewModelScope.launch {
             repository.getListItemById(listId, itemId).collect{
                 listItemUIState = it.toListItemUIState()
+            }
+        }
+        viewModelScope.launch {
+            repository.getAllCategories().collect{
+                categoryUIState.value = UpdateItemUIState(it)
+
+                if(itemUIState.category != null){
+                    updateItemCategoryName()
+                }
             }
         }
     }
