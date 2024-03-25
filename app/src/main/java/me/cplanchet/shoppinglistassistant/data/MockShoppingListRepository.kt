@@ -5,7 +5,11 @@ import kotlinx.coroutines.flow.flowOf
 import me.cplanchet.shoppinglistassistant.data.dtos.*
 
 class MockShoppingListRepository : ShoppingListRepository{
+    val store1 = StoreDto(1, "Store 1", listOf(), listOf())
+    val store2 = StoreDto(2, "Store 2", listOf(), listOf())
+
     val category = CategoryDto(1, "cat 1")
+
     val item1 = ItemDto(1, "item1", category)
     val item2 = ItemDto(2, "item2", category)
     val item3 = ItemDto(3, "item3", category)
@@ -26,8 +30,8 @@ class MockShoppingListRepository : ShoppingListRepository{
         ListItemDto(item1, 1f, "count", false,1),
         ListItemDto(item2, 3f, "count", false, 2),
     )
-    val shoppingList1 = ShoppingListDto(1, "Name1", listItems, null)
-    val shoppingList2 = ShoppingListDto(2, "name2", listItems2, null)
+    val shoppingList1 = ShoppingListDto(1, "Name1", listItems, store1)
+    val shoppingList2 = ShoppingListDto(2, "name2", listItems2, store2)
     val shoppingList3 = ShoppingListDto(3, "name3", listItems3, null)
     val shoppingList4 = ShoppingListDto(4, "name4", listOf(), null)
     val shoppingLists = listOf(
@@ -36,8 +40,6 @@ class MockShoppingListRepository : ShoppingListRepository{
         shoppingList3,
         shoppingList4
     )
-    val store1 = StoreDto(1, "Store 1", listOf(), listOf())
-    val store2 = StoreDto(2, "Store 2", listOf(), listOf())
 
     override fun getAllLists(): Flow<List<ShoppingListDto>> {
         return flowOf(shoppingLists)

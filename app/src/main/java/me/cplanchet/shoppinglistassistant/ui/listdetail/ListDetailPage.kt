@@ -21,14 +21,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import me.cplanchet.shoppinglistassistant.R
+import me.cplanchet.shoppinglistassistant.data.MockShoppingListRepository
 import me.cplanchet.shoppinglistassistant.data.dtos.ListItemDto
 import me.cplanchet.shoppinglistassistant.ui.AppViewModelProvider
 import me.cplanchet.shoppinglistassistant.ui.components.AppBar
@@ -58,17 +61,26 @@ fun ListDetailPage(
         Column(
             modifier = modifier.padding(paddingValues).then(Modifier.padding(top = 32.dp, start = 16.dp))
         ) {
-            Text(
-                modifier = Modifier.clickable(onClick = {navigateToUpdateListPage(listDetailViewModel.listId)}),
-                text = uiState.value.name,
-                style = MaterialTheme.typography.titleLarge,
-                color = MaterialTheme.colorScheme.primary)
-            if(uiState.value.store != null){
-                Text(
-                    modifier = Modifier.clickable(onClick = {navigateToUpdateListPage(listDetailViewModel.listId)}),
-                    text = uiState.value.store!!.name,
-                    style = MaterialTheme.typography.titleSmall,
-                    color = MaterialTheme.colorScheme.primary)
+            Row(
+                modifier = Modifier.fillMaxWidth().padding(end=8.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ){
+                Column {
+                    Text(
+                        modifier = Modifier.clickable(onClick = {navigateToUpdateListPage(listDetailViewModel.listId)}),
+                        text = uiState.value.name,
+                        style = MaterialTheme.typography.titleLarge,
+                        color = MaterialTheme.colorScheme.primary)
+                    if(uiState.value.store != null){
+                        Text(
+                            modifier = Modifier.clickable(onClick = {navigateToUpdateListPage(listDetailViewModel.listId)}),
+                            text = uiState.value.store!!.name,
+                            style = MaterialTheme.typography.titleSmall,
+                            color = MaterialTheme.colorScheme.primary)
+                    }
+                }
+                FilterMenu(onFilterSelect = {})
             }
 //            LazyColumn(
 //                modifier = Modifier.padding(end = 16.dp, top = 16.dp)
@@ -362,6 +374,40 @@ fun DragDropItemList(
     }
 }
 
+@Composable
+fun FilterMenu(
+    modifier: Modifier = Modifier,
+    onFilterSelect: (filterName: String) -> Unit,
+){
+    var expanded by remember { mutableStateOf(false) }
+    Column{
+        IconButton(onClick = { expanded = true }){
+            Icon(painter = painterResource(R.drawable.filter_alt_24px),
+                contentDescription = "Filter List Icon", tint = MaterialTheme.colorScheme.onSurface
+            )
+        }
+        DropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false },
+        ){
+            DropdownMenuItem(
+                text = {Text("Category")},
+                onClick = {
+                    onFilterSelect("CATEGORY")
+                    expanded = false
+                }
+            )
+            DropdownMenuItem(
+                text = {Text("None")},
+                onClick = {
+                    onFilterSelect("NONE")
+                    expanded = false
+                }
+            )
+        }
+    }
+}
+
 @Preview(
     uiMode = Configuration.UI_MODE_NIGHT_NO,
     name = "light mode"
@@ -372,8 +418,10 @@ fun DragDropItemList(
 )
 @Composable
 fun ListDetailPreview(){
+    val savedStateHandle = SavedStateHandle(mapOf("listId" to 1))
+    val viewModel = ListDetailViewModel(MockShoppingListRepository(), savedStateHandle)
     ShoppingListAssistantTheme {
-        AddItemSection(onSubmit =  {}, onCancel = {}, options = listOf("Apple", "Orange", "Banana"))
+        ListDetailPage(onNavigateUp = {}, navigateToUpdateListPage = {}, navigateToUpdateItemPage = {test, test2 -> }, listDetailViewModel = viewModel)
     }
 }
 
