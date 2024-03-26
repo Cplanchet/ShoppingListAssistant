@@ -112,22 +112,6 @@ fun ListDetailPage(
 //                items = items,
 //                onMove = {from, to -> listDetailViewModel.reorderList.move(from, to)}
 //            )
-            DragDropItemList(
-                items = items.value,
-                onMove = { from, to ->
-                    coroutineScope.launch {
-                         listDetailViewModel.swap(from, to)
-                    }
-                },
-                onCheckedChanged = {
-                    coroutineScope.launch{
-                        listDetailViewModel.updateListItem(it)
-                    }
-                },
-                onEditButtonPressed = {
-                    navigateToUpdateItemPage(listDetailViewModel.listId, it)
-                }
-            )
             if(addItem){
                 AddItemSection(
                     onSubmit = {
@@ -144,7 +128,7 @@ fun ListDetailPage(
                             }
                         }
                         addItem = false
-                   },
+                    },
                     onCancel = {addItem = false},
                     options = itemsState.value.items.map { it.name }.filter { item -> listDetailViewModel.listUIState.value.items.find{added -> added.item.name == item} == null}
                 )
@@ -153,6 +137,22 @@ fun ListDetailPage(
                     Text(text = stringResource(R.string.list_detail_button_label))
                 }
             }
+            DragDropItemList(
+                items = items.value,
+                onMove = { from, to ->
+                    coroutineScope.launch {
+                         listDetailViewModel.swap(from, to)
+                    }
+                },
+                onCheckedChanged = {
+                    coroutineScope.launch{
+                        listDetailViewModel.updateListItem(it)
+                    }
+                },
+                onEditButtonPressed = {
+                    navigateToUpdateItemPage(listDetailViewModel.listId, it)
+                }
+            )
 
             if(itemToDelete != null){
                 DeleteDialog(
