@@ -10,14 +10,16 @@ import kotlinx.coroutines.Job
 @Composable
 fun rememberDragDropListState(
     lazyListState: LazyListState = rememberLazyListState(),
-    onMove: (Int, Int) -> Unit
+    onMove: (Int, Int) -> Unit,
+    onStop: () -> Unit
 ): DragDropListState {
-    return remember { DragDropListState(lazyListState = lazyListState, onMove = onMove) }
+    return remember { DragDropListState(lazyListState = lazyListState, onMove = onMove, onStop = onStop) }
 }
 
 class DragDropListState(
     val lazyListState: LazyListState,
-    private val onMove: (Int, Int) -> Unit
+    private val onMove: (Int, Int) -> Unit,
+    private val onStop: () -> Unit
 ) {
     var draggedDistance by mutableStateOf(0f)
     var initiallyDraggedElement by mutableStateOf<LazyListItemInfo?>(null)
@@ -57,6 +59,7 @@ class DragDropListState(
         currentIndexOfDraggedItem = null
         initiallyDraggedElement = null
         overScrollJob?.cancel()
+        onStop()
     }
 
     fun onDrag(offset: Offset) {

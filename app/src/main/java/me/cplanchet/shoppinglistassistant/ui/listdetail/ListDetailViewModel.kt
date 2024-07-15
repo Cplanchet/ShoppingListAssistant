@@ -85,11 +85,16 @@ class ListDetailViewModel(
         }
     }
 
-    suspend fun swap(from: Int, to: Int){
-        viewModelScope.launch{
-            listRepository.swapListItems(listItems.value.get(from), listItems.value.get(to), listId)
-        }
+    fun swap(from: Int, to: Int){
         listItems.value.move(from, to);
+    }
+
+    suspend fun saveItemOrder(){
+        viewModelScope.launch {
+            listItems.value.forEach { item ->
+                updateListItem(item.copy(order = listItems.value.indexOf(item) + 1))
+            }
+        }
     }
 
     private fun refreshItemNames(){

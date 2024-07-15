@@ -26,7 +26,6 @@ interface ShoppingListRepository{
     fun getAllListItems(listId: Int): Flow<List<ListItemDto>>
     fun getListItemById(listId: Int, itemId: Int): Flow<ListItemDto>
     suspend fun updateListItem(item: ListItemDto, listId: Int)
-    suspend fun swapListItems(from: ListItemDto, to: ListItemDto, listId: Int)
 
     fun getAllCategories(): Flow<List<CategoryDto>>
     fun getCategoryById(id: Int): Flow<CategoryDto>

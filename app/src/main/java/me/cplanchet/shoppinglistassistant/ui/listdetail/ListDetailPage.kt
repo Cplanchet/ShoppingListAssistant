@@ -151,6 +151,11 @@ fun ListDetailPage(
                 },
                 onEditButtonPressed = {
                     navigateToUpdateItemPage(listDetailViewModel.listId, it)
+                },
+                onStop = {
+                    coroutineScope.launch {
+                        listDetailViewModel.saveItemOrder()
+                    }
                 }
             )
 
@@ -306,13 +311,14 @@ fun DeleteDialog(
 fun DragDropItemList(
     items: List<ListItemDto>,
     onMove: (Int, Int) -> Unit,
+    onStop: () -> Unit,
     modifier: Modifier = Modifier,
     onCheckedChanged: (ListItemDto) -> Unit,
     onEditButtonPressed: (itemId: Int) -> Unit
 ) {
     val scope = rememberCoroutineScope()
     var overScrollJob by remember { mutableStateOf<Job?>(null) }
-    val dragDropListState = rememberDragDropListState(onMove = onMove)
+    val dragDropListState = rememberDragDropListState(onMove = onMove, onStop = onStop)
 
     LazyColumn(
         modifier = modifier

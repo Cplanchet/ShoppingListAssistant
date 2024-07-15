@@ -26,11 +26,12 @@ import kotlinx.coroutines.launch
 fun DragDropList(
     items: List<String>,
     onMove: (Int, Int) -> Unit,
+    onStop: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val scope = rememberCoroutineScope()
     var overScrollJob by remember { mutableStateOf<Job?>(null) }
-    val dragDropListState = rememberDragDropListState(onMove = onMove)
+    val dragDropListState = rememberDragDropListState(onMove = onMove, onStop = onStop)
 
     LazyColumn(
         modifier = modifier
@@ -53,7 +54,7 @@ fun DragDropList(
                             } ?: kotlin.run { overScrollJob?.cancel() }
                     },
                     onDragStart = { offset -> dragDropListState.onDragStart(offset) },
-                    onDragEnd = { dragDropListState.onDragInterrupted() },
+                    onDragEnd = { dragDropListState.onDragInterrupted()},
                     onDragCancel = { dragDropListState.onDragInterrupted() }
                 )
             }

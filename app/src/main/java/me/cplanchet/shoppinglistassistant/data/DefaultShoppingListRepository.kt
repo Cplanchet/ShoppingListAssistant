@@ -68,11 +68,6 @@ class DefaultShoppingListRepository(private val shoppingListDao: ShoppingListDao
         listItemDao.update(ListItem(listId, item.item.id, item.amount, item.amountUnit, item.checked, item.order))
     }
 
-    override suspend fun swapListItems(from: ListItemDto, to: ListItemDto, listId: Int) {
-        listItemDao.update(to.copy(order = from.order).mapToEntity(listId))
-        listItemDao.update(from.copy(order = to.order).mapToEntity(listId))
-    }
-
     override fun getAllCategories(): Flow<List<CategoryDto>>{
         return categoryDao.getAllCategories().map { convertToCategoryDtos(it) }
     }
