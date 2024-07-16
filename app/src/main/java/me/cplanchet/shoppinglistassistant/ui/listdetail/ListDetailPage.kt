@@ -39,7 +39,6 @@ import me.cplanchet.shoppinglistassistant.ui.components.AutocompleteTextbox
 import me.cplanchet.shoppinglistassistant.ui.components.rememberDragDropListState
 import me.cplanchet.shoppinglistassistant.ui.theme.ShoppingListAssistantTheme
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ListDetailPage(
     modifier: Modifier = Modifier,
@@ -82,36 +81,6 @@ fun ListDetailPage(
                 }
                 FilterMenu(onFilterSelect = {})
             }
-//            LazyColumn(
-//                modifier = Modifier.padding(end = 16.dp, top = 16.dp)
-//            ){
-//                items(uiState.value.items) { item ->
-//                    ListItem(
-//                        modifier = Modifier.combinedClickable(
-//                            onClick = {
-//                                coroutineScope.launch{
-//                                listDetailViewModel.updateListItem(item.copy(checked = !item.checked))
-//                            } },
-//                            onLongClick = { itemToDelete = item },
-//                            onLongClickLabel = stringResource(R.string.click_item_context)
-//                        ),
-//                        listItem = item,
-//                        onCheckedChanged ={
-//                            coroutineScope.launch{
-//                                listDetailViewModel.updateListItem(item.copy(checked = it))
-//                            }
-//                        },
-//                        onEditButtonPressed = {
-//                            navigateToUpdateItemPage(listDetailViewModel.listId, it)
-//                        }
-//                    )
-//                }
-//            }
-
-//            DragDropList(
-//                items = items,
-//                onMove = {from, to -> listDetailViewModel.reorderList.move(from, to)}
-//            )
             if(addItem){
                 AddItemSection(
                     onSubmit = {
@@ -140,9 +109,7 @@ fun ListDetailPage(
             DragDropItemList(
                 items = items.value,
                 onMove = { from, to ->
-                    coroutineScope.launch {
-                         listDetailViewModel.swap(from, to)
-                    }
+                    listDetailViewModel.swap(from, to)
                 },
                 onCheckedChanged = {
                     coroutineScope.launch{
@@ -373,7 +340,7 @@ fun DragDropItemList(
                         onCheckedChanged(item.copy(checked = it))
                     },
                     onEditButtonPressed = {
-                       onEditButtonPressed(item.item.id);
+                        onEditButtonPressed(item.item.id)
                     })
             }
         }
