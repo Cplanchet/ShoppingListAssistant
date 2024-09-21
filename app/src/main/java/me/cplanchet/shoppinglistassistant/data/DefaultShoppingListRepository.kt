@@ -72,7 +72,7 @@ class DefaultShoppingListRepository(private val shoppingListDao: ShoppingListDao
         return categoryDao.getAllCategories().map { convertToCategoryDtos(it) }
     }
     override fun getCategoryById(id: Int): Flow<CategoryDto> {
-        return categoryDao.getCategoryById(id).map { convertToCategoryDto(it) }
+        return categoryDao.getCategoryById(id).map { convertToCategoryDto(it) ?: CategoryDto() }
     }
     override suspend fun insertCategory(category: CategoryDto) {
         categoryDao.insert(category.mapToEntity())
@@ -121,6 +121,7 @@ class DefaultShoppingListRepository(private val shoppingListDao: ShoppingListDao
         var categoryDto: CategoryDto?
         if(item != null){
             categoryDto = categoryDao.getCategoryById(item.categoryId ?: 0).map { convertToCategoryDto(it) }.firstOrNull()
+            println(categoryDto);
             return item.mapToDto(categoryDto)
         }
         return ItemDto()
@@ -146,11 +147,11 @@ class DefaultShoppingListRepository(private val shoppingListDao: ShoppingListDao
         return storeDtos
     }
 
-    private fun convertToCategoryDto(category: Category?): CategoryDto{
+    private fun convertToCategoryDto(category: Category?): CategoryDto?{
         if(category != null && category.id !=0){
             return category.mapToDto()
         }
-        return CategoryDto()
+        return null;
     }
     private fun convertToCategoryDtos(categories: List<Category>): List<CategoryDto>{
         var dtos: ArrayList<CategoryDto> = ArrayList()

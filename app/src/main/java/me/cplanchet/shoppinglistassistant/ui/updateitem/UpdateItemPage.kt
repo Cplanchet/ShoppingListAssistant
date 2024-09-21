@@ -5,6 +5,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -26,6 +27,7 @@ import me.cplanchet.shoppinglistassistant.ui.components.AppBar
 import me.cplanchet.shoppinglistassistant.ui.components.LinkDropDownBox
 import me.cplanchet.shoppinglistassistant.ui.state.ItemUIState
 import me.cplanchet.shoppinglistassistant.ui.state.ListItemUIState
+import me.cplanchet.shoppinglistassistant.ui.state.isValid
 import me.cplanchet.shoppinglistassistant.ui.theme.ShoppingListAssistantTheme
 
 @Composable
@@ -147,11 +149,11 @@ fun ItemView(
         Row(
             modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
+            horizontalArrangement = Arrangement.Start
         ) {
             LinkDropDownBox(
-                modifier = Modifier.padding(top = 8.dp).then(if(item.category == null) { Modifier.fillMaxWidth()} else Modifier),
-                options = listOf("Remove Category") + categoryState.categories.map { it.name },
+                modifier = Modifier.padding(top = 8.dp).then(if(item.category == null) { Modifier.fillMaxWidth()} else Modifier.width(250.dp)),
+                options = categoryState.categories.map { it.name },
                 onSelectionChanged = { onSelectionChange(it) },
                 selected = item.category?.name ?: "",
                 label = { Text(stringResource(R.string.label_category)) },
@@ -165,7 +167,15 @@ fun ItemView(
                     },
                     modifier = Modifier,
                 ){
-                    Icon(imageVector = Icons.Filled.Edit, contentDescription = "Edit Icon", modifier = Modifier.fillMaxHeight())
+                    Icon(imageVector = Icons.Filled.Edit, contentDescription = "Edit Category Icon", modifier = Modifier.fillMaxHeight().padding(top = 16.dp))
+                }
+                IconButton(
+                    onClick = {
+                       onSelectionChange("")
+                    },
+                    modifier = Modifier,
+                ){
+                    Icon(imageVector = Icons.Filled.Delete, contentDescription = "Delete Category Icon", modifier = Modifier.fillMaxHeight().padding(top = 16.dp))
                 }
             }
         }
@@ -192,7 +202,8 @@ fun ItemView(
 
             Button(
                 onClick = { onSave() },
-                modifier = Modifier.width(100.dp)
+                modifier = Modifier.width(100.dp),
+                enabled = item.isValid()
             ){
                 Text(stringResource(R.string.save))
             }
