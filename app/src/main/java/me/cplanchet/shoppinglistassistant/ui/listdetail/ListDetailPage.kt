@@ -9,6 +9,7 @@ import androidx.compose.foundation.gestures.detectDragGesturesAfterLongPress
 import androidx.compose.foundation.gestures.scrollBy
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
@@ -53,6 +54,8 @@ fun ListDetailPage(
     var addItem by remember { mutableStateOf(false)}
     val coroutineScope = rememberCoroutineScope()
     var itemToDelete by remember { mutableStateOf<ListItemDto?>(null)}
+    val sortType by remember{listDetailViewModel.sortStyle}
+    val categorizedItems by remember { listDetailViewModel.categorizedItems }
 
     Scaffold(
         topBar = {AppBar(hasBackButton = true, navigateUp = { onNavigateUp() })}
@@ -106,25 +109,42 @@ fun ListDetailPage(
                     Text(text = stringResource(R.string.list_detail_button_label))
                 }
             }
-            DragDropItemList(
-                items = items.value,
-                onMove = { from, to ->
-                    listDetailViewModel.swap(from, to)
-                },
-                onCheckedChanged = {
-                    coroutineScope.launch{
-                        listDetailViewModel.updateListItem(it)
-                    }
-                },
-                onEditButtonPressed = {
-                    navigateToUpdateItemPage(listDetailViewModel.listId, it)
-                },
-                onStop = {
-                    coroutineScope.launch {
-                        listDetailViewModel.saveItemOrder()
-                    }
+            when(sortType){
+                "Category" ->{
+                    CategorizedList(
+                        categorizedItems,
+                        onCheckedChanged = {
+                            coroutineScope.launch{
+                                listDetailViewModel.updateListItem(it)
+                            }
+                        },
+                        onEditButtonPressed = {
+                            navigateToUpdateItemPage(listDetailViewModel.listId, it)
+                        },
+                    )
                 }
-            )
+                else -> {
+                    DragDropItemList(
+                        items = items.value,
+                        onMove = { from, to ->
+                            listDetailViewModel.swap(from, to)
+                        },
+                        onCheckedChanged = {
+                            coroutineScope.launch{
+                                listDetailViewModel.updateListItem(it)
+                            }
+                        },
+                        onEditButtonPressed = {
+                            navigateToUpdateItemPage(listDetailViewModel.listId, it)
+                        },
+                        onStop = {
+                            coroutineScope.launch {
+                                listDetailViewModel.saveItemOrder()
+                            }
+                        }
+                    )
+                }
+            }
 
             if(itemToDelete != null){
                 DeleteDialog(
@@ -377,6 +397,45 @@ fun FilterMenu(
                     expanded = false
                 }
             )
+        }
+    }
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun CategorizedList(
+    lists: Map<String, List<ListItemDto>>,
+    onCheckedChanged: (checked: ListItemDto) -> Unit,
+    onEditButtonPressed: (itemId: Int) -> Unit,
+    modifier: Modifier = Modifier
+
+){
+    for (list in lists) {
+        Text(
+            text = if(list.key != "") list.key else "Uncategorized",
+            style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.secondary
+        )
+        LazyColumn{
+            items(list.value){item ->
+                Column(
+                    modifier = Modifier
+                ) {
+                    ListItem(
+                        modifier = Modifier.combinedClickable(
+                            onClick = {
+                                onCheckedChanged(item.copy(checked = !item.checked))
+                            }
+                        ),
+                        listItem = item,
+                        onCheckedChanged ={
+                            onCheckedChanged(item.copy(checked = it))
+                        },
+                        onEditButtonPressed = {
+                            onEditButtonPressed(item.item.id)
+                        })
+                }
+            }
         }
     }
 }

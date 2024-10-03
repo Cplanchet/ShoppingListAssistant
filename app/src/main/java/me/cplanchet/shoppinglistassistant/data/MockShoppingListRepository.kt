@@ -9,11 +9,12 @@ class MockShoppingListRepository : ShoppingListRepository{
     val store2 = StoreDto(2, "Store 2", listOf(), listOf())
 
     val category = CategoryDto(1, "cat 1")
+    val category2 = CategoryDto(1, "cat 2")
 
     val item1 = ItemDto(1, "item1", category)
-    val item2 = ItemDto(2, "item2", category)
+    val item2 = ItemDto(2, "item2", category2)
     val item3 = ItemDto(3, "item3", category)
-    val item4 = ItemDto(4, "item4", category)
+    val item4 = ItemDto(4, "item4", category2)
 
     val listItems = listOf(
         ListItemDto(item1, 1f, "count", true, 1),
