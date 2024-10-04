@@ -45,9 +45,8 @@ class ListDetailViewModelTest {
             on { getAllItems() } doReturn flowOf(DaoMockData.allItemDtos)
             on { getListById(1) } doReturn flowOf(DaoMockData.shoppingList1Dto)
             on { getAllListItems(1) } doReturn flowOf(DaoMockData.allListItemDtosList1)
-            onBlocking { updateListItem(any<ListItemDto>(), any<Int>()) } doReturn(Unit)
-            underTest = ListDetailViewModel(shoppingListRepository, savedStateHandle)
         }
+        underTest = ListDetailViewModel(shoppingListRepository, savedStateHandle)
     }
         @Test
         fun itemsUIState_initializedByRepo() = runTest {
@@ -152,5 +151,18 @@ class ListDetailViewModelTest {
         fun saveItemOrder_callsRepoToSaveNewOrder() = runTest {
             underTest.saveItemOrder()
             verify(shoppingListRepository, times(underTest.listItems.value.size)).updateListItem(any(), any())
+        }
+
+        @Test
+        fun categorizedList_initializedByRepo() = runTest {
+            val expected = DaoMockData.categorizedList
+
+            val collect = launch(UnconfinedTestDispatcher(testScheduler)) {
+                underTest.listItems.collect {
+                }
+            }
+
+            assertEquals(expected, underTest.categorizedItems.value)
+            collect.cancel()
         }
 }

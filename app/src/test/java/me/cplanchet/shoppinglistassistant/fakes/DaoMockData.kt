@@ -57,4 +57,9 @@ object DaoMockData {
     val shoppingList2Dto = ShoppingListDto(2, "list2", allListItemDtosList2, store1Dto)
 
     val allListDtos = listOf(shoppingList1Dto, shoppingList2Dto)
+
+    val categorizedList: MutableMap<String, MutableList<ListItemDto>> = mutableMapOf(
+        "" to mutableListOf(listItem1Dto),
+        "category1" to mutableListOf(listItem2Dto)
+    )
 }
