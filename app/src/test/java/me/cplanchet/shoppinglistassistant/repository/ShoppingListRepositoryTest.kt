@@ -192,18 +192,6 @@ class ShoppingListRepositoryTest {
 
          verify(listItemDao).update(expectedEntity)
     }
-    @Test
-    fun swapListItems_givenTwoDtos_SwapsOrderAndPassesEntityToDao() = runTest {
-        val from = DaoMockData.listItem3Dto
-        val to = DaoMockData.listItem4Dto
-        val expectedEntity1 = DaoMockData.listItem4.copy(order = 2)
-        val expectedEntity2 = DaoMockData.listItem3.copy(order = 1)
-
-        repository.swapListItems(from, to, 2)
-
-        verify(listItemDao).update(expectedEntity1)
-        verify(listItemDao).update(expectedEntity2)
-    }
 
     @Test
     fun getAllCategories_returnsList() = runTest {

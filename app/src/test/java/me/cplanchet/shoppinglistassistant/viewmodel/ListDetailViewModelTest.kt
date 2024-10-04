@@ -24,9 +24,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.junit.MockitoJUnitRunner
-import org.mockito.kotlin.doReturn
-import org.mockito.kotlin.mock
-import org.mockito.kotlin.verify
+import org.mockito.kotlin.*
 
 @RunWith(MockitoJUnitRunner::class)
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -41,112 +39,118 @@ class ListDetailViewModelTest {
 
 
     @Before
-    fun setup(){
+    fun setup() {
         savedStateHandle = SavedStateHandle(mapOf("listId" to 1))
-        shoppingListRepository = mock<ShoppingListRepository>{
-            on{ getAllItems() } doReturn flowOf(DaoMockData.allItemDtos)
-            on{ getListById(1) } doReturn flowOf(DaoMockData.shoppingList1Dto)
-            on { getAllListItems(1)} doReturn flowOf(DaoMockData.allListItemDtosList1)
+        shoppingListRepository = mock<ShoppingListRepository> {
+            on { getAllItems() } doReturn flowOf(DaoMockData.allItemDtos)
+            on { getListById(1) } doReturn flowOf(DaoMockData.shoppingList1Dto)
+            on { getAllListItems(1) } doReturn flowOf(DaoMockData.allListItemDtosList1)
+            onBlocking { updateListItem(any<ListItemDto>(), any<Int>()) } doReturn(Unit)
+            underTest = ListDetailViewModel(shoppingListRepository, savedStateHandle)
         }
-        underTest = ListDetailViewModel(shoppingListRepository, savedStateHandle)
     }
-    @Test
-    fun itemsUIState_initializedByRepo() = runTest {
-        val expectedItemList = DaoMockData.allItemDtos
-        val expected = ListDetailUIState(expectedItemList.toMutableStateList())
+        @Test
+        fun itemsUIState_initializedByRepo() = runTest {
+            val expectedItemList = DaoMockData.allItemDtos
+            val expected = ListDetailUIState(expectedItemList.toMutableStateList())
 
-        val collect = launch(UnconfinedTestDispatcher(testScheduler)){
-            underTest.itemsUIState.collect{
+            val collect = launch(UnconfinedTestDispatcher(testScheduler)) {
+                underTest.itemsUIState.collect {
+                }
             }
+
+            assertEquals(expected.items.size, underTest.itemsUIState.value.items.size)
+            collect.cancel()
         }
 
-        assertEquals(expected.items.size, underTest.itemsUIState.value.items.size)
-        collect.cancel()
-    }
+        @Test
+        fun listUiState_initializedByRepo() = runTest {
+            val expectedList = DaoMockData.shoppingList1Dto
+            val expected = expectedList.toListUIState()
 
-    @Test
-    fun listUiState_initializedByRepo() = runTest {
-        val expectedList = DaoMockData.shoppingList1Dto
-        val expected = expectedList.toListUIState()
+            val collect = launch(UnconfinedTestDispatcher(testScheduler)) {
+                underTest.listUIState.collect()
+            }
 
-        val collect = launch(UnconfinedTestDispatcher(testScheduler)){
-            underTest.listUIState.collect()
+            assertEquals(expected, underTest.listUIState.value)
+            collect.cancel()
         }
 
-        assertEquals(expected, underTest.listUIState.value)
-        collect.cancel()
-    }
+        @Test
+        fun listId_isSetBySavedStateHandle() {
+            val expected = 1;
 
-    @Test
-    fun listId_isSetBySavedStateHandle(){
-        val expected = 1;
-
-        assertEquals(expected, underTest.listId)
-    }
-
-    @Test
-    fun addItemToList_givenAnItemDto_callsRepoAndSetsOrderAndDefaultValues() = runTest {
-        val toAdd = ItemDto(10, "New Item")
-        val expected = ListItemDto(toAdd, 1f, "count", false, 3)
-
-        underTest.addItemToList(toAdd)
-
-        verify(shoppingListRepository).addListItem(expected, 1)
-    }
-
-    @Test
-    fun addItemToList_givenAnItemDtoForEmptyList_callsRepoAndSetsOrderToOne() = runTest{
-        shoppingListRepository = mock<ShoppingListRepository>{
-            on{ getAllItems() } doReturn flowOf(DaoMockData.allItemDtos)
-            on{ getListById(1) } doReturn flowOf(ShoppingListDto(1, "emptyList", listOf(), null))
-            on { getAllListItems(1)} doReturn flowOf(listOf())
+            assertEquals(expected, underTest.listId)
         }
-        val alternate = ListDetailViewModel(shoppingListRepository, savedStateHandle)
-        val toAdd = ItemDto(10, "New Item")
-        val expected = ListItemDto(toAdd, 1f, "count", false, 1)
 
-        alternate.addItemToList(toAdd)
+        @Test
+        fun addItemToList_givenAnItemDto_callsRepoAndSetsOrderAndDefaultValues() = runTest {
+            val toAdd = ItemDto(10, "New Item")
+            val expected = ListItemDto(toAdd, 1f, "count", false, 3)
 
-        verify(shoppingListRepository).addListItem(expected, 1)
-    }
+            underTest.addItemToList(toAdd)
 
-    @Test
-    fun createItem_givenAName_createsAnItemDtoWithName() = runTest {
-        val expected = ItemDto(0, "testName", null)
-        val toCreateName = "testName"
+            verify(shoppingListRepository).addListItem(expected, 1)
+        }
 
-        underTest.createItem(toCreateName)
+        @Test
+        fun addItemToList_givenAnItemDtoForEmptyList_callsRepoAndSetsOrderToOne() = runTest {
+            shoppingListRepository = mock<ShoppingListRepository> {
+                on { getAllItems() } doReturn flowOf(DaoMockData.allItemDtos)
+                on { getListById(1) } doReturn flowOf(ShoppingListDto(1, "emptyList", listOf(), null))
+                on { getAllListItems(1) } doReturn flowOf(listOf())
+            }
+            val alternate = ListDetailViewModel(shoppingListRepository, savedStateHandle)
+            val toAdd = ItemDto(10, "New Item")
+            val expected = ListItemDto(toAdd, 1f, "count", false, 1)
 
-        verify(shoppingListRepository).insertItem(expected)
-    }
+            alternate.addItemToList(toAdd)
 
-    @Test
-    fun updateListItem_givenNewListItemDto_callsRepoToUpdateItem() = runTest {
-        val toUpdate = ListItemDto(ItemDto(1, "newName"), 12f, "pounds",true, 3)
+            verify(shoppingListRepository).addListItem(expected, 1)
+        }
 
-        underTest.updateListItem(toUpdate)
+        @Test
+        fun createItem_givenAName_createsAnItemDtoWithName() = runTest {
+            val expected = ItemDto(0, "testName", null)
+            val toCreateName = "testName"
 
-        verify(shoppingListRepository).updateListItem(toUpdate, 1)
-    }
+            underTest.createItem(toCreateName)
 
-    @Test
-    fun deleteListItem_givenListItemDto_callsRepo() = runTest {
-        val toDelete = DaoMockData.listItem1Dto
+            verify(shoppingListRepository).insertItem(expected)
+        }
 
-        underTest.deleteListItem(toDelete)
+        @Test
+        fun updateListItem_givenNewListItemDto_callsRepoToUpdateItem() = runTest {
+            val toUpdate = ListItemDto(ItemDto(1, "newName"), 12f, "pounds", true, 3)
 
-        verify(shoppingListRepository).deleteListItem(toDelete, 1)
-    }
+            underTest.updateListItem(toUpdate)
 
-    @Test
-    fun swap_givenTwoIndexes_callsRepoAndSwapsItemsInList() = runTest{
-        val from = 1
-        val to = 0
-        val expected = mutableListOf(DaoMockData.listItem2Dto, DaoMockData.listItem1Dto)
+            verify(shoppingListRepository).updateListItem(toUpdate, 1)
+        }
 
-        underTest.swap(from, to)
+        @Test
+        fun deleteListItem_givenListItemDto_callsRepo() = runTest {
+            val toDelete = DaoMockData.listItem1Dto
 
-        verify(shoppingListRepository).swapListItems(DaoMockData.listItem2Dto, DaoMockData.listItem1Dto, 1)
-        assertEquals(expected, underTest.listItems.value)
-    }
+            underTest.deleteListItem(toDelete)
+
+            verify(shoppingListRepository).deleteListItem(toDelete, 1)
+        }
+
+        @Test
+        fun swap_givenTwoIndexes_changesOrderOfMutableList() = runTest {
+            val from = 1
+            val to = 0
+            val expected = mutableListOf(DaoMockData.listItem2Dto, DaoMockData.listItem1Dto)
+
+            underTest.swap(from, to)
+
+            assertEquals(underTest.listItems.value.toList(), expected)
+        }
+
+        @Test
+        fun saveItemOrder_callsRepoToSaveNewOrder() = runTest {
+            underTest.saveItemOrder()
+            verify(shoppingListRepository, times(underTest.listItems.value.size)).updateListItem(any(), any())
+        }
 }

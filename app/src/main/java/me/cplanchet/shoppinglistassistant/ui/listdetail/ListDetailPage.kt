@@ -54,7 +54,7 @@ fun ListDetailPage(
     var addItem by remember { mutableStateOf(false)}
     val coroutineScope = rememberCoroutineScope()
     var itemToDelete by remember { mutableStateOf<ListItemDto?>(null)}
-    val sortType by remember{listDetailViewModel.sortStyle}
+    var sortType by remember{listDetailViewModel.sortStyle}
     val categorizedItems by remember { listDetailViewModel.categorizedItems }
 
     Scaffold(
@@ -82,7 +82,7 @@ fun ListDetailPage(
                             color = MaterialTheme.colorScheme.primary)
                     }
                 }
-                FilterMenu(onFilterSelect = {})
+                FilterMenu(onFilterSelect = {sortType = it})
             }
             if(addItem){
                 AddItemSection(
@@ -110,7 +110,7 @@ fun ListDetailPage(
                 }
             }
             when(sortType){
-                "Category" ->{
+                FilterType.CATEGORY ->{
                     CategorizedList(
                         categorizedItems,
                         onCheckedChanged = {
@@ -370,7 +370,7 @@ fun DragDropItemList(
 @Composable
 fun FilterMenu(
     modifier: Modifier = Modifier,
-    onFilterSelect: (filterName: String) -> Unit,
+    onFilterSelect: (filterName: FilterType) -> Unit,
 ){
     var expanded by remember { mutableStateOf(false) }
     Column{
@@ -386,14 +386,14 @@ fun FilterMenu(
             DropdownMenuItem(
                 text = {Text("Category")},
                 onClick = {
-                    onFilterSelect("CATEGORY")
+                    onFilterSelect(FilterType.CATEGORY)
                     expanded = false
                 }
             )
             DropdownMenuItem(
-                text = {Text("None")},
+                text = {Text("Custom order")},
                 onClick = {
-                    onFilterSelect("NONE")
+                    onFilterSelect(FilterType.CUSTOM)
                     expanded = false
                 }
             )

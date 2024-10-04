@@ -25,7 +25,7 @@ class ListDetailViewModel(
     val listId: Int = checkNotNull(savedStateHandle[ListDetailDestination.listIdArg])
     var itemToAdd by mutableStateOf("")
     var listUIState:StateFlow<ListUIState> = _listUIState
-    var sortStyle = mutableStateOf("Category")
+    var sortStyle = mutableStateOf(FilterType.CUSTOM)
     val itemsUIState = listRepository.getAllItems().map{
         ListDetailUIState(it.toMutableStateList())
     }.stateIn(
