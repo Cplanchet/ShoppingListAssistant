@@ -24,6 +24,7 @@ import me.cplanchet.shoppinglistassistant.data.MockShoppingListRepository
 import me.cplanchet.shoppinglistassistant.data.dtos.CategoryDto
 import me.cplanchet.shoppinglistassistant.ui.AppViewModelProvider
 import me.cplanchet.shoppinglistassistant.ui.components.AppBar
+import me.cplanchet.shoppinglistassistant.ui.components.DeleteDialog
 import me.cplanchet.shoppinglistassistant.ui.components.LinkDropDownBox
 import me.cplanchet.shoppinglistassistant.ui.state.ItemUIState
 import me.cplanchet.shoppinglistassistant.ui.state.ListItemUIState
@@ -47,6 +48,7 @@ fun UpdateItemPage(
         var view by remember { mutableStateOf(0) }
         val tabNames = listOf("List", "Item")
         val coroutineScope = rememberCoroutineScope()
+        var deleteDialogOpen by remember { mutableStateOf(false) }
 
         Column(
             modifier = Modifier.padding(it)
@@ -83,6 +85,22 @@ fun UpdateItemPage(
                         listItem = viewModel.listItemUIState
                     )
                 } else {
+                    if (deleteDialogOpen) {
+                        DeleteDialog(
+                            textString = R.string.update_item_delete_dialog_message,
+                            titleString = R.string.update_item_delete_dialog_title,
+                            onDismiss = {
+                                deleteDialogOpen = false
+                            },
+                            onConfirm = {
+                                coroutineScope.launch {
+                                    viewModel.deleteItem()
+                                    navigateBack()
+                                    deleteDialogOpen = false
+                                }
+                            }
+                        )
+                    }
                     ItemView(
                         item = viewModel.itemUIState,
                         categoryState = vm,
@@ -91,10 +109,7 @@ fun UpdateItemPage(
                             viewModel.updateItemUIState(viewModel.itemUIState.copy(category = vm.categories.firstOrNull { category -> category.name == it }))
                         },
                         onDelete = {
-                            coroutineScope.launch {
-                                navigateBack()
-                                viewModel.deleteItem()
-                            }
+                            deleteDialogOpen = true
                         },
                         onCancel = { navigateBack() },
                         onSave = {

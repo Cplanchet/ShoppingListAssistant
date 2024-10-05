@@ -33,4 +33,6 @@
     <string name="update_category_delete_dialog_content">Are you sure you want to delete this category?</string>
     <string name="dismiss">dismiss</string>
     <string name="confirm">Confirm</string>
+    <string name="update_item_delete_dialog_message">This Item will be deleted and removed from all lists.</string>
+    <string name="update_item_delete_dialog_title">Delete Item</string>
 </resources>
