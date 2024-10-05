@@ -5,7 +5,7 @@ import kotlinx.coroutines.flow.flow
 import me.cplanchet.shoppinglistassistant.data.daos.ShoppingListDao
 import me.cplanchet.shoppinglistassistant.data.entities.ShoppingList
 
-class FakeShoppingListDao: ShoppingListDao {
+class FakeShoppingListDao : ShoppingListDao {
     override suspend fun insert(shoppingList: ShoppingList) {
         println(shoppingList)
     }
@@ -18,9 +18,9 @@ class FakeShoppingListDao: ShoppingListDao {
 
     override fun getShoppingListById(id: Int): Flow<ShoppingList> {
         return flow {
-            when(id) {
-                1 -> emit(DaoMockData.shoppingList1);
-                2 -> emit(DaoMockData.shoppingList2);
+            when (id) {
+                1 -> emit(DaoMockData.shoppingList1)
+                2 -> emit(DaoMockData.shoppingList2)
                 else -> {}
             }
         }

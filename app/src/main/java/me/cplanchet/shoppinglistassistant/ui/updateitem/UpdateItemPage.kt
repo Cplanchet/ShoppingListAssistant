@@ -38,7 +38,7 @@ fun UpdateItemPage(
     navigateToCategoryCreatePage: () -> Unit,
     navigateToUpdateCategoryPage: (categoryId: Int) -> Unit,
     viewModel: UpdateItemViewModel = viewModel(factory = AppViewModelProvider.Factory)
-){
+) {
     val vm by viewModel.categoryUIState.collectAsState()
     Scaffold(
         modifier = modifier,
@@ -51,55 +51,54 @@ fun UpdateItemPage(
         Column(
             modifier = Modifier.padding(it)
         ) {
-            TabRow(selectedTabIndex = view){
+            TabRow(selectedTabIndex = view) {
                 tabNames.forEachIndexed { index, title ->
                     Tab(
                         selected = view == index,
-                        onClick = {view = index},
-                        text = { Text(text = title, maxLines = 2, overflow = TextOverflow.Ellipsis)}
+                        onClick = { view = index },
+                        text = { Text(text = title, maxLines = 2, overflow = TextOverflow.Ellipsis) }
                     )
                 }
             }
             Column(
-                modifier.fillMaxWidth().padding(top= 32.dp),
+                modifier.fillMaxWidth().padding(top = 32.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                if(view == 0){
+                if (view == 0) {
                     ListItemView(
-                        onValueChange = {listItem -> viewModel.updateListItemUIState(listItem) },
-                        onCancel = {navigateBack()},
+                        onValueChange = { listItem -> viewModel.updateListItemUIState(listItem) },
+                        onCancel = { navigateBack() },
                         onSave = {
-                             coroutineScope.launch {
-                                 viewModel.saveListItem()
-                                 navigateBack()
-                             }
+                            coroutineScope.launch {
+                                viewModel.saveListItem()
+                                navigateBack()
+                            }
                         },
                         onDelete = {
-                           coroutineScope.launch{
-                               navigateBack()
-                               viewModel.removeListItem()
-                           }
+                            coroutineScope.launch {
+                                navigateBack()
+                                viewModel.removeListItem()
+                            }
                         },
                         listItem = viewModel.listItemUIState
                     )
-                }
-                else{
+                } else {
                     ItemView(
                         item = viewModel.itemUIState,
                         categoryState = vm,
-                        onValueChange = { newItem -> viewModel.updateItemUIState(newItem)},
+                        onValueChange = { newItem -> viewModel.updateItemUIState(newItem) },
                         onSelectionChange = {
-                            viewModel.updateItemUIState(viewModel.itemUIState.copy(category = vm.categories.firstOrNull{category -> category.name == it}))
+                            viewModel.updateItemUIState(viewModel.itemUIState.copy(category = vm.categories.firstOrNull { category -> category.name == it }))
                         },
                         onDelete = {
-                           coroutineScope.launch{
-                               navigateBack()
-                               viewModel.deleteItem()
-                           }
+                            coroutineScope.launch {
+                                navigateBack()
+                                viewModel.deleteItem()
+                            }
                         },
                         onCancel = { navigateBack() },
                         onSave = {
-                            coroutineScope.launch{
+                            coroutineScope.launch {
                                 viewModel.saveItem()
                                 navigateBack()
                             }
@@ -122,19 +121,19 @@ fun ItemView(
     modifier: Modifier = Modifier,
     item: ItemUIState,
     categoryState: UpdateItemUIState,
-    onValueChange: (item:ItemUIState) -> Unit,
+    onValueChange: (item: ItemUIState) -> Unit,
     onSelectionChange: (selection: String) -> Unit,
     onCreateCategory: () -> Unit,
     onEditCategory: (CategoryDto) -> Unit,
     onSave: () -> Unit,
     onCancel: () -> Unit,
     onDelete: () -> Unit
-){
+) {
     Column(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier.fillMaxWidth(.8f)
-    ){
+    ) {
         Text(
             text = stringResource(R.string.edit_item_view_title),
             color = MaterialTheme.colorScheme.primary,
@@ -143,8 +142,8 @@ fun ItemView(
         OutlinedTextField(
             modifier = Modifier.padding(top = 16.dp).fillMaxWidth(),
             value = item.name,
-            onValueChange = {onValueChange(item.copy(name = it))},
-            label = {Text(stringResource(R.string.label_name))}
+            onValueChange = { onValueChange(item.copy(name = it)) },
+            label = { Text(stringResource(R.string.label_name)) }
         )
         Row(
             modifier.fillMaxWidth(),
@@ -152,7 +151,11 @@ fun ItemView(
             horizontalArrangement = Arrangement.Start
         ) {
             LinkDropDownBox(
-                modifier = Modifier.padding(top = 8.dp).then(if(item.category == null) { Modifier.fillMaxWidth()} else Modifier.width(250.dp)),
+                modifier = Modifier.padding(top = 8.dp).then(
+                    if (item.category == null) {
+                        Modifier.fillMaxWidth()
+                    } else Modifier.width(250.dp)
+                ),
                 options = categoryState.categories.map { it.name },
                 onSelectionChanged = { onSelectionChange(it) },
                 selected = item.category?.name ?: "",
@@ -160,22 +163,30 @@ fun ItemView(
                 linkText = stringResource(R.string.create_category_link),
                 onLinkSelected = { onCreateCategory() }
             )
-            if(item.category != null){
+            if (item.category != null) {
                 IconButton(
                     onClick = {
                         onEditCategory(item.category)
                     },
                     modifier = Modifier,
-                ){
-                    Icon(imageVector = Icons.Filled.Edit, contentDescription = "Edit Category Icon", modifier = Modifier.fillMaxHeight().padding(top = 16.dp))
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.Edit,
+                        contentDescription = "Edit Category Icon",
+                        modifier = Modifier.fillMaxHeight().padding(top = 16.dp)
+                    )
                 }
                 IconButton(
                     onClick = {
-                       onSelectionChange("")
+                        onSelectionChange("")
                     },
                     modifier = Modifier,
-                ){
-                    Icon(imageVector = Icons.Filled.Delete, contentDescription = "Delete Category Icon", modifier = Modifier.fillMaxHeight().padding(top = 16.dp))
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.Delete,
+                        contentDescription = "Delete Category Icon",
+                        modifier = Modifier.fillMaxHeight().padding(top = 16.dp)
+                    )
                 }
             }
         }
@@ -183,20 +194,21 @@ fun ItemView(
             onClick = { onDelete() },
             colors = ButtonDefaults.buttonColors(
                 contentColor = MaterialTheme.colorScheme.onError,
-                containerColor = MaterialTheme.colorScheme.error),
+                containerColor = MaterialTheme.colorScheme.error
+            ),
             modifier = Modifier.padding(top = 16.dp)
-        ){
+        ) {
             Text(stringResource(R.string.label_delete_item))
         }
         Row(
             modifier = Modifier.padding(top = 8.dp).fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween
-        ){
+        ) {
             OutlinedButton(
                 onClick = { onCancel() },
                 modifier = Modifier.width(100.dp),
                 border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary)
-            ){
+            ) {
                 Text(stringResource(R.string.cancel))
             }
 
@@ -204,7 +216,7 @@ fun ItemView(
                 onClick = { onSave() },
                 modifier = Modifier.width(100.dp),
                 enabled = item.isValid()
-            ){
+            ) {
                 Text(stringResource(R.string.save))
             }
         }
@@ -219,7 +231,7 @@ fun ListItemView(
     onCancel: () -> Unit,
     onSave: () -> Unit,
     onDelete: () -> Unit
-){
+) {
     Column(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -233,17 +245,17 @@ fun ListItemView(
         Row(
             horizontalArrangement = Arrangement.Center,
             modifier = Modifier.fillMaxWidth().padding(top = 16.dp)
-        ){
+        ) {
             OutlinedTextField(
                 onValueChange = { onValueChange(listItem.copy(amount = it.toFloat())) },
-                label = {Text(stringResource(R.string.label_list_item_amount))},
+                label = { Text(stringResource(R.string.label_list_item_amount)) },
                 value = listItem.amount.toString(),
                 modifier = Modifier.width(100.dp),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
             )
             OutlinedTextField(
                 onValueChange = { onValueChange(listItem.copy(amountUnit = it)) },
-                label = {Text(stringResource(R.string.label_list_item_unit))},
+                label = { Text(stringResource(R.string.label_list_item_unit)) },
                 value = listItem.amountUnit
             )
         }
@@ -251,27 +263,28 @@ fun ListItemView(
             onClick = { onDelete() },
             colors = ButtonDefaults.buttonColors(
                 contentColor = MaterialTheme.colorScheme.onError,
-                containerColor = MaterialTheme.colorScheme.error),
+                containerColor = MaterialTheme.colorScheme.error
+            ),
             modifier = Modifier.padding(top = 16.dp)
-        ){
+        ) {
             Text(stringResource(R.string.label_remove_item))
         }
         Row(
             modifier = Modifier.padding(top = 8.dp).fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween
-        ){
+        ) {
             OutlinedButton(
                 onClick = { onCancel() },
                 modifier = Modifier.width(100.dp),
                 border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary)
-            ){
+            ) {
                 Text(stringResource(R.string.cancel))
             }
 
             Button(
                 onClick = { onSave() },
                 modifier = Modifier.width(100.dp)
-            ){
+            ) {
                 Text(stringResource(R.string.save))
             }
         }
@@ -287,8 +300,13 @@ fun ListItemView(
     name = "dark mode"
 )
 @Composable
-fun UpdateItemPagePreview(){
+fun UpdateItemPagePreview() {
     ShoppingListAssistantTheme {
-        UpdateItemPage(onNavigateUp = {}, viewModel = UpdateItemViewModel(MockShoppingListRepository(), SavedStateHandle()), navigateBack = {}, navigateToCategoryCreatePage = {}, navigateToUpdateCategoryPage = {})
+        UpdateItemPage(
+            onNavigateUp = {},
+            viewModel = UpdateItemViewModel(MockShoppingListRepository(), SavedStateHandle()),
+            navigateBack = {},
+            navigateToCategoryCreatePage = {},
+            navigateToUpdateCategoryPage = {})
     }
 }

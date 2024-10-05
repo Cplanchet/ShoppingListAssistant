@@ -15,7 +15,7 @@ import me.cplanchet.shoppinglistassistant.ui.state.*
 class UpdateItemViewModel(
     private val repository: ShoppingListRepository,
     savedStateHandle: SavedStateHandle
-): ViewModel(){
+) : ViewModel() {
     private val listId: Int = checkNotNull(savedStateHandle[UpdateItemDestination.listIdArg])
     private val itemId: Int = checkNotNull(savedStateHandle[UpdateItemDestination.itemIdArg])
 
@@ -26,26 +26,31 @@ class UpdateItemViewModel(
     var categoryUIState: MutableStateFlow<UpdateItemUIState> = MutableStateFlow(UpdateItemUIState())
         private set
 
-    fun updateItemUIState(newItemUIState: ItemUIState){
+    fun updateItemUIState(newItemUIState: ItemUIState) {
         itemUIState = newItemUIState.copy()
     }
-    fun updateListItemUIState(newListItemUIState: ListItemUIState){
+
+    fun updateListItemUIState(newListItemUIState: ListItemUIState) {
         listItemUIState = newListItemUIState.copy()
     }
-    suspend fun saveItem(){
-        if(itemUIState.isValid()){
+
+    suspend fun saveItem() {
+        if (itemUIState.isValid()) {
             repository.updateItem(itemUIState.toItem())
         }
     }
-    suspend fun saveListItem(){
-        if(listItemUIState.isValid()){
+
+    suspend fun saveListItem() {
+        if (listItemUIState.isValid()) {
             repository.updateListItem(listItemUIState.toListItem(), listId)
         }
     }
-    suspend fun removeListItem(){
+
+    suspend fun removeListItem() {
         repository.deleteListItem(listItemUIState.toListItem(), listId)
     }
-    suspend fun deleteItem(){
+
+    suspend fun deleteItem() {
         repository.deleteItem(itemUIState.toItem())
     }
 
@@ -54,22 +59,22 @@ class UpdateItemViewModel(
         updateItemUIState(itemUIState.copy(category = category))
     }
 
-    init{
+    init {
         viewModelScope.launch {
-            repository.getItemById(itemId).collect{
+            repository.getItemById(itemId).collect {
                 itemUIState = it.toItemUiState()
             }
         }
         viewModelScope.launch {
-            repository.getListItemById(listId, itemId).collect{
+            repository.getListItemById(listId, itemId).collect {
                 listItemUIState = it.toListItemUIState()
             }
         }
         viewModelScope.launch {
-            repository.getAllCategories().collect{
+            repository.getAllCategories().collect {
                 categoryUIState.value = UpdateItemUIState(it)
 
-                if(itemUIState.category != null){
+                if (itemUIState.category != null) {
                     updateItemCategoryName()
                 }
             }

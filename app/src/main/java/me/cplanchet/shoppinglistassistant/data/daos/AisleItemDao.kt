@@ -8,12 +8,16 @@ import me.cplanchet.shoppinglistassistant.data.entities.AisleItem
 interface AisleItemDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(aisleItem: AisleItem)
+
     @Update
-    suspend fun update(aisleItem:AisleItem)
+    suspend fun update(aisleItem: AisleItem)
+
     @Delete
-    suspend fun delete(aisleItem:AisleItem)
+    suspend fun delete(aisleItem: AisleItem)
+
     @Query("SELECT * FROM Aisle_Item WHERE aisleId = :id")
     fun getAisleItemByAisleId(id: Int): Flow<List<AisleItem>>
+
     @Query("SELECT * FROM Aisle_Item")
     fun getAllAisleItems(): Flow<List<AisleItem>>
 }

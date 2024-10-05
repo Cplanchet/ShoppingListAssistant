@@ -23,7 +23,7 @@ class CreateListViewModelTest {
     private lateinit var shoppingListRepository: ShoppingListRepository
 
     @Test
-    fun updateUIState_givenListUIState_updatesState(){
+    fun updateUIState_givenListUIState_updatesState() {
         val underTest = CreateListViewModel(shoppingListRepository)
         val toUpdate = ListUIState(1, "name", listOf(), null)
         assertNotEquals(toUpdate, underTest.listUIState)

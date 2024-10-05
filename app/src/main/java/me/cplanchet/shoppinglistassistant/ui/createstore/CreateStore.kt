@@ -28,20 +28,20 @@ fun CreateStorePage(
     onNavigateUp: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: CreateStoreViewModel = viewModel(factory = AppViewModelProvider.Factory),
-){
+) {
     val coroutineScope = rememberCoroutineScope()
     Scaffold(
         modifier = modifier,
         topBar = {
-            AppBar(hasBackButton = true, navigateUp = {onNavigateUp()})
+            AppBar(hasBackButton = true, navigateUp = { onNavigateUp() })
         }
-    ){paddingValues ->
+    ) { paddingValues ->
         Column(
             modifier = Modifier.padding(paddingValues)
-                .then(Modifier.padding(top=32.dp, end = 32.dp, bottom = 32.dp, start = 32.dp)),
+                .then(Modifier.padding(top = 32.dp, end = 32.dp, bottom = 32.dp, start = 32.dp)),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(16.dp)
-        ){
+        ) {
             Text(
                 text = stringResource(R.string.create_store_title),
                 style = MaterialTheme.typography.titleLarge,
@@ -50,25 +50,27 @@ fun CreateStorePage(
             )
             CreateStoreFormBody(
                 storeUIState = viewModel.storeUIState,
-                onValueChanged = {viewModel.updateUIState(it)},
-                onSubmit = { coroutineScope.launch{
-                    viewModel.saveStore()
-                    navigateBack()
-                }},
-                onBackButtonPressed = {navigateBack()}
+                onValueChanged = { viewModel.updateUIState(it) },
+                onSubmit = {
+                    coroutineScope.launch {
+                        viewModel.saveStore()
+                        navigateBack()
+                    }
+                },
+                onBackButtonPressed = { navigateBack() }
             )
         }
     }
 }
 
 @Composable
-fun CreateStoreFormBody (
+fun CreateStoreFormBody(
     modifier: Modifier = Modifier,
     storeUIState: StoreUIState,
     onValueChanged: (StoreUIState) -> Unit,
     onSubmit: () -> Unit,
     onBackButtonPressed: () -> Unit
-){
+) {
     Column(
         modifier = modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -76,27 +78,27 @@ fun CreateStoreFormBody (
     ) {
         OutlinedTextField(
             value = storeUIState.name,
-            onValueChange = {onValueChanged(storeUIState.copy(name = it))},
-            label = {Text(stringResource(R.string.store_name_label))},
+            onValueChange = { onValueChanged(storeUIState.copy(name = it)) },
+            label = { Text(stringResource(R.string.store_name_label)) },
             modifier = Modifier.fillMaxWidth(),
             singleLine = true,
-            keyboardActions = KeyboardActions(onDone = {onSubmit()})
+            keyboardActions = KeyboardActions(onDone = { onSubmit() })
         )
         Row(
             horizontalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier.fillMaxWidth()
-        ){
+        ) {
             OutlinedButton(
                 modifier = Modifier.width(100.dp),
-                onClick = {onBackButtonPressed()},
+                onClick = { onBackButtonPressed() },
                 border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary)
-            ){
+            ) {
                 Text(stringResource(R.string.back))
             }
             Button(
                 modifier = Modifier.width(100.dp),
-                onClick = {onSubmit()},
-            ){
+                onClick = { onSubmit() },
+            ) {
                 Text(stringResource(R.string.save))
             }
         }
@@ -112,7 +114,7 @@ fun CreateStoreFormBody (
     name = "dark mode"
 )
 @Composable
-fun CreateStorePreview(){
+fun CreateStorePreview() {
     ShoppingListAssistantTheme {
         CreateStorePage(
             viewModel = CreateStoreViewModel(MockShoppingListRepository()),

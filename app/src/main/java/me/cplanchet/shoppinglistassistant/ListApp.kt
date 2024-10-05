@@ -6,6 +6,6 @@ import androidx.navigation.compose.rememberNavController
 import me.cplanchet.shoppinglistassistant.navigation.ListNavHost
 
 @Composable
-fun ListApp(navController: NavHostController = rememberNavController()){
+fun ListApp(navController: NavHostController = rememberNavController()) {
     ListNavHost(navController = navController)
 }

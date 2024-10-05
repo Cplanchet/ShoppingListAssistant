@@ -27,7 +27,7 @@ fun CreateCategoryPage(
     onNavigateUp: () -> Unit,
     navigateBack: () -> Unit,
     viewModel: CreateCategoryViewModel = viewModel(factory = AppViewModelProvider.Factory)
-){
+) {
     Scaffold(
         modifier = modifier,
         topBar = {
@@ -39,7 +39,7 @@ fun CreateCategoryPage(
                 .then(Modifier.padding(all = 32.dp).fillMaxWidth()),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(16.dp)
-        ){
+        ) {
             val coroutineScope = rememberCoroutineScope()
             Text(
                 text = stringResource(R.string.create_category_title),
@@ -47,10 +47,10 @@ fun CreateCategoryPage(
                 textAlign = TextAlign.Center,
                 color = MaterialTheme.colorScheme.primary
             )
-            OutlinedTextField (
+            OutlinedTextField(
                 value = viewModel.categoryUIState.name,
-                onValueChange = { viewModel.updateUIState(viewModel.categoryUIState.copy(name = it))},
-                label = {Text(stringResource(R.string.create_category_label_name))},
+                onValueChange = { viewModel.updateUIState(viewModel.categoryUIState.copy(name = it)) },
+                label = { Text(stringResource(R.string.create_category_label_name)) },
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true,
                 keyboardActions = KeyboardActions(
@@ -66,14 +66,14 @@ fun CreateCategoryPage(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
-            ){
+            ) {
                 OutlinedButton(
                     onClick = {
-                      navigateBack();
+                        navigateBack();
                     },
                     border = BorderStroke(1.dp, color = MaterialTheme.colorScheme.primary),
                     modifier = Modifier.width(100.dp)
-                ){
+                ) {
                     Text(stringResource(R.string.back))
                 }
                 Button(
@@ -84,7 +84,7 @@ fun CreateCategoryPage(
                         navigateBack()
                     },
                     modifier = Modifier.width(100.dp)
-                ){
+                ) {
                     Text(stringResource(R.string.save))
                 }
             }
@@ -101,7 +101,7 @@ fun CreateCategoryPage(
     name = "dark mode"
 )
 @Composable
-fun CreateStorePreview(){
+fun CreateStorePreview() {
     ShoppingListAssistantTheme {
         CreateCategoryPage(
             onNavigateUp = {},

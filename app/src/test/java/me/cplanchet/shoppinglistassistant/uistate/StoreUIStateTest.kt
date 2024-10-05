@@ -13,6 +13,7 @@ import org.junit.Test
 class StoreUIStateTest {
     private val items = DaoMockData.allItemDtos
     private val aisle = AisleDto(1, "name", DaoMockData.allCategoryDtos, DaoMockData.allItemDtos)
+
     @Test
     fun storeUIState_defaultConstructor_createsUIState() {
         val expected = StoreUIState(0, "", listOf(), listOf())
@@ -33,7 +34,7 @@ class StoreUIStateTest {
     }
 
     @Test
-    fun toStoreDto_givenUIState_createsDto(){
+    fun toStoreDto_givenUIState_createsDto() {
         val expected = StoreDto(1, "name", items, listOf(aisle))
         val uiState = StoreUIState(1, "name", items, listOf(aisle))
 
@@ -43,7 +44,7 @@ class StoreUIStateTest {
     }
 
     @Test
-    fun toStoreUIState_givenDto_createsUIState(){
+    fun toStoreUIState_givenDto_createsUIState() {
         val expected = StoreUIState(1, "name", items, listOf(aisle))
         val dto = StoreDto(1, "name", items, listOf(aisle))
 
@@ -53,21 +54,21 @@ class StoreUIStateTest {
     }
 
     @Test
-    fun isValid_validUIState_returnsTrue(){
+    fun isValid_validUIState_returnsTrue() {
         val validUIState = StoreUIState(1, "name", listOf(), listOf())
 
         Assert.assertTrue(validUIState.isValid())
     }
 
     @Test
-    fun isValid_missingName_returnsFalse(){
+    fun isValid_missingName_returnsFalse() {
         val invalidUIState = StoreUIState(1, "", listOf(), listOf())
 
         Assert.assertFalse(invalidUIState.isValid())
     }
 
     @Test
-    fun isValid_longName_returnsFalse(){
+    fun isValid_longName_returnsFalse() {
         val invalidUIState = StoreUIState(1, "loooooooooooooooooooooooongname", listOf(), listOf())
 
         Assert.assertFalse(invalidUIState.isValid())

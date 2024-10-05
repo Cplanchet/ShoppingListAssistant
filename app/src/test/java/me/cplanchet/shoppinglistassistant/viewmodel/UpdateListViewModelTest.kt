@@ -34,9 +34,9 @@ class UpdateListViewModelTest {
     private lateinit var underTest: UpdateListViewModel
 
     @Before
-    fun setup(){
+    fun setup() {
         savedStateHandle = SavedStateHandle(mapOf("listId" to 1))
-        shoppingListRepository = mock<ShoppingListRepository>{
+        shoppingListRepository = mock<ShoppingListRepository> {
             on { getListById(1) } doReturn flowOf(DaoMockData.shoppingList1Dto)
             on { getAllStores() } doReturn flowOf(DaoMockData.allStoreDtos)
         }
@@ -44,7 +44,7 @@ class UpdateListViewModelTest {
     }
 
     @Test
-    fun listUIState_initializedByRepo(){
+    fun listUIState_initializedByRepo() {
         val expectedList = DaoMockData.shoppingList1Dto
         val expected = expectedList.toListUIState()
 
@@ -57,7 +57,7 @@ class UpdateListViewModelTest {
         val expected = UpdateListUIState(expectedStoreList)
 
         val collect = launch(UnconfinedTestDispatcher(testScheduler)) {
-            underTest.updateListUIState.collect{}
+            underTest.updateListUIState.collect {}
         }
 
         assertEquals(expected, underTest.updateListUIState.value)
@@ -65,7 +65,7 @@ class UpdateListViewModelTest {
     }
 
     @Test
-    fun updateListState_givenListUIState_updatesViewModelListUIState(){
+    fun updateListState_givenListUIState_updatesViewModelListUIState() {
         val expected = ListUIState(1, "newName", DaoMockData.allListItemDtosList2, DaoMockData.store2Dto)
 
         underTest.updateListState(expected)
@@ -83,7 +83,7 @@ class UpdateListViewModelTest {
     }
 
     @Test
-    fun saveList_givenInvalidListUIState_neverCallsRepo() = runTest{
+    fun saveList_givenInvalidListUIState_neverCallsRepo() = runTest {
         val invalidState = ListUIState(1, "", listOf(), null)
 
         underTest.updateListState(invalidState)

@@ -33,16 +33,16 @@ class UpdateCategoryViewModelTest {
     private lateinit var underTest: UpdateCategoryViewModel
 
     @Before
-    fun setup(){
+    fun setup() {
         savedStateHandle = SavedStateHandle(mapOf(UpdateCategoryDestination.categoryIdArg to 1))
-        shoppingListRepository = mock<ShoppingListRepository>{
+        shoppingListRepository = mock<ShoppingListRepository> {
             on { getCategoryById(1) } doReturn flowOf(DaoMockData.category1Dto)
         }
         underTest = UpdateCategoryViewModel(shoppingListRepository, savedStateHandle)
     }
 
     @Test
-    fun categoryUIState_initialized(){
+    fun categoryUIState_initialized() {
         val expectedDto = DaoMockData.category1Dto
         val expected = expectedDto.toCategoryUIState()
 
@@ -50,7 +50,7 @@ class UpdateCategoryViewModelTest {
     }
 
     @Test
-    fun updateCategoryUIState_givenUIState_UpdatesViewModelState(){
+    fun updateCategoryUIState_givenUIState_UpdatesViewModelState() {
         val expected = CategoryUIState(5, "testName")
 
         underTest.updateCategoryUIState(expected)

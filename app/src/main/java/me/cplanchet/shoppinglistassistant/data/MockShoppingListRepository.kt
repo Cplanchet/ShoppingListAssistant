@@ -4,7 +4,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import me.cplanchet.shoppinglistassistant.data.dtos.*
 
-class MockShoppingListRepository : ShoppingListRepository{
+class MockShoppingListRepository : ShoppingListRepository {
     val store1 = StoreDto(1, "Store 1", listOf(), listOf())
     val store2 = StoreDto(2, "Store 2", listOf(), listOf())
 
@@ -28,7 +28,7 @@ class MockShoppingListRepository : ShoppingListRepository{
         ListItemDto(item3, 1f, "count", true, 3)
     )
     val listItems3 = listOf(
-        ListItemDto(item1, 1f, "count", false,1),
+        ListItemDto(item1, 1f, "count", false, 1),
         ListItemDto(item2, 3f, "count", false, 2),
     )
     val shoppingList1 = ShoppingListDto(1, "Name1", listItems, store1)
@@ -49,56 +49,69 @@ class MockShoppingListRepository : ShoppingListRepository{
     override fun getListById(listId: Int): Flow<ShoppingListDto> {
         return flowOf(shoppingList1)
     }
-    override suspend fun insertList(list: ShoppingListDto){
+
+    override suspend fun insertList(list: ShoppingListDto) {
         return
     }
+
     override suspend fun deleteList(list: ShoppingListDto) {
         return
     }
-    override suspend fun updateList(store:ShoppingListDto){}
+
+    override suspend fun updateList(store: ShoppingListDto) {}
 
     override fun getAllStores(): Flow<List<StoreDto>> {
 
         return flowOf(listOf(store1, store2))
     }
-    override fun getStoreById(id: Int): Flow<StoreDto>{
+
+    override fun getStoreById(id: Int): Flow<StoreDto> {
         return flowOf(store1)
     }
+
     override suspend fun insertStore(store: StoreDto) {
     }
 
-    override suspend fun addListItem(listItem: ListItemDto, listId: Int){}
-    override suspend fun deleteListItem(listItem: ListItemDto, listId: Int){}
+    override suspend fun addListItem(listItem: ListItemDto, listId: Int) {}
+    override suspend fun deleteListItem(listItem: ListItemDto, listId: Int) {}
 
-    override fun getAllItems(): Flow<List<ItemDto>>{
+    override fun getAllItems(): Flow<List<ItemDto>> {
         return flowOf(listOf(item1, item2, item3, item4))
     }
-    override fun getItemById(itemId: Int): Flow<ItemDto>{
+
+    override fun getItemById(itemId: Int): Flow<ItemDto> {
         return flowOf(item1)
     }
-    override suspend fun insertItem(item: ItemDto){}
-    override suspend fun updateItem(item: ItemDto){}
-    override suspend fun deleteItem(item: ItemDto){}
 
-    override fun getAllListItems(listId: Int): Flow<List<ListItemDto>>{
+    override suspend fun insertItem(item: ItemDto) {}
+    override suspend fun updateItem(item: ItemDto) {}
+    override suspend fun deleteItem(item: ItemDto) {}
+
+    override fun getAllListItems(listId: Int): Flow<List<ListItemDto>> {
         return flowOf(listItems)
     }
-    override fun getListItemById(listId: Int, itemId: Int): Flow<ListItemDto>{
+
+    override fun getListItemById(listId: Int, itemId: Int): Flow<ListItemDto> {
         return flowOf(listItems[0])
     }
-    override suspend fun updateListItem(item: ListItemDto, listId: Int){
+
+    override suspend fun updateListItem(item: ListItemDto, listId: Int) {
     }
 
-    override fun getAllCategories(): Flow<List<CategoryDto>>{
+    override fun getAllCategories(): Flow<List<CategoryDto>> {
         return flowOf(listOf(category))
     }
+
     override fun getCategoryById(id: Int): Flow<CategoryDto> {
         return flowOf(category)
     }
+
     override suspend fun insertCategory(category: CategoryDto) {
     }
+
     override suspend fun updateCategory(category: CategoryDto) {
     }
+
     override suspend fun deleteCategory(category: CategoryDto) {
     }
 }

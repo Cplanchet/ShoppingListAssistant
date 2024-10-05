@@ -14,7 +14,7 @@ class ListItemUIStateTest {
     private val itemDto = DaoMockData.item1Dto
 
     @Test
-    fun listItemUIState_defaultConstructor_createsDefaultUIState(){
+    fun listItemUIState_defaultConstructor_createsDefaultUIState() {
         val expected = ListItemUIState(ItemDto(), 0f, "", false, 0)
 
         val actual = ListItemUIState()
@@ -23,7 +23,7 @@ class ListItemUIStateTest {
     }
 
     @Test
-    fun listItemUIState_constructor_createsUIState(){
+    fun listItemUIState_constructor_createsUIState() {
         val actual = ListItemUIState(itemDto, 1f, "count", true, 4)
 
         assertEquals(itemDto, actual.item)
@@ -54,28 +54,28 @@ class ListItemUIStateTest {
     }
 
     @Test
-    fun isValid_validUIState_returnsTrue(){
+    fun isValid_validUIState_returnsTrue() {
         val validUIState = ListItemUIState(itemDto, 1f, "count", true, 4)
 
         assertTrue(validUIState.isValid())
     }
 
     @Test
-    fun isValid_amountZero_returnsFalse(){
+    fun isValid_amountZero_returnsFalse() {
         val validUIState = ListItemUIState(itemDto, 0f, "count", true, 4)
 
         assertFalse(validUIState.isValid())
     }
 
     @Test
-    fun isValid_amountUnitEmpty_returnsFalse(){
+    fun isValid_amountUnitEmpty_returnsFalse() {
         val validUIState = ListItemUIState(itemDto, 1f, "", true, 4)
 
         assertFalse(validUIState.isValid())
     }
 
     @Test
-    fun isValid_orderZero_returnsFalse(){
+    fun isValid_orderZero_returnsFalse() {
         val validUIState = ListItemUIState(itemDto, 1f, "count", true, 0)
 
         assertFalse(validUIState.isValid())

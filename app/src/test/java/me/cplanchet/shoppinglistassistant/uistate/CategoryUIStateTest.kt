@@ -10,7 +10,7 @@ import org.junit.Test
 
 class CategoryUIStateTest {
     @Test
-    fun categoryUIState_defaultConstructor_createsDefaultUIState(){
+    fun categoryUIState_defaultConstructor_createsDefaultUIState() {
         val expected = CategoryUIState(0, "")
         val actual = CategoryUIState()
 
@@ -18,7 +18,7 @@ class CategoryUIStateTest {
     }
 
     @Test
-    fun categoryUIState_constructorWithArguments_createsUIState(){
+    fun categoryUIState_constructorWithArguments_createsUIState() {
         val actual = CategoryUIState(1, "4")
 
         assertEquals(1, actual.id)
@@ -26,7 +26,7 @@ class CategoryUIStateTest {
     }
 
     @Test
-    fun toCategoryDto_convertsToDto(){
+    fun toCategoryDto_convertsToDto() {
         val expected = CategoryDto(1, "name")
         val uiState = CategoryUIState(1, "name")
 

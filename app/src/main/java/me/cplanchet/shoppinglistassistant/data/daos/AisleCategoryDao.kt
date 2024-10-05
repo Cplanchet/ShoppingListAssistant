@@ -10,10 +10,10 @@ interface AisleCategoryDao {
     suspend fun insert(aisleCategory: AisleCategory)
 
     @Update
-    suspend fun update(aisleCategory:AisleCategory)
+    suspend fun update(aisleCategory: AisleCategory)
 
     @Delete
-    suspend fun delete(aisleCategory:AisleCategory)
+    suspend fun delete(aisleCategory: AisleCategory)
 
     @Query("SELECT * FROM Aisle_Category WHERE aisleId = :id")
     fun getAisleCategoryByAisleId(id: Int): Flow<List<AisleCategory>>

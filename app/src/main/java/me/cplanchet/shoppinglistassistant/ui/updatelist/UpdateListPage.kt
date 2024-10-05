@@ -30,17 +30,17 @@ fun UpdateListPage(
     navigateBack: () -> Unit,
     navigateToCreateStorePage: () -> Unit,
     viewModel: UpdateListViewModel = viewModel(factory = AppViewModelProvider.Factory)
-){
+) {
     val coroutineScope = rememberCoroutineScope()
     val updateListViewModel by viewModel.updateListUIState.collectAsState()
 
     Scaffold(
         topBar = { AppBar(hasBackButton = true, navigateUp = { onNavigateUp() }) }
-    ) {padding ->
+    ) { padding ->
         Column(
             modifier = modifier.fillMaxWidth().padding(padding).then(Modifier.padding(top = 32.dp)),
             horizontalAlignment = Alignment.CenterHorizontally
-        ){
+        ) {
             Text(
                 text = stringResource(R.string.update_list_title),
                 textAlign = TextAlign.Center,
@@ -48,25 +48,25 @@ fun UpdateListPage(
                 style = MaterialTheme.typography.titleLarge
             )
             Column(
-                modifier = Modifier.fillMaxWidth(.8f).padding(top= 16.dp, ),
+                modifier = Modifier.fillMaxWidth(.8f).padding(top = 16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 OutlinedTextField(
                     modifier = Modifier.fillMaxWidth(),
                     value = viewModel.listUIState.name,
-                    onValueChange = { viewModel.updateListState(viewModel.listUIState.copy(name = it))},
-                    label = {Text(text = stringResource(R.string.list_name_label))}
+                    onValueChange = { viewModel.updateListState(viewModel.listUIState.copy(name = it)) },
+                    label = { Text(text = stringResource(R.string.list_name_label)) }
                 )
                 LinkDropDownBox(
                     modifier = Modifier.padding(top = 8.dp),
-                    options = updateListViewModel.stores.map {it.name}.plus("None"),
-                    onLinkSelected = {navigateToCreateStorePage()},
+                    options = updateListViewModel.stores.map { it.name }.plus("None"),
+                    onLinkSelected = { navigateToCreateStorePage() },
                     onSelectionChanged = {
                         viewModel.updateListState(viewModel.listUIState.copy(
-                            store = updateListViewModel.stores.find {store -> store.name == it}
+                            store = updateListViewModel.stores.find { store -> store.name == it }
                         ))
                     },
-                    label = {Text(text = stringResource(R.string.choose_store))},
+                    label = { Text(text = stringResource(R.string.choose_store)) },
                     selected = viewModel.listUIState.store?.name ?: "None",
                     linkText = stringResource(R.string.create_store_title)
                 )
@@ -74,12 +74,12 @@ fun UpdateListPage(
             Row(
                 modifier.fillMaxWidth(.8f).padding(top = 32.dp),
                 horizontalArrangement = Arrangement.SpaceBetween
-            ){
+            ) {
                 OutlinedButton(
-                    modifier = Modifier.widthIn(min= 130.dp),
+                    modifier = Modifier.widthIn(min = 130.dp),
                     onClick = { navigateBack() },
                     border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary)
-                ){
+                ) {
                     Text(text = "Cancel")
                 }
                 Button(
@@ -91,7 +91,7 @@ fun UpdateListPage(
                         }
                     },
                     enabled = viewModel.listUIState.isValid()
-                ){
+                ) {
                     Text(text = "Save")
                 }
             }
@@ -108,7 +108,7 @@ fun UpdateListPage(
     name = "dark mode"
 )
 @Composable
-fun UpdateListPreview(){
+fun UpdateListPreview() {
     ShoppingListAssistantTheme {
         UpdateListPage(onNavigateUp = {}, navigateBack = {}, navigateToCreateStorePage = {})
     }

@@ -26,7 +26,7 @@ import org.mockito.kotlin.verify
 
 @RunWith(MockitoJUnitRunner::class)
 @OptIn(ExperimentalCoroutinesApi::class)
-class CreateCategoryViewModelTest() {
+class CreateCategoryViewModelTest {
 
     @get:Rule
     val mainDispatcherRule = MainDispatcherRule()
@@ -38,21 +38,22 @@ class CreateCategoryViewModelTest() {
     fun createListUIState_generatesFromRepository() = runTest {
         val expectedStoreList = DaoMockData.allStoreDtos
         val expected = CreateListUIState(expectedStoreList)
-        val shoppingListRepository = mock<ShoppingListRepository>{
-            on{getAllStores()} doReturn flow { emit(expectedStoreList)}
+        val shoppingListRepository = mock<ShoppingListRepository> {
+            on { getAllStores() } doReturn flow { emit(expectedStoreList) }
         }
 
         val underTest = CreateListViewModel(shoppingListRepository)
 
-        val collect = launch(UnconfinedTestDispatcher(testScheduler)){
-            underTest.createListUIState.collect{
+        val collect = launch(UnconfinedTestDispatcher(testScheduler)) {
+            underTest.createListUIState.collect {
             }
         }
         assertEquals(expected, underTest.createListUIState.value)
         collect.cancel()
     }
+
     @Test
-    fun updateUIState_givenUIState_UpdatesUIState(){
+    fun updateUIState_givenUIState_UpdatesUIState() {
         val underTest = CreateCategoryViewModel(shoppingListRepository)
         val toUpdate = CategoryUIState(4, "Name")
 

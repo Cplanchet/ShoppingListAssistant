@@ -8,7 +8,8 @@ data class ListUIState(
     val id: Int = 0,
     val name: String = "",
     val items: List<ListItemDto> = ArrayList(),
-    val store: StoreDto? = null)
+    val store: StoreDto? = null
+)
 
 fun ListUIState.toListDto(): ShoppingListDto = ShoppingListDto(
     id = id,

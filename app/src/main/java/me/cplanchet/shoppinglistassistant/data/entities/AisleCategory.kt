@@ -22,7 +22,7 @@ import androidx.room.ForeignKey.Companion.CASCADE
         )
     ]
 )
-data class AisleCategory (
+data class AisleCategory(
     val aisleId: Int,
     val categoryId: Int
 )

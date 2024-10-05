@@ -54,7 +54,7 @@ fun DragDropList(
                             } ?: kotlin.run { overScrollJob?.cancel() }
                     },
                     onDragStart = { offset -> dragDropListState.onDragStart(offset) },
-                    onDragEnd = { dragDropListState.onDragInterrupted()},
+                    onDragEnd = { dragDropListState.onDragInterrupted() },
                     onDragCancel = { dragDropListState.onDragInterrupted() }
                 )
             }

@@ -34,7 +34,7 @@ fun HomeScreen(
     homeViewModel: HomeViewModel = viewModel(factory = AppViewModelProvider.Factory),
     navigateToCreateList: () -> Unit,
     navigateToListDetail: (listId: Int) -> Unit
-){
+) {
     val coroutineScope = rememberCoroutineScope()
     val homeUIState by homeViewModel.homeUIState.collectAsState()
     val openDialog = remember { mutableStateOf(false) }
@@ -59,9 +59,9 @@ fun HomeScreen(
             }
         },
         content = {
-            if(openDialog.value){
+            if (openDialog.value) {
                 DeleteDialog(
-                    onDismiss = {openDialog.value = false},
+                    onDismiss = { openDialog.value = false },
                     onConfirm = {
                         coroutineScope.launch {
                             homeViewModel.deleteList(listToDelete.value)
@@ -76,16 +76,16 @@ fun HomeScreen(
                     .fillMaxHeight(),
                 verticalArrangement = Arrangement.spacedBy(16.dp),
                 contentPadding = PaddingValues(top = 64.dp, bottom = 16.dp)
-            ){
-                items(homeUIState.shoppingLists){list ->
+            ) {
+                items(homeUIState.shoppingLists) { list ->
                     ListCard(
                         list = list,
                         onListDelete = {
-                        listToDelete.value = it
-                        openDialog.value = true
-                    },
+                            listToDelete.value = it
+                            openDialog.value = true
+                        },
                         onCardClick = { navigateToListDetail(it) }
-                        )
+                    )
                 }
             }
         }
@@ -99,16 +99,16 @@ fun ListCard(
     list: ShoppingListDto,
     onListDelete: (ShoppingListDto) -> Unit,
     onCardClick: (listId: Int) -> Unit
- ) {
+) {
     ElevatedCard(
         shape = RectangleShape,
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
         elevation = CardDefaults.elevatedCardElevation(defaultElevation = 5.dp),
-        onClick = {onCardClick(list.id)}
+        onClick = { onCardClick(list.id) }
     ) {
         Column(
             modifier = modifier.padding(top = 0.dp, start = 16.dp, bottom = 0.dp, end = 16.dp)
-        ){
+        ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
@@ -135,9 +135,9 @@ fun ListCard(
             Column(
                 modifier = Modifier.padding(8.dp),
                 horizontalAlignment = Alignment.Start
-            ){
-                if(list.items.size >= 3){
-                    for(i in 0..2){
+            ) {
+                if (list.items.size >= 3) {
+                    for (i in 0..2) {
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.spacedBy(4.dp)
@@ -149,14 +149,14 @@ fun ListCard(
                             Text(
                                 text = list.items[i].item.name,
                                 textDecoration = if (list.items[i].checked) TextDecoration.LineThrough else TextDecoration.None
-                                )
+                            )
                         }
                     }
-                    if(list.items.size > 3){
+                    if (list.items.size > 3) {
                         Text("...")
                     }
-                } else{
-                    for(i in list.items){
+                } else {
+                    for (i in list.items) {
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.spacedBy(4.dp)
@@ -184,7 +184,7 @@ fun DeleteDialog(
     onConfirm: () -> Unit,
     listDto: ShoppingListDto,
     modifier: Modifier = Modifier,
-){
+) {
     AlertDialog(
         onDismissRequest = {
             onDismiss()
@@ -194,7 +194,7 @@ fun DeleteDialog(
             modifier = modifier.wrapContentWidth().wrapContentHeight(),
             shape = MaterialTheme.shapes.large,
             tonalElevation = AlertDialogDefaults.TonalElevation
-        ){
+        ) {
             Column(modifier = Modifier.padding(16.dp)) {
                 Text(
                     text = "Are you sure you want to delete " + listDto.name + "?"
@@ -203,7 +203,7 @@ fun DeleteDialog(
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.End
-                ){
+                ) {
                     TextButton(
                         onClick = {
                             onDismiss()
@@ -233,13 +233,13 @@ fun DeleteDialog(
     name = "dark mode"
 )
 @Composable
-fun HomeScreenPreview(){
+fun HomeScreenPreview() {
     val test = HomeViewModel(listRepository = MockShoppingListRepository())
     ShoppingListAssistantTheme {
         HomeScreen(
             homeViewModel = test,
             navigateToCreateList = {},
             navigateToListDetail = {}
-            )
+        )
     }
 }

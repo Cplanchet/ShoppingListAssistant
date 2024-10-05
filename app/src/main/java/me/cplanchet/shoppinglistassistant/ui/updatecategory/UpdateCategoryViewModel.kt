@@ -17,30 +17,32 @@ import me.cplanchet.shoppinglistassistant.ui.state.toCategoryUIState
 class UpdateCategoryViewModel(
     private val shoppingListRepository: ShoppingListRepository,
     savedStateHandle: SavedStateHandle
-): ViewModel() {
+) : ViewModel() {
     private val categoryId: Int = checkNotNull(savedStateHandle[UpdateCategoryDestination.categoryIdArg])
     var categoryUIState by mutableStateOf(CategoryUIState())
         private set
 
     init {
         viewModelScope.launch {
-            shoppingListRepository.getCategoryById(categoryId).collect{
+            shoppingListRepository.getCategoryById(categoryId).collect {
                 categoryUIState = it.toCategoryUIState()
             }
         }
     }
 
-    fun updateCategoryUIState(newState: CategoryUIState){
+    fun updateCategoryUIState(newState: CategoryUIState) {
         categoryUIState = newState.copy()
     }
-    suspend fun saveCategory(){
+
+    suspend fun saveCategory() {
         viewModelScope.launch {
-            if(categoryUIState.isValid()) {
+            if (categoryUIState.isValid()) {
                 shoppingListRepository.updateCategory(categoryUIState.toCategoryDto())
             }
         }
     }
-    suspend fun deleteCategory(){
+
+    suspend fun deleteCategory() {
         viewModelScope.launch {
             shoppingListRepository.deleteCategory(categoryUIState.toCategoryDto())
         }

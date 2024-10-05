@@ -19,14 +19,14 @@ import me.cplanchet.shoppinglistassistant.ui.state.toListUIState
 class ListDetailViewModel(
     private val listRepository: ShoppingListRepository,
     savedStateHandle: SavedStateHandle
-): ViewModel() {
+) : ViewModel() {
     private val _listUIState = MutableStateFlow(ListUIState())
 
     val listId: Int = checkNotNull(savedStateHandle[ListDetailDestination.listIdArg])
     var itemToAdd by mutableStateOf("")
-    var listUIState:StateFlow<ListUIState> = _listUIState
+    var listUIState: StateFlow<ListUIState> = _listUIState
     var sortStyle = mutableStateOf(FilterType.CUSTOM)
-    val itemsUIState = listRepository.getAllItems().map{
+    val itemsUIState = listRepository.getAllItems().map {
         ListDetailUIState(it.toMutableStateList())
     }.stateIn(
         scope = viewModelScope,
@@ -36,25 +36,27 @@ class ListDetailViewModel(
     var categorizedItems: MutableState<Map<String, MutableList<ListItemDto>>> = mutableStateOf(mapOf())
 
 
-    var listItems = MutableStateFlow(_listUIState.value.items.sortedBy { x -> x.order }.toMutableStateList())   //TODO: Get List Item UI State and pass to listItems
+    var listItems = MutableStateFlow(_listUIState.value.items.sortedBy { x -> x.order }
+        .toMutableStateList())   //TODO: Get List Item UI State and pass to listItems
+
     init {
-        viewModelScope.launch{
-            listRepository.getListById(listId).collect{
+        viewModelScope.launch {
+            listRepository.getListById(listId).collect {
                 _listUIState.value = it.toListUIState()
                 generateCategorizedList(it.items)
             }
         }
-        viewModelScope.launch{
-            listRepository.getAllListItems(listId).collect{
+        viewModelScope.launch {
+            listRepository.getAllListItems(listId).collect {
                 _listUIState.value = _listUIState.value.copy(items = it)
                 listItems.value = it.toMutableStateList()
                 generateCategorizedList(it)
             }
         }
         viewModelScope.launch {
-            itemsUIState.collect{
+            itemsUIState.collect {
                 val toAdd = it.items.find { item -> item.name.equals(itemToAdd, true) }
-                if(toAdd != null){
+                if (toAdd != null) {
                     addItemToList(toAdd)
                     itemToAdd = ""
                 }
@@ -63,35 +65,38 @@ class ListDetailViewModel(
             }
         }
     }
-    suspend fun addItemToList(item: ItemDto){
-        val order = if (_listUIState.value.items.isNotEmpty()) _listUIState.value.items.maxOf { t -> t.order } + 1 else 1
-        viewModelScope.launch{
-            listRepository.addListItem(ListItemDto(item, 1f, "count", false,order), listId)
+
+    suspend fun addItemToList(item: ItemDto) {
+        val order =
+            if (_listUIState.value.items.isNotEmpty()) _listUIState.value.items.maxOf { t -> t.order } + 1 else 1
+        viewModelScope.launch {
+            listRepository.addListItem(ListItemDto(item, 1f, "count", false, order), listId)
         }
     }
 
-    suspend fun createItem(itemName: String){
+    suspend fun createItem(itemName: String) {
         viewModelScope.launch {
             listRepository.insertItem(ItemDto(0, itemName, null))
         }
     }
 
-    suspend fun updateListItem(item: ListItemDto){
+    suspend fun updateListItem(item: ListItemDto) {
         viewModelScope.launch {
             listRepository.updateListItem(item, listId)
         }
     }
 
-    suspend fun deleteListItem(item: ListItemDto){
+    suspend fun deleteListItem(item: ListItemDto) {
         viewModelScope.launch {
             listRepository.deleteListItem(item, listId)
         }
     }
 
-    fun swap(from: Int, to: Int){
+    fun swap(from: Int, to: Int) {
         listItems.value.move(from, to);
     }
-    suspend fun saveItemOrder(){
+
+    suspend fun saveItemOrder() {
         viewModelScope.launch {
             listItems.value.forEach { item ->
                 updateListItem(item.copy(order = listItems.value.indexOf(item) + 1))
@@ -99,21 +104,25 @@ class ListDetailViewModel(
         }
     }
 
-    private fun refreshItemNames(){
+    private fun refreshItemNames() {
         listUIState.value.items.forEach { item ->
             val refreshedItem = itemsUIState.value.items.find { itemDto -> itemDto.id == item.item.id }
 
             if (refreshedItem != null) {
-                listUIState.value.items.single{listItem -> listItem.item.id == refreshedItem.id}.item = refreshedItem
+                listUIState.value.items.single { listItem -> listItem.item.id == refreshedItem.id }.item = refreshedItem
             }
         }
     }
-    private fun generateCategorizedList(list: List<ListItemDto>){
-        val temp:MutableMap<String, MutableList<ListItemDto>> = mutableMapOf();
-        list.sortedBy { x -> x.order }.forEach{item ->
+
+    private fun generateCategorizedList(list: List<ListItemDto>) {
+        val temp: MutableMap<String, MutableList<ListItemDto>> = mutableMapOf();
+        list.sortedBy { x -> x.order }.forEach { item ->
             val itemKey = item.item.category?.name ?: "";
             val categoryList = temp.get(itemKey)
-            temp.set(itemKey, categoryList?.plusElement(item)?.sortedBy { x -> x.order }?.toMutableList() ?: mutableListOf(item))
+            temp.set(
+                itemKey,
+                categoryList?.plusElement(item)?.sortedBy { x -> x.order }?.toMutableList() ?: mutableListOf(item)
+            )
         }
         categorizedItems.value = temp
     }

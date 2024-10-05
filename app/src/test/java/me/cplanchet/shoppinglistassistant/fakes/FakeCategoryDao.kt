@@ -5,7 +5,7 @@ import kotlinx.coroutines.flow.flow
 import me.cplanchet.shoppinglistassistant.data.daos.CategoryDao
 import me.cplanchet.shoppinglistassistant.data.entities.Category
 
-class FakeCategoryDao: CategoryDao {
+class FakeCategoryDao : CategoryDao {
     override suspend fun insert(category: Category) {
     }
 
@@ -17,7 +17,7 @@ class FakeCategoryDao: CategoryDao {
 
     override fun getCategoryById(id: Int): Flow<Category> {
         return flow {
-            when(id){
+            when (id) {
                 1 -> emit(DaoMockData.category1)
                 2 -> emit(DaoMockData.category2)
                 else -> {}
@@ -26,7 +26,7 @@ class FakeCategoryDao: CategoryDao {
     }
 
     override fun getAllCategories(): Flow<List<Category>> {
-        return flow{
+        return flow {
             emit(DaoMockData.allCategories)
         }
     }

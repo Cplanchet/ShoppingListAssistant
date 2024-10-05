@@ -16,7 +16,7 @@ import me.cplanchet.shoppinglistassistant.ui.updateitem.UpdateItemViewModel
 import me.cplanchet.shoppinglistassistant.ui.updatelist.UpdateListViewModel
 
 object AppViewModelProvider {
-    val Factory = viewModelFactory{
+    val Factory = viewModelFactory {
         initializer {
             HomeViewModel(
                 listApplication().container.shoppingListRepository

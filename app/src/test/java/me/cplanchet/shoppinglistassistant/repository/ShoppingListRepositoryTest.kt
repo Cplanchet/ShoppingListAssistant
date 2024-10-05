@@ -20,21 +20,26 @@ import org.mockito.kotlin.verify
 class ShoppingListRepositoryTest {
     @Spy
     private var shoppingListDao: ShoppingListDao = FakeShoppingListDao()
+
     @Spy
     private val listItemDao: ListItemDao = FakeListItemDao()
+
     @Spy
     private val itemDao: ItemDao = FakeItemDao()
+
     @Spy
     private val categoryDao: CategoryDao = FakeCategoryDao()
+
     @Spy
     private val storeDao: StoreDao = FakeStoreDao()
 
     private lateinit var repository: ShoppingListRepository
 
     @Before
-    fun createRepo(){
+    fun createRepo() {
         repository = DefaultShoppingListRepository(shoppingListDao, listItemDao, itemDao, categoryDao, storeDao)
     }
+
     @Test
     fun getAllTests_retrievesTests() = runTest {
         val expected = DaoMockData.shoppingList1Dto
@@ -44,16 +49,18 @@ class ShoppingListRepositoryTest {
         assertEquals(DaoMockData.allLists.size, actual.size)
         assertEquals(expected, actual[0])
     }
+
     @Test
-    fun getListById_ListId2_returnsCorrectList() = runTest{
+    fun getListById_ListId2_returnsCorrectList() = runTest {
         val expected = DaoMockData.shoppingList2Dto
 
         val actual = repository.getListById(2).first()
 
         assertEquals(expected, actual)
     }
+
     @Test
-    fun insertList_givenDto_CallsDaoWithEntityEquivalent() = runTest{
+    fun insertList_givenDto_CallsDaoWithEntityEquivalent() = runTest {
         val toInsert = DaoMockData.shoppingList2Dto
         val expectedDaoInsert = DaoMockData.shoppingList2
 
@@ -61,6 +68,7 @@ class ShoppingListRepositoryTest {
 
         verify(shoppingListDao).insert(expectedDaoInsert)
     }
+
     @Test
     fun deleteList_givenDto_callsDaoWithEntity() = runTest {
         val toDelete = DaoMockData.shoppingList1Dto
@@ -70,6 +78,7 @@ class ShoppingListRepositoryTest {
 
         verify(shoppingListDao).delete(expectedEntity)
     }
+
     @Test
     fun updateList_givenDto_callsDaoWithEntity() = runTest {
         val toUpdate = DaoMockData.shoppingList1Dto
@@ -88,6 +97,7 @@ class ShoppingListRepositoryTest {
 
         assertEquals(expected, actual)
     }
+
     @Test
     fun getStoreById_id1_returnsCorrectStore() = runTest {
         val expected = DaoMockData.store1Dto
@@ -96,6 +106,7 @@ class ShoppingListRepositoryTest {
 
         assertEquals(expected, actual)
     }
+
     @Test
     fun insertStore_passedDto_callsDaoWithEntity() = runTest {
         val toInsert = DaoMockData.store2Dto
@@ -115,6 +126,7 @@ class ShoppingListRepositoryTest {
 
         verify(listItemDao).insert(expectedEntity)
     }
+
     @Test
     fun deleteListItem_givenDtoAndListId_callsDaoWithEntity() = runTest {
         val toDelete = DaoMockData.listItem3Dto
@@ -124,6 +136,7 @@ class ShoppingListRepositoryTest {
 
         verify(listItemDao).delete(expectedEntity)
     }
+
     @Test
     fun getAllItems_returnsList() = runTest {
         val expected = DaoMockData.allItemDtos
@@ -132,6 +145,7 @@ class ShoppingListRepositoryTest {
 
         assertEquals(expected, actual)
     }
+
     @Test
     fun getItemById_id2_returnsCorrectItem() = runTest {
         val expected = DaoMockData.item2Dto
@@ -140,6 +154,7 @@ class ShoppingListRepositoryTest {
 
         assertEquals(expected, actual)
     }
+
     @Test
     fun insertItem_givenDto_callsDaoWithEntity() = runTest {
         val toInsert = DaoMockData.item3Dto
@@ -149,6 +164,7 @@ class ShoppingListRepositoryTest {
 
         verify(itemDao).insert(expectedEntity)
     }
+
     @Test
     fun updateItem_givenDto_callsDaoWithEntity() = runTest {
         val toUpdate = DaoMockData.item4Dto
@@ -158,6 +174,7 @@ class ShoppingListRepositoryTest {
 
         verify(itemDao).update(expectedEntity)
     }
+
     @Test
     fun deleteItem_givenDto_callsDaoWithEntity() = runTest {
         val toDelete = DaoMockData.item1Dto
@@ -167,6 +184,7 @@ class ShoppingListRepositoryTest {
 
         verify(itemDao).delete(expectedEntity)
     }
+
     @Test
     fun getAllListItems_listId1_returnsList() = runTest {
         val expected = DaoMockData.allListItemDtosList1
@@ -175,6 +193,7 @@ class ShoppingListRepositoryTest {
 
         assertEquals(expected, actual)
     }
+
     @Test
     fun getListItemById_listId2AndItemId3_returnsCorrectItem() = runTest {
         val expected = DaoMockData.listItem3Dto
@@ -183,6 +202,7 @@ class ShoppingListRepositoryTest {
 
         assertEquals(expected, actual)
     }
+
     @Test
     fun updateListItem_givenDto_CallsDaoWithEntity() = runTest {
         val toUpdate = DaoMockData.listItem2Dto
@@ -190,7 +210,7 @@ class ShoppingListRepositoryTest {
 
         repository.updateListItem(toUpdate, 1)
 
-         verify(listItemDao).update(expectedEntity)
+        verify(listItemDao).update(expectedEntity)
     }
 
     @Test
@@ -201,6 +221,7 @@ class ShoppingListRepositoryTest {
 
         assertEquals(expected, actual)
     }
+
     @Test
     fun getCategoryById_givenAndId_ReturnsCorrectCategory() = runTest {
         val expected = DaoMockData.category1Dto
@@ -209,6 +230,7 @@ class ShoppingListRepositoryTest {
 
         assertEquals(expected, actual)
     }
+
     @Test
     fun insertCategory_givenDto_CallsDaoWithEntity() = runTest {
         val toInsert = DaoMockData.category1Dto
@@ -218,6 +240,7 @@ class ShoppingListRepositoryTest {
 
         verify(categoryDao).insert(expectedEntity)
     }
+
     @Test
     fun updateCategory_givenDto_CallsDaoWithEntity() = runTest {
         val toUpdate = DaoMockData.category2Dto
@@ -227,6 +250,7 @@ class ShoppingListRepositoryTest {
 
         verify(categoryDao).update(expectedEntity)
     }
+
     @Test
     fun deleteCategory_givenDto_callsDaoWithEntity() = runTest {
         val toDelete = DaoMockData.category2Dto

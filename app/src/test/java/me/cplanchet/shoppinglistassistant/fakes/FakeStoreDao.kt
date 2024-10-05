@@ -5,7 +5,7 @@ import kotlinx.coroutines.flow.flow
 import me.cplanchet.shoppinglistassistant.data.daos.StoreDao
 import me.cplanchet.shoppinglistassistant.data.entities.Store
 
-class FakeStoreDao: StoreDao {
+class FakeStoreDao : StoreDao {
     override suspend fun insert(store: Store) {
     }
 
@@ -17,11 +17,11 @@ class FakeStoreDao: StoreDao {
 
     override fun getStoreById(id: Int): Flow<Store> {
         return flow {
-           when(id){
-               1 -> emit(DaoMockData.store1)
-               2 -> emit(DaoMockData.store2)
-               else -> {}
-           }
+            when (id) {
+                1 -> emit(DaoMockData.store1)
+                2 -> emit(DaoMockData.store2)
+                else -> {}
+            }
         }
     }
 

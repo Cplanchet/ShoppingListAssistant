@@ -12,16 +12,18 @@ import org.junit.Test
 class ItemUIStateTest {
 
     private val category = DaoMockData.category1Dto
+
     @Test
-    fun ItemUIState_defaultConstructor_createsADefaultItemUIState(){
+    fun ItemUIState_defaultConstructor_createsADefaultItemUIState() {
         val expected = ItemUIState(0, "", null)
 
         val actual = ItemUIState()
 
         assertEquals(expected, actual)
     }
+
     @Test
-    fun ItemUIState_constructor_createsItemUIStateCorrectly(){
+    fun ItemUIState_constructor_createsItemUIStateCorrectly() {
         val actual = ItemUIState(1, "name", category)
 
         assertEquals(1, actual.id)
@@ -30,7 +32,7 @@ class ItemUIStateTest {
     }
 
     @Test
-    fun toItem_convertsUIStateToDto(){
+    fun toItem_convertsUIStateToDto() {
         val expected = ItemDto(1, "name", category)
         val UIState = ItemUIState(1, "name", category)
 
@@ -40,7 +42,7 @@ class ItemUIStateTest {
     }
 
     @Test
-    fun toItemUIState_convertsDtoToUIState(){
+    fun toItemUIState_convertsDtoToUIState() {
         val expected = ItemUIState(1, "name", category)
         val dto = ItemDto(1, "name", category)
 
@@ -50,14 +52,14 @@ class ItemUIStateTest {
     }
 
     @Test
-    fun isValid_validUIState_returnsTrue(){
+    fun isValid_validUIState_returnsTrue() {
         val uiState = ItemUIState(1, "name", null)
 
         assertTrue(uiState.isValid())
     }
 
     @Test
-    fun isValid_invalidUIState_returnsFalse(){
+    fun isValid_invalidUIState_returnsFalse() {
         val uiState = ItemUIState(1, "", null)
 
         assertFalse(uiState.isValid())

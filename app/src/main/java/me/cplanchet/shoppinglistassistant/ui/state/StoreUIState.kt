@@ -11,14 +11,14 @@ data class StoreUIState(
     val aisles: List<AisleDto> = listOf()
 )
 
-fun StoreDto.toUIState(): StoreUIState{
+fun StoreDto.toUIState(): StoreUIState {
     return StoreUIState(this.id, this.name, this.items, this.aisle)
 }
 
-fun StoreUIState.isValid(): Boolean{
+fun StoreUIState.isValid(): Boolean {
     return this.name.isNotBlank() && this.name.length <= 30;
 }
 
-fun StoreUIState.toStoreDto(): StoreDto{
+fun StoreUIState.toStoreDto(): StoreDto {
     return StoreDto(this.id, this.name, this.items, this.aisles)
 }

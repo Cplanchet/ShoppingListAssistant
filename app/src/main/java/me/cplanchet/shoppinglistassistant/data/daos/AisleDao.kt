@@ -7,13 +7,13 @@ import me.cplanchet.shoppinglistassistant.data.entities.Aisle
 @Dao
 interface AisleDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insert(aisle:Aisle)
+    suspend fun insert(aisle: Aisle)
 
     @Update
-    suspend fun update(aisle:Aisle)
+    suspend fun update(aisle: Aisle)
 
     @Delete
-    suspend fun delete(aisle:Aisle)
+    suspend fun delete(aisle: Aisle)
 
     @Query("SELECT * FROM Aisle WHERE id = :id")
     fun getAisleById(id: Int): Flow<Aisle>

@@ -3,16 +3,16 @@ package me.cplanchet.shoppinglistassistant.data
 import kotlinx.coroutines.flow.Flow
 import me.cplanchet.shoppinglistassistant.data.dtos.*
 
-interface ShoppingListRepository{
+interface ShoppingListRepository {
     fun getAllLists(): Flow<List<ShoppingListDto>>
     fun getListById(listId: Int): Flow<ShoppingListDto>
     suspend fun insertList(list: ShoppingListDto)
     suspend fun deleteList(list: ShoppingListDto)
-    suspend fun updateList(store:ShoppingListDto)
+    suspend fun updateList(store: ShoppingListDto)
 
     fun getAllStores(): Flow<List<StoreDto>>
     fun getStoreById(id: Int): Flow<StoreDto>
-    suspend fun insertStore(store:StoreDto)
+    suspend fun insertStore(store: StoreDto)
 
     suspend fun addListItem(listItem: ListItemDto, listId: Int)
     suspend fun deleteListItem(listItem: ListItemDto, listId: Int)

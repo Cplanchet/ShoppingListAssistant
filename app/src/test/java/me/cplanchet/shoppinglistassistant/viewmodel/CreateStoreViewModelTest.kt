@@ -27,7 +27,7 @@ class CreateStoreViewModelTest {
     private val aisles = listOf(AisleDto(1, "Name", listOf(), listOf()))
 
     @Test
-    fun updateUIState_givenAStoreUIState_UpdatesTheState(){
+    fun updateUIState_givenAStoreUIState_UpdatesTheState() {
         val underTest = CreateStoreViewModel(shoppingListRepository)
         val newStoreUIState = StoreUIState(1, "name", items, aisles)
 

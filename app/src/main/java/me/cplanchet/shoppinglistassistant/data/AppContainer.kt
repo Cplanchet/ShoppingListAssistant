@@ -7,7 +7,7 @@ interface AppContainer {
     val shoppingListRepository: ShoppingListRepository
 }
 
-class AppDataContainer(private val context: Context): AppContainer{
+class AppDataContainer(private val context: Context) : AppContainer {
     override val shoppingListRepository: ShoppingListRepository by lazy {
         DefaultShoppingListRepository(
             ListDatabase.getDatabase(context).shoppingListDao(),

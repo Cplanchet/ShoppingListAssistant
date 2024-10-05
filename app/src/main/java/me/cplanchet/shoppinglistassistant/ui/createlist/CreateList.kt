@@ -32,17 +32,17 @@ fun CreateListPage(
     navigateToCreateStorePage: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: CreateListViewModel = viewModel(factory = AppViewModelProvider.Factory)
-){
+) {
     val coroutineScope = rememberCoroutineScope()
     val createListUIState by viewModel.createListUIState.collectAsState()
     Scaffold(
         modifier = modifier,
         topBar = {
-            AppBar(hasBackButton = true, navigateUp = {onNavigateUp()},)
+            AppBar(hasBackButton = true, navigateUp = { onNavigateUp() })
         }
-    ){ paddingValues ->
+    ) { paddingValues ->
         Column(
-           modifier = Modifier.padding(paddingValues).then(Modifier.padding(top = 32.dp)),
+            modifier = Modifier.padding(paddingValues).then(Modifier.padding(top = 32.dp)),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
@@ -67,19 +67,19 @@ fun CreateListPage(
                     onClick = { navigateBack() },
                     modifier.width(100.dp),
                     border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary)
-                ){
+                ) {
                     Text(text = stringResource(R.string.back))
                 }
                 Button(
                     onClick = {
-                              coroutineScope.launch{
-                                  viewModel.saveList()
-                                  navigateBack()
-                              }
+                        coroutineScope.launch {
+                            viewModel.saveList()
+                            navigateBack()
+                        }
                     },
                     modifier.width(100.dp),
                     enabled = viewModel.listUIState.isValid()
-                ){
+                ) {
                     Text(text = stringResource(R.string.save))
                 }
             }
@@ -94,7 +94,7 @@ fun FormBody(
     modifier: Modifier = Modifier,
     onValueChange: (ListUIState) -> Unit,
     onCreateStore: () -> Unit
-){
+) {
     Column(
         modifier = modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -103,8 +103,8 @@ fun FormBody(
     {
         OutlinedTextField(
             value = listUIState.name,
-            onValueChange = {onValueChange(listUIState.copy(name = it))},
-            label = {Text(stringResource(R.string.list_name_label))},
+            onValueChange = { onValueChange(listUIState.copy(name = it)) },
+            label = { Text(stringResource(R.string.list_name_label)) },
             modifier = Modifier.fillMaxWidth(),
             singleLine = true
         )
@@ -135,7 +135,7 @@ fun FormBody(
     name = "dark mode"
 )
 @Composable
-fun CreateListPreview(){
+fun CreateListPreview() {
     ShoppingListAssistantTheme {
         CreateListPage(
             navigateBack = {},

@@ -13,6 +13,6 @@ fun ItemUIState.toItem(): ItemDto = ItemDto(id, name, category)
 
 fun ItemDto.toItemUiState(): ItemUIState = ItemUIState(id, name, category)
 
-fun ItemUIState.isValid(): Boolean{
+fun ItemUIState.isValid(): Boolean {
     return name.isNotBlank()
 }

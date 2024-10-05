@@ -8,12 +8,16 @@ import me.cplanchet.shoppinglistassistant.data.entities.Store
 interface StoreDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(store: Store)
+
     @Update
-    suspend fun update(store:Store)
+    suspend fun update(store: Store)
+
     @Delete
-    suspend fun delete(store:Store)
+    suspend fun delete(store: Store)
+
     @Query("SELECT * FROM Store WHERE id = :id")
     fun getStoreById(id: Int): Flow<Store>
+
     @Query("SELECT * FROM Store")
     fun getAllStores(): Flow<List<Store>>
 }

@@ -21,55 +21,59 @@ import me.cplanchet.shoppinglistassistant.ui.updatelist.UpdateListPage
 fun ListNavHost(
     navController: NavHostController,
     modifier: Modifier = Modifier
-){
+) {
     NavHost(
         navController = navController,
         startDestination = HomeDestination.route,
         modifier = modifier
-    ){
-        composable(route = HomeDestination.route){
+    ) {
+        composable(route = HomeDestination.route) {
             HomeScreen(
-                navigateToCreateList = {navController.navigate(CreateListDestination.route)},
-                navigateToListDetail = {navController.navigate("${ListDetailDestination.route}/${it}")}
+                navigateToCreateList = { navController.navigate(CreateListDestination.route) },
+                navigateToListDetail = { navController.navigate("${ListDetailDestination.route}/${it}") }
             )
         }
-        composable(route = CreateListDestination.route){
+        composable(route = CreateListDestination.route) {
             CreateListPage(
                 navigateBack = { navController.popBackStack() },
                 onNavigateUp = { navController.navigateUp() },
                 navigateToCreateStorePage = { navController.navigate(CreateStoreDestination.route) }
             )
         }
-        composable(route = CreateStoreDestination.route){
+        composable(route = CreateStoreDestination.route) {
             CreateStorePage(
-                navigateBack = {navController.popBackStack()},
-                onNavigateUp = {navController.navigateUp()}
+                navigateBack = { navController.popBackStack() },
+                onNavigateUp = { navController.navigateUp() }
             )
         }
         composable(route = ListDetailDestination.routeWithArgs,
-            arguments = listOf(navArgument(ListDetailDestination.listIdArg){
+            arguments = listOf(navArgument(ListDetailDestination.listIdArg) {
                 type = NavType.IntType
-            })){
+            })
+        ) {
             ListDetailPage(
                 onNavigateUp = { navController.navigateUp() },
-                navigateToUpdateListPage = {navController.navigate("${UpdateListDestination.route}/${it}")},
-                navigateToUpdateItemPage = {listId, itemId -> navController.navigate("${UpdateItemDestination.route}/${listId}/item/${itemId}")}
+                navigateToUpdateListPage = { navController.navigate("${UpdateListDestination.route}/${it}") },
+                navigateToUpdateItemPage = { listId, itemId -> navController.navigate("${UpdateItemDestination.route}/${listId}/item/${itemId}") }
             )
         }
         composable(route = UpdateListDestination.routeWithArgs,
-            arguments = listOf(navArgument(UpdateListDestination.listIdArg){
+            arguments = listOf(navArgument(UpdateListDestination.listIdArg) {
                 type = NavType.IntType
-            })){
+            })
+        ) {
             UpdateListPage(
                 onNavigateUp = { navController.navigateUp() },
                 navigateBack = { navController.popBackStack() },
-                navigateToCreateStorePage = {navController.navigate(CreateStoreDestination.route)}
+                navigateToCreateStorePage = { navController.navigate(CreateStoreDestination.route) }
             )
         }
-        composable(route = UpdateItemDestination.routeWithArgs,
+        composable(
+            route = UpdateItemDestination.routeWithArgs,
             arguments = listOf(
-                navArgument(UpdateItemDestination.listIdArg){type = NavType.IntType},
-                navArgument(UpdateItemDestination.itemIdArg){type = NavType.IntType})){
+                navArgument(UpdateItemDestination.listIdArg) { type = NavType.IntType },
+                navArgument(UpdateItemDestination.itemIdArg) { type = NavType.IntType })
+        ) {
             UpdateItemPage(
                 onNavigateUp = { navController.navigateUp() },
                 navigateBack = { navController.popBackStack() },
@@ -77,14 +81,15 @@ fun ListNavHost(
                 navigateToUpdateCategoryPage = { navController.navigate("${UpdateCategoryDestination.route}/${it}") }
             )
         }
-        composable(route = CreateCategoryDestination.route){
+        composable(route = CreateCategoryDestination.route) {
             CreateCategoryPage(
                 onNavigateUp = { navController.navigateUp() },
                 navigateBack = { navController.popBackStack() }
             )
         }
         composable(route = UpdateCategoryDestination.routeWithArgs,
-            arguments = listOf(navArgument(UpdateCategoryDestination.categoryIdArg){type = NavType.IntType })){
+            arguments = listOf(navArgument(UpdateCategoryDestination.categoryIdArg) { type = NavType.IntType })
+        ) {
             UpdateCategoryPage(
                 onNavigateUp = { navController.navigateUp() },
                 navigateBack = { navController.popBackStack() }

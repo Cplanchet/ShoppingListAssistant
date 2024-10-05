@@ -24,12 +24,12 @@ fun UpdateCategoryPage(
     onNavigateUp: () -> Unit,
     navigateBack: () -> Unit,
     updateCategoryViewModel: UpdateCategoryViewModel = viewModel(factory = AppViewModelProvider.Factory)
-){
+) {
     val coroutineScope = rememberCoroutineScope()
-    var dialogOpen by remember { mutableStateOf(false)}
+    var dialogOpen by remember { mutableStateOf(false) }
 
-    Scaffold(topBar = { AppBar(hasBackButton = true, navigateUp = onNavigateUp) }){ paddingValues ->
-        if(dialogOpen){
+    Scaffold(topBar = { AppBar(hasBackButton = true, navigateUp = onNavigateUp) }) { paddingValues ->
+        if (dialogOpen) {
             DeleteDialog(
                 onDismiss = { dialogOpen = false },
                 onConfirm = {
@@ -58,8 +58,9 @@ fun UpdateCategoryPage(
                 onValueChange = {
                     updateCategoryViewModel.updateCategoryUIState(
                         updateCategoryViewModel.categoryUIState.copy(name = it)
-                    )},
-                label = { Text( text = stringResource(R.string.create_category_label_name)) },
+                    )
+                },
+                label = { Text(text = stringResource(R.string.create_category_label_name)) },
             )
             Button(
                 onClick = {
@@ -67,23 +68,24 @@ fun UpdateCategoryPage(
                 },
                 colors = ButtonDefaults.buttonColors(
                     contentColor = MaterialTheme.colorScheme.onError,
-                    containerColor = MaterialTheme.colorScheme.error),
+                    containerColor = MaterialTheme.colorScheme.error
+                ),
                 modifier = Modifier.widthIn(min = 100.dp)
-                ){
+            ) {
                 Text(text = stringResource(R.string.delete))
             }
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
-            ){
+            ) {
                 OutlinedButton(
                     onClick = {
                         navigateBack()
                     },
                     modifier = Modifier.widthIn(min = 100.dp),
                     border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary)
-                ){
+                ) {
                     Text(stringResource(R.string.cancel))
                 }
                 Button(
@@ -94,7 +96,7 @@ fun UpdateCategoryPage(
                         navigateBack()
                     },
                     modifier = Modifier.widthIn(min = 100.dp)
-                ){
+                ) {
                     Text(stringResource(R.string.save))
                 }
             }
@@ -107,7 +109,7 @@ fun DeleteDialog(
     onDismiss: () -> Unit,
     onConfirm: () -> Unit,
     modifier: Modifier = Modifier
-){
+) {
     Surface(
         modifier = modifier.wrapContentWidth().wrapContentHeight(),
         shape = MaterialTheme.shapes.large,
@@ -115,11 +117,11 @@ fun DeleteDialog(
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Text(text = stringResource(R.string.update_category_delete_dialog_content))
-            Spacer(modifier=Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(24.dp))
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.End
-            ){
+            ) {
                 TextButton(
                     onClick = {
                         onDismiss()
@@ -148,7 +150,7 @@ fun DeleteDialog(
     name = "dark mode"
 )
 @Composable
-fun UpdateCategoryPreview(){
+fun UpdateCategoryPreview() {
     ShoppingListAssistantTheme {
         UpdateCategoryPage(onNavigateUp = {}, navigateBack = {})
     }

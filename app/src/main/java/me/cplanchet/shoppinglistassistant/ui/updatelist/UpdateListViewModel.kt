@@ -20,29 +20,30 @@ import me.cplanchet.shoppinglistassistant.ui.state.toListUIState
 class UpdateListViewModel(
     private val shoppingListRepository: ShoppingListRepository,
     savedStateHandle: SavedStateHandle
-): ViewModel() {
+) : ViewModel() {
     private val listId: Int = checkNotNull(savedStateHandle[UpdateListDestination.listIdArg])
 
     var listUIState by mutableStateOf(ListUIState())
         private set
-    val updateListUIState = shoppingListRepository.getAllStores().map{ UpdateListUIState(it) }.stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5_000L),
-            initialValue = UpdateListUIState()
-        )
+    val updateListUIState = shoppingListRepository.getAllStores().map { UpdateListUIState(it) }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5_000L),
+        initialValue = UpdateListUIState()
+    )
 
-    fun updateListState(newListUIState: ListUIState){
+    fun updateListState(newListUIState: ListUIState) {
         listUIState = newListUIState.copy()
     }
-    suspend fun saveList(){
-        if(listUIState.isValid()){
+
+    suspend fun saveList() {
+        if (listUIState.isValid()) {
             shoppingListRepository.updateList(listUIState.toListDto())
         }
     }
 
-    init{
+    init {
         viewModelScope.launch {
-            shoppingListRepository.getListById(listId).collect{
+            shoppingListRepository.getListById(listId).collect {
                 updateListState(it.toListUIState())
             }
         }

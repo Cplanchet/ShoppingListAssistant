@@ -47,53 +47,54 @@ fun ListDetailPage(
     navigateToUpdateListPage: (listId: Int) -> Unit,
     navigateToUpdateItemPage: (listId: Int, itemId: Int) -> Unit,
     listDetailViewModel: ListDetailViewModel = viewModel(factory = AppViewModelProvider.Factory)
-){
+) {
     val uiState = listDetailViewModel.listUIState.collectAsState()
     val itemsState = listDetailViewModel.itemsUIState.collectAsState()
     val items = listDetailViewModel.listItems.collectAsState()
-    var addItem by remember { mutableStateOf(false)}
+    var addItem by remember { mutableStateOf(false) }
     val coroutineScope = rememberCoroutineScope()
-    var itemToDelete by remember { mutableStateOf<ListItemDto?>(null)}
-    var sortType by remember{listDetailViewModel.sortStyle}
+    var itemToDelete by remember { mutableStateOf<ListItemDto?>(null) }
+    var sortType by remember { listDetailViewModel.sortStyle }
     val categorizedItems by remember { listDetailViewModel.categorizedItems }
 
     Scaffold(
-        topBar = {AppBar(hasBackButton = true, navigateUp = { onNavigateUp() })}
-    ){paddingValues ->
+        topBar = { AppBar(hasBackButton = true, navigateUp = { onNavigateUp() }) }
+    ) { paddingValues ->
         Column(
             modifier = modifier.padding(paddingValues).then(Modifier.padding(top = 32.dp, start = 16.dp))
         ) {
             Row(
-                modifier = Modifier.fillMaxWidth().padding(end=8.dp),
+                modifier = Modifier.fillMaxWidth().padding(end = 8.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
-            ){
+            ) {
                 Column {
                     Text(
-                        modifier = Modifier.clickable(onClick = {navigateToUpdateListPage(listDetailViewModel.listId)}),
+                        modifier = Modifier.clickable(onClick = { navigateToUpdateListPage(listDetailViewModel.listId) }),
                         text = uiState.value.name,
                         style = MaterialTheme.typography.titleLarge,
-                        color = MaterialTheme.colorScheme.primary)
-                    if(uiState.value.store != null){
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                    if (uiState.value.store != null) {
                         Text(
-                            modifier = Modifier.clickable(onClick = {navigateToUpdateListPage(listDetailViewModel.listId)}),
+                            modifier = Modifier.clickable(onClick = { navigateToUpdateListPage(listDetailViewModel.listId) }),
                             text = uiState.value.store!!.name,
                             style = MaterialTheme.typography.titleSmall,
-                            color = MaterialTheme.colorScheme.primary)
+                            color = MaterialTheme.colorScheme.primary
+                        )
                     }
                 }
-                FilterMenu(onFilterSelect = {sortType = it})
+                FilterMenu(onFilterSelect = { sortType = it })
             }
-            if(addItem){
+            if (addItem) {
                 AddItemSection(
                     onSubmit = {
                         val item = itemsState.value.items.find { item -> item.name.equals(it, ignoreCase = true) }
-                        if(item != null){
+                        if (item != null) {
                             coroutineScope.launch {
                                 listDetailViewModel.addItemToList(item)
                             }
-                        }
-                        else{
+                        } else {
                             coroutineScope.launch {
                                 listDetailViewModel.itemToAdd = it
                                 listDetailViewModel.createItem(it)
@@ -101,20 +102,21 @@ fun ListDetailPage(
                         }
                         addItem = false
                     },
-                    onCancel = {addItem = false},
-                    options = itemsState.value.items.map { it.name }.filter { item -> listDetailViewModel.listUIState.value.items.find{added -> added.item.name == item} == null}
+                    onCancel = { addItem = false },
+                    options = itemsState.value.items.map { it.name }
+                        .filter { item -> listDetailViewModel.listUIState.value.items.find { added -> added.item.name == item } == null }
                 )
-            } else{
-                TextButton(onClick = {addItem = true}){
+            } else {
+                TextButton(onClick = { addItem = true }) {
                     Text(text = stringResource(R.string.list_detail_button_label))
                 }
             }
-            when(sortType){
-                FilterType.CATEGORY ->{
+            when (sortType) {
+                FilterType.CATEGORY -> {
                     CategorizedList(
                         categorizedItems,
                         onCheckedChanged = {
-                            coroutineScope.launch{
+                            coroutineScope.launch {
                                 listDetailViewModel.updateListItem(it)
                             }
                         },
@@ -123,6 +125,7 @@ fun ListDetailPage(
                         },
                     )
                 }
+
                 else -> {
                     DragDropItemList(
                         items = items.value,
@@ -130,7 +133,7 @@ fun ListDetailPage(
                             listDetailViewModel.swap(from, to)
                         },
                         onCheckedChanged = {
-                            coroutineScope.launch{
+                            coroutineScope.launch {
                                 listDetailViewModel.updateListItem(it)
                             }
                         },
@@ -146,7 +149,7 @@ fun ListDetailPage(
                 }
             }
 
-            if(itemToDelete != null){
+            if (itemToDelete != null) {
                 DeleteDialog(
                     onConfirm = {
                         coroutineScope.launch {
@@ -167,28 +170,28 @@ fun ListItem(
     onCheckedChanged: (checked: Boolean) -> Unit,
     onEditButtonPressed: (itemId: Int) -> Unit,
     listItem: ListItemDto
-){
+) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
         modifier = modifier.fillMaxWidth()
-    ){
+    ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Start,
-        ){
+        ) {
             Checkbox(
                 checked = listItem.checked,
                 onCheckedChange = { onCheckedChanged(it) }
             )
             Text(
                 text = listItem.item.name + "  " + "(" + listItem.amount + " " + listItem.amountUnit + ")",
-                textDecoration = if(listItem.checked) TextDecoration.LineThrough else TextDecoration.None
+                textDecoration = if (listItem.checked) TextDecoration.LineThrough else TextDecoration.None
             )
         }
         Row(
             verticalAlignment = Alignment.CenterVertically,
-        ){
+        ) {
             IconButton(onClick = { onEditButtonPressed(listItem.item.id) }) {
                 Icon(imageVector = Icons.Filled.Edit, contentDescription = "edit icon")
             }
@@ -203,13 +206,13 @@ fun AddItemSection(
     onCancel: () -> Unit,
     onSubmit: (itemName: String) -> Unit,
     options: List<String>
-){
-    var empty by remember { mutableStateOf(true)}
-    var resultText by remember {mutableStateOf("")}
+) {
+    var empty by remember { mutableStateOf(true) }
+    var resultText by remember { mutableStateOf("") }
     Row(
         modifier = modifier,
         verticalAlignment = Alignment.CenterVertically
-    ){
+    ) {
         AutocompleteTextbox(
             options = options,
             onSelectionChanged = { onSubmit(it) },
@@ -218,10 +221,10 @@ fun AddItemSection(
                 resultText = it
                 empty = resultText == ""
             }
-        ){
+        ) {
             Text(text = "Add Item")
         }
-        if(empty){
+        if (empty) {
             IconButton(
                 onClick = { onCancel() },
             ) {
@@ -231,11 +234,10 @@ fun AddItemSection(
                     tint = MaterialTheme.colorScheme.error
                 )
             }
-        }
-        else{
+        } else {
             IconButton(
-                onClick = {onSubmit(resultText)}
-            ){
+                onClick = { onSubmit(resultText) }
+            ) {
                 Icon(
                     imageVector = Icons.Filled.Check,
                     contentDescription = "Add Item",
@@ -252,7 +254,7 @@ fun DeleteDialog(
     onDismiss: () -> Unit,
     onConfirm: () -> Unit,
     modifier: Modifier = Modifier,
-){
+) {
     AlertDialog(
         onDismissRequest = {
             onDismiss()
@@ -262,7 +264,7 @@ fun DeleteDialog(
             modifier = modifier.wrapContentWidth().wrapContentHeight(),
             shape = MaterialTheme.shapes.large,
             tonalElevation = AlertDialogDefaults.TonalElevation
-        ){
+        ) {
             Column(modifier = Modifier.padding(16.dp)) {
                 Text(
                     text = "Are you sure you want to delete this item?"
@@ -271,7 +273,7 @@ fun DeleteDialog(
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.End
-                ){
+                ) {
                     TextButton(
                         onClick = {
                             onDismiss()
@@ -356,7 +358,7 @@ fun DragDropItemList(
                         //onLongClickLabel = stringResource(R.string.click_item_context)
                     ),
                     listItem = item,
-                    onCheckedChanged ={
+                    onCheckedChanged = {
                         onCheckedChanged(item.copy(checked = it))
                     },
                     onEditButtonPressed = {
@@ -371,27 +373,28 @@ fun DragDropItemList(
 fun FilterMenu(
     modifier: Modifier = Modifier,
     onFilterSelect: (filterName: FilterType) -> Unit,
-){
+) {
     var expanded by remember { mutableStateOf(false) }
-    Column{
-        IconButton(onClick = { expanded = true }){
-            Icon(painter = painterResource(R.drawable.filter_alt_24px),
+    Column {
+        IconButton(onClick = { expanded = true }) {
+            Icon(
+                painter = painterResource(R.drawable.filter_alt_24px),
                 contentDescription = "Filter List Icon", tint = MaterialTheme.colorScheme.onSurface
             )
         }
         DropdownMenu(
             expanded = expanded,
             onDismissRequest = { expanded = false },
-        ){
+        ) {
             DropdownMenuItem(
-                text = {Text("Category")},
+                text = { Text("Category") },
                 onClick = {
                     onFilterSelect(FilterType.CATEGORY)
                     expanded = false
                 }
             )
             DropdownMenuItem(
-                text = {Text("Custom order")},
+                text = { Text("Custom order") },
                 onClick = {
                     onFilterSelect(FilterType.CUSTOM)
                     expanded = false
@@ -409,15 +412,15 @@ fun CategorizedList(
     onEditButtonPressed: (itemId: Int) -> Unit,
     modifier: Modifier = Modifier
 
-){
+) {
     for (list in lists) {
         Text(
-            text = if(list.key != "") list.key else "Uncategorized",
+            text = if (list.key != "") list.key else "Uncategorized",
             style = MaterialTheme.typography.bodyLarge,
             color = MaterialTheme.colorScheme.secondary
         )
-        LazyColumn{
-            items(list.value){item ->
+        LazyColumn {
+            items(list.value) { item ->
                 Column(
                     modifier = Modifier
                 ) {
@@ -428,7 +431,7 @@ fun CategorizedList(
                             }
                         ),
                         listItem = item,
-                        onCheckedChanged ={
+                        onCheckedChanged = {
                             onCheckedChanged(item.copy(checked = it))
                         },
                         onEditButtonPressed = {
@@ -449,11 +452,16 @@ fun CategorizedList(
     name = "dark mode"
 )
 @Composable
-fun ListDetailPreview(){
+fun ListDetailPreview() {
     val savedStateHandle = SavedStateHandle(mapOf("listId" to 1))
     val viewModel = ListDetailViewModel(MockShoppingListRepository(), savedStateHandle)
     ShoppingListAssistantTheme {
-        ListDetailPage(onNavigateUp = {}, navigateToUpdateListPage = {}, navigateToUpdateItemPage = {test, test2 -> }, listDetailViewModel = viewModel)
+        ListDetailPage(
+            onNavigateUp = {},
+            navigateToUpdateListPage = {},
+            navigateToUpdateItemPage = { test, test2 -> },
+            listDetailViewModel = viewModel
+        )
     }
 }
 

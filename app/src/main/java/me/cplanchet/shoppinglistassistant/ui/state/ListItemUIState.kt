@@ -9,11 +9,11 @@ data class ListItemUIState(
     val amountUnit: String = "",
     val checked: Boolean = false,
     val order: Int = 0
-    )
+)
 
 fun ListItemDto.toListItemUIState(): ListItemUIState = ListItemUIState(item, amount, amountUnit, checked, order)
 fun ListItemUIState.toListItem(): ListItemDto = ListItemDto(item, amount, amountUnit, checked, order)
 
-fun ListItemUIState.isValid(): Boolean{
+fun ListItemUIState.isValid(): Boolean {
     return amountUnit.isNotBlank() && amount > 0 && order > 0
 }

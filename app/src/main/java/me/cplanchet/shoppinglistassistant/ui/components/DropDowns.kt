@@ -13,8 +13,8 @@ fun StandardDropdownBox(
     onSelectionChanged: (String) -> Unit,
     selected: String,
     label: @Composable (() -> Unit)?
-){
-    var expanded by remember {mutableStateOf(false)}
+) {
+    var expanded by remember { mutableStateOf(false) }
 
     ExposedDropdownMenuBox(
         expanded = expanded,
@@ -121,8 +121,8 @@ fun AutocompleteTextbox(
     text: String,
     onTextChange: (String) -> Unit,
     label: @Composable (() -> Unit)
-){
-    var expanded by remember {mutableStateOf(false)}
+) {
+    var expanded by remember { mutableStateOf(false) }
     ExposedDropdownMenuBox(
         expanded = expanded,
         onExpandedChange = { expanded = !expanded },
@@ -130,7 +130,7 @@ fun AutocompleteTextbox(
     ) {
         OutlinedTextField(
             value = text,
-            onValueChange = { onTextChange(it)},
+            onValueChange = { onTextChange(it) },
             label = label,
             trailingIcon = {
                 ExposedDropdownMenuDefaults.TrailingIcon(
@@ -140,8 +140,8 @@ fun AutocompleteTextbox(
             colors = ExposedDropdownMenuDefaults.textFieldColors(),
             modifier = Modifier.menuAnchor()
         )
-        val filteringOptions = options.filter { it. contains(text, ignoreCase = true) }
-        if(filteringOptions.isNotEmpty()){
+        val filteringOptions = options.filter { it.contains(text, ignoreCase = true) }
+        if (filteringOptions.isNotEmpty()) {
             ExposedDropdownMenu(
                 expanded = expanded,
                 onDismissRequest = {

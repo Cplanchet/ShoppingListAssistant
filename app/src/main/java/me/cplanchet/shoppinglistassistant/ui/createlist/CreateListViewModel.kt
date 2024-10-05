@@ -14,22 +14,23 @@ import me.cplanchet.shoppinglistassistant.ui.state.ListUIState
 import me.cplanchet.shoppinglistassistant.ui.state.isValid
 import me.cplanchet.shoppinglistassistant.ui.state.toListDto
 
-class CreateListViewModel(private val shoppingListRepository: ShoppingListRepository): ViewModel() {
+class CreateListViewModel(private val shoppingListRepository: ShoppingListRepository) : ViewModel() {
     var listUIState by mutableStateOf(ListUIState())
         private set
 
-    val createListUIState: StateFlow<CreateListUIState> = shoppingListRepository.getAllStores().map{ CreateListUIState(it) }.stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(5_000L),
-        initialValue = CreateListUIState()
-    )
+    val createListUIState: StateFlow<CreateListUIState> =
+        shoppingListRepository.getAllStores().map { CreateListUIState(it) }.stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5_000L),
+            initialValue = CreateListUIState()
+        )
 
-    fun updateUIState(newListUIState: ListUIState){
+    fun updateUIState(newListUIState: ListUIState) {
         listUIState = newListUIState.copy()
     }
 
-    suspend fun saveList(){
-        if(listUIState.isValid()){
+    suspend fun saveList() {
+        if (listUIState.isValid()) {
             shoppingListRepository.insertList(listUIState.toListDto())
         }
     }

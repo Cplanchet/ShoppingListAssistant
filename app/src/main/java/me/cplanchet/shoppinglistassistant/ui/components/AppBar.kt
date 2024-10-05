@@ -18,13 +18,13 @@ fun AppBar(
     modifier: Modifier = Modifier,
     hasBackButton: Boolean,
     navigateUp: () -> Unit = {}
-){
-    if(hasBackButton){
+) {
+    if (hasBackButton) {
         TopAppBar(
-            title = { Text(stringResource(R.string.app_title))},
+            title = { Text(stringResource(R.string.app_title)) },
             modifier = modifier,
             navigationIcon = {
-                IconButton(onClick = navigateUp){
+                IconButton(onClick = navigateUp) {
                     Icon(
                         imageVector = Icons.Filled.ArrowBack,
                         contentDescription = "back button"
@@ -36,24 +36,24 @@ fun AppBar(
                 navigationIconContentColor = MaterialTheme.colorScheme.onPrimary,
                 containerColor = MaterialTheme.colorScheme.primary,
 
-            )
+                )
         )
-    }
-    else{
+    } else {
         TopAppBar(
-            title = {Text(stringResource(R.string.app_title))},
+            title = { Text(stringResource(R.string.app_title)) },
             modifier = modifier,
             colors = TopAppBarDefaults.smallTopAppBarColors(
                 titleContentColor = MaterialTheme.colorScheme.onPrimary,
                 navigationIconContentColor = MaterialTheme.colorScheme.onPrimary,
                 containerColor = MaterialTheme.colorScheme.primary,
 
-            ))
+                )
+        )
     }
 }
 
 @Preview(
-    uiMode= UI_MODE_NIGHT_YES,
+    uiMode = UI_MODE_NIGHT_YES,
     name = "Dark Mode"
 )
 @Preview(
@@ -61,7 +61,7 @@ fun AppBar(
     name = "Light Mode"
 )
 @Composable
-fun Preview(){
+fun Preview() {
     ShoppingListAssistantTheme {
         AppBar(hasBackButton = false)
     }
